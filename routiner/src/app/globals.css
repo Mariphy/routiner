@@ -2,20 +2,111 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+.calendar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.header {
+  margin-bottom: 20px;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+.body {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
 }
+
+.row {
+  display: contents;
+}
+
+.cell {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.cell.disabled {
+  background-color: #f9f9f9;
+  color: #ccc;
+}
+
+.cell.selected {
+  background-color: #4caf50;
+  color: white;
+}
+
+.number {
+  font-size: 1.2em;
+}
+
+.day-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.flex {
+  display: flex;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.border {
+  border: 1px solid #ddd;
+}
+
+.p-4 {
+  padding: 1rem;
+}
+
+.w-64 {
+  width: 16rem;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.task {
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.bg-blue-500 {
+  background-color: #3b82f6;
+}
+
+.bg-red-500 {
+  background-color: #ef4444;
+}
+
+.text-white {
+  color: white;
+}
+
+.mr-2 {
+  margin-right: 0.5rem;
+}
+
+.p-1 {
+  padding: 0.25rem;
+}
+
