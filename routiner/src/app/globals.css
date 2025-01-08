@@ -64,10 +64,6 @@
   padding: 1rem;
 }
 
-.w-64 {
-  width: 16rem;
-}
-
 .text-xl {
   font-size: 1.25rem;
 }
@@ -110,3 +106,18 @@
   padding: 0.25rem;
 }
 
+.board-container {
+  overflow-x: auto;
+}
+
+
+
+@media (max-width: 640px) {
+  .column {
+    width: 100%;
+  }
+
+  .board {
+    flex-direction: row; 
+  }
+}

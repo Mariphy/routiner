@@ -15,16 +15,16 @@ export default function Board() {
   const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
 
   return (
-    <div className="board-container overflow-x-auto">
-      <div className="board flex gap-1 p-4 bg-gray-100">
-        <div className="column border p-4 w-64 rounded-lg bg-white shadow-md">
+    <div className="board-container overflow-x-auto bg-gray-100">
+      <div className="board flex gap-1 p-4">
+        <div className="column border p-4 w-96 rounded-lg bg-white shadow-md">
           <h2 className="text-xl font-bold mb-4">Task List</h2>
           {tasks.map(task => (
             <Task key={task.id} task={task} onEdit={() => {}} onDelete={() => {}} />
           ))}
         </div>
         {daysOfWeek.map((day, index) => (
-          <div key={index} className="column border p-4 w-64 rounded-lg bg-white shadow-md">
+          <div key={index} className="column border p-4 w-80 rounded-lg bg-white shadow-md">
             <h2 className="text-xl font-bold mb-4">{format(day, 'EEEE')}</h2>
             {tasks
               .filter(task => task.day === index)
