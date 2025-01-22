@@ -20,7 +20,7 @@ export async function connectToDb() {
     await client.connect();
 
     cashedClient = client;
-    cashedDb = client.db('routiner');
+    cashedDb = client.db('Routiner');
 
-    return { client, db: client.db('routiner') };
+    return { client, db: client.db('Routiner') };
 }

@@ -1,13 +1,36 @@
 import { connectToDb } from "../db";
+import { ObjectId } from "mongodb";
 
 export async function GET() {
-    const { db } = await connectToDb();
-    const routines = await db.collection('routines').find({}).toArray();
+    try {
+        const { db } = await connectToDb();
+        const user = await db.collection("Users").findOne({
+            _id: new ObjectId("678d355afa0c718c79b59091")
+        });
 
-    return new Response(JSON.stringify(routines), {
-        status: 200,
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
+        if (!user) {
+            console.error("User not found");
+            return new Response(JSON.stringify({ error: "User not found" }), {
+                status: 404,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+        }
+
+        return new Response(JSON.stringify({ tasks: user.tasks }), {
+            status: 200,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+    } catch (error) {
+        console.error("Error fetching user:", error);
+        return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+            status: 500,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+    }
 }
