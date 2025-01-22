@@ -1,5 +1,6 @@
 import React from 'react';
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, format, addDays, isSameMonth, isSameDay } from 'date-fns';
+import Day from './Day';
 
 export default function Calendar() {
   const today = new Date();
@@ -43,6 +44,7 @@ export default function Calendar() {
       <div className="body">
         {rows}
       </div>
+      <Day></Day>
     </div>
   );
   }
