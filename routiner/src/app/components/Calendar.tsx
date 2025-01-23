@@ -18,7 +18,7 @@ export default function Calendar() {
   while (day <= endDate) {
     for (let i = 0; i < 7; i++) {
       formattedDate = format(day, dateFormat);
-      const cloneDay = day;
+      //const cloneDay = day;
       days.push(
         <div
           className={`col cell ${!isSameMonth(day, monthStart) ? "disabled" : isSameDay(day, today) ? "selected" : ""}`}

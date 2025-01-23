@@ -1,5 +1,5 @@
 import React from 'react';
-import { format, startOfWeek, addDays } from 'date-fns';
+import { startOfWeek, addDays } from 'date-fns';
 interface BoardProps {
   tasks: Array<string>; 
 }
@@ -7,7 +7,7 @@ interface BoardProps {
 export default function Board({ tasks }: BoardProps) {
   const startDate = startOfWeek(new Date(), { weekStartsOn: 0 });
 
-  const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
+  //const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
 
   return (
     <div className="board-container overflow-x-auto bg-gray-100">
