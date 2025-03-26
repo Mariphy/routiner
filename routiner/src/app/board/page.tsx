@@ -5,7 +5,7 @@ import NavBar from '../components/NavBar';
 import Board from '../components/Board';
 
 export default function BoardPage() {
-  const [tasks, setTasks] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<{ title: string; day?: string }[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,7 +16,7 @@ export default function BoardPage() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        setTasks(data.tasks);
+        setTasks(data.tasks.map((task: string) => ({ title: task })));
         setLoading(false);
       } catch (error) {
         console.error('Fetch error:', error);
@@ -26,14 +26,14 @@ export default function BoardPage() {
     fetchTasks();
   }, []);
 
-  const handleAddTask = async (newTask: string) => {
+  const handleAddTask = async (newTask: { title: string; day?: string }) => {
     try {
       const response = await fetch('http://localhost:3000/api/routines', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ task: newTask }),
+        body: JSON.stringify({ task: newTask.title }),
       });
 
       if (!response.ok) {
