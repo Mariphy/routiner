@@ -53,10 +53,10 @@ export default function BoardPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="p-4 bg-gray-800 text-white text-center">
+      <header className="fixed top-0 left-0 w-full bg-gray-800 text-white z-50 shadow-md">
         <NavBar/>
       </header>
-      <main className="flex-grow flex flex-col sm:flex-row">
+      <main className="flex-grow flex flex-col sm:flex-row pt-28">
         <div className="flex-1 p-4">
           <Board tasks={tasks} onAddTask={handleAddTask} />
         </div>
