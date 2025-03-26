@@ -5,7 +5,7 @@ import NavBar from '../components/NavBar';
 import Board from '../components/Board';
 
 export default function BoardPage() {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,6 +26,27 @@ export default function BoardPage() {
     fetchTasks();
   }, []);
 
+  const handleAddTask = async (newTask: string) => {
+    try {
+      const response = await fetch('http://localhost:3000/api/routines', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ task: newTask }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to add task: ${response.status}`);
+      }
+
+      // Update the local state with the new task
+      setTasks((prevTasks) => [...prevTasks, newTask]);
+    } catch (error) {
+      console.error('Error adding task:', error);
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   } 
@@ -37,7 +58,7 @@ export default function BoardPage() {
       </header>
       <main className="flex-grow flex flex-col sm:flex-row">
         <div className="flex-1 p-4">
-          <Board tasks={tasks}/>
+          <Board tasks={tasks} onAddTask={handleAddTask} />
         </div>
       </main>
     </div>

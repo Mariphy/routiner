@@ -45,6 +45,7 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
         </div>
         
       </div>
+      
     </div>
   );
 }
