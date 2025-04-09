@@ -1,11 +1,27 @@
-import NextAuth from "next-auth"
+import NextAuth, { Session } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials";
 import { connectToDb } from "./api/db";
 import { verifyPassword } from "./utils/bcrypt";
 
 async function getUserByEmail(email: string) {
-  const { db } = await connectToDb();
-  return db.collection("Users").findOne({ email });
+  try {
+    const { db } = await connectToDb(); 
+    const user = await db.collection("Users").findOne({ email }); 
+    return user;
+  } catch (error) {
+    return null; 
+  }
+}
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    };
+  }
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -27,6 +43,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return { id: user.id, email: user.email }; // Return user object
       },
     }),
-  ],
+  ], 
+  session: {
+    strategy: "jwt", 
+  },
+  callbacks: {
+    async session({ session, token }) {
+      if (token && session.user) {
+        session.user.id = token.sub ?? "";
+      }
+      return session;
+    },
+  },
   secret: process.env.NEXTAUTH_SECRET,
 });
