@@ -1,4 +1,5 @@
-import NextAuth, { Session } from "next-auth"
+import NextAuth, { Session } from "next-auth";
+import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { getUserByEmail } from "./lib/user";
 import { verifyPassword } from "./lib/bcrypt";
@@ -38,7 +39,7 @@ export const authOptions = {
     strategy: "jwt" as const, 
   },
   callbacks: {
-    async session({ session, token }: { session: Session; token: any }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       if (token && session.user) {
         session.user.id = token.sub ?? "";
       }
