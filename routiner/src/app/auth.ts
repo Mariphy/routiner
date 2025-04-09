@@ -1,17 +1,7 @@
 import NextAuth, { Session } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials";
-import { connectToDb } from "./api/db";
-import { verifyPassword } from "./utils/bcrypt";
-
-async function getUserByEmail(email: string) {
-  try {
-    const { db } = await connectToDb(); 
-    const user = await db.collection("Users").findOne({ email }); 
-    return user;
-  } catch (error) {
-    return null; 
-  }
-}
+import { getUserByEmail } from "./lib/user";
+import { verifyPassword } from "./lib/bcrypt";
 
 declare module "next-auth" {
   interface Session {
