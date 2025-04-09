@@ -1,7 +1,15 @@
 "use client";
+import { auth } from "@/app/auth";
+import { redirect } from "next/navigation";
 import NavBar from "./components/NavBar";
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
+
+  if (!session?.user) {
+    redirect("/login");
+  }
+
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -9,7 +17,9 @@ export default function Home() {
         <NavBar/>
       </header>
       <main className="flex-grow p-4">
-        
+        <div>
+          <h1>Welcome, {session.user.email}!</h1>
+        </div>
       </main>
     </div>
   );
