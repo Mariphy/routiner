@@ -14,7 +14,7 @@ declare module "next-auth" {
   }
 }
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const authOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -35,10 +35,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ], 
   session: {
-    strategy: "jwt", 
+    strategy: "jwt" as const, 
   },
   callbacks: {
-    async session({ session, token }) {
+    async session({ session, token }: { session: Session; token: any }) {
       if (token && session.user) {
         session.user.id = token.sub ?? "";
       }
@@ -46,4 +46,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
-});
+  debug: true,
+};
+
+export default NextAuth(authOptions)

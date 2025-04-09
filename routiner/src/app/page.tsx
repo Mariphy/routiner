@@ -1,10 +1,10 @@
-import { auth } from "@/app/auth";
+import { authOptions } from "@/app/auth";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import NavBar from "./components/NavBar";
 
 export default async function Home() {
-  const session = await getServerSession(auth) as { user?: { email?: string } };
+  const session = await getServerSession(authOptions) as { user?: { email?: string } };
 
   if (!session?.user) {
     redirect("/login");
