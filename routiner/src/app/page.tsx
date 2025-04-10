@@ -2,6 +2,7 @@ import { authOptions } from "@/app/auth";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import NavBar from "./components/NavBar";
+import SignOutButton from "./components/SignOutButton";
 
 export default async function Home() {
   const session = await getServerSession(authOptions) as { user?: { email?: string } };
@@ -19,6 +20,7 @@ export default async function Home() {
       <main className="flex-grow p-4">
         <div>
           <h1>Welcome, {session.user.email}!</h1>
+          <SignOutButton />
         </div>
       </main>
     </div>
