@@ -16,7 +16,7 @@ export default function BoardPage() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        setTasks(data.tasks.map((task: string) => ({ title: task })));
+        setTasks(data.tasks);
         setLoading(false);
       } catch (error) {
         console.error('Fetch error:', error);
@@ -26,14 +26,14 @@ export default function BoardPage() {
     fetchTasks();
   }, []);
 
-  const handleAddTask = async (newTask: { title: string; day?: string }) => {
+  const handleAddTask = async (newTask: { title: string; day?: string, time?: string }) => {
     try {
       const response = await fetch('http://localhost:3000/api/routines', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ task: newTask.title }),
+        body: JSON.stringify({ task: newTask }),
       });
 
       if (!response.ok) {

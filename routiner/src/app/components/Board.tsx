@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { startOfWeek, addDays, format } from 'date-fns';
 
 interface BoardProps {
-  tasks: Array<{ title: string; day?: string }>;
-  onAddTask: (newTask: { title: string; day?: string }) => void;
+  tasks: Array<{ title: string; day?: string; time?: string }>;
+  onAddTask: (newTask: { title: string; day?: string; time?: string }) => void;
 }
 
 export default function Board({ tasks, onAddTask }: BoardProps) {
@@ -14,9 +14,13 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
   const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
 
   const handleAddTask = (day?: string) => {
+    const taskDay = day ?? selectedDay; // Use the passed day or the selectedDay state
     if (newTask.trim()) {
-      onAddTask({ title: newTask, day: day ?? selectedDay ?? undefined }); // Call the parent-provided callback to add the task
+      // Always create a task object with the correct format
+      const newTaskObject = { title: newTask.trim(), day: taskDay ?? undefined };
+      onAddTask(newTaskObject); // Pass the task object to the parent-provided callback
       setNewTask(''); // Clear the input field
+      setSelectedDay(null); // Reset the selected day
     }
   };
 
@@ -59,7 +63,7 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
                     key={taskIndex}
                     className="task border p-2 mb-2 rounded-lg bg-gray-50 shadow-sm"
                   >
-                    <h3 className="font-bold">{task.title}</h3>
+                    <h3 className="font-normal">{task.title}</h3>
                   </div>
                 ))}
               <div className="flex items-center gap-2 mt-4">
