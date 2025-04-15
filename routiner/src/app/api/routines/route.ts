@@ -1,7 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/auth";
 import { connectToDb } from "../db";
-import { ObjectId } from "mongodb";
 
 export async function GET() {
     try {
