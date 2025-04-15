@@ -26,7 +26,7 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
 
   return (
     <div className="board-container overflow-x-auto bg-gray-100">
-      <div className="board flex gap-1 p-4 min-w-max">
+      <div className="board flex gap-1 p-4 min-w-max min-h-[600px]">
         <div className="column border p-4 w-full sm:w-64 md:w-72 lg:w-80 rounded-lg bg-white shadow-md">
           <h2 className="text-xl font-bold mb-4">Task List</h2>
           {tasks.map((task, index) => (
