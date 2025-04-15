@@ -7,9 +7,12 @@ export async function connectToDb() {
     if (cashedClient && cashedDb) {
         return { client: cashedClient, db: cashedDb };
     }
-    const uri = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@cluster0.5qjn6.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
-   
-    const client = new MongoClient(uri, {
+const uri = process.env.MONGODB_URI;
+if (!uri) {
+    throw new Error('MONGODB_URI is not defined in the environment variables.');
+}
+
+const client = new MongoClient(uri, {
     serverApi: {
         version: ServerApiVersion.v1,
         strict: true,
