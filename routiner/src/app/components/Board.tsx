@@ -31,7 +31,7 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
           <h2 className="text-xl font-bold mb-4">Task List</h2>
           {tasks.map((task, index) => (
             <div key={index} className="task border p-2 mb-2">
-              <h3 className="font-bold">{task.title}</h3>
+              <h3 className="font-normal">{task.title}</h3>
             </div>
           ))}
           <div className="flex items-center gap-2 mb-4">
