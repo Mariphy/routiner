@@ -11,7 +11,8 @@ export default function BoardPage() {
   useEffect(() => {
     async function fetchTasks() {
       try {
-        const response = await fetch('process.env.APP_URL/api/routines');
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL
+        const response = await fetch(`${baseUrl}/api/routines`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -28,7 +29,8 @@ export default function BoardPage() {
 
   const handleAddTask = async (newTask: { title: string; day?: string, time?: string }) => {
     try {
-      const response = await fetch('process.env.APP_URL/api/routines', {
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL
+      const response = await fetch(`${baseUrl}/api/routines`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
