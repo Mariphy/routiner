@@ -1,8 +1,9 @@
 import NextAuth, { Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
+import type { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from "next-auth/providers/credentials";
-import { getUserByEmail } from "./lib/user";
-import { verifyPassword } from "./lib/bcrypt";
+import { getUserByEmail } from "@/app/lib/user";
+import { verifyPassword } from "@/app/lib/bcrypt";
 
 declare module "next-auth" {
   interface Session {
@@ -15,15 +16,16 @@ declare module "next-auth" {
   }
 }
 
-export const authOptions = {
+export const options: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" },
+        email: { label: "Email", type: "text", placeholeder: "email" },
+        password: { label: "Password", type: "password", placeholder: "password" },
       },
       async authorize(credentials) {
+        console.log(credentials)
         if (!credentials?.email) return null; // Ensure email is defined
         const user = await getUserByEmail(credentials.email); // Fetch user from DB
         if (!user) return null;
@@ -49,5 +51,3 @@ export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   debug: true,
 };
-
-export default NextAuth(authOptions)

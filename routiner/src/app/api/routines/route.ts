@@ -1,10 +1,10 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/auth";
+import { options } from "@/app/api/auth/[...nextauth]/options";
 import { connectToDb } from "../db";
 
 export async function GET() {
     try {
-        const session = await getServerSession(authOptions);
+        const session = await getServerSession(options);
         if (!session?.user?.email) {
           return new Response(JSON.stringify({ error: "Unauthorized" }), {
             status: 401,
@@ -39,7 +39,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
     try {
-        const session = await getServerSession(authOptions);
+        const session = await getServerSession(options);
         if (!session?.user?.email) {
           return new Response(JSON.stringify({ error: "Unauthorized" }), {
             status: 401,
