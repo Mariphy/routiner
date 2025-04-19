@@ -2,8 +2,6 @@ import { options } from "@/app/api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import NavBar from "./components/NavBar";
-import Login from "./components/Login";
-import SignOutButton from "./components/SignOutButton";
 
 export default async function Home() {
   const session = await getServerSession(options);
@@ -20,8 +18,6 @@ export default async function Home() {
       <main className="flex-grow p-4">
         <div>
           {session ? <h1>Welcome, {session.user.email}!</h1> : <h1>Welcome, Guest!</h1>}
-          <Login />
-          <SignOutButton />
         </div>
       </main>
     </div>
