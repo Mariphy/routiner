@@ -25,7 +25,6 @@ export const options: NextAuthOptions = {
         password: { label: "Password", type: "password", placeholder: "password" },
       },
       async authorize(credentials) {
-        console.log(credentials)
         if (!credentials?.email) return null; // Ensure email is defined
         const user = await getUserByEmail(credentials.email); // Fetch user from DB
         if (!user) return null;
