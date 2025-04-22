@@ -2,6 +2,7 @@
  
  import { useRouter } from "next/navigation";
  import { useState } from "react";
+ import { signup } from "@/app/actions/auth";
  
  export default function SignUpPage() {
    const router = useRouter();
@@ -10,37 +11,19 @@
    const [error, setError] = useState("");
  
    async function handleSubmit(e: React.FormEvent) {
-     e.preventDefault();
-     setError("");
+      e.preventDefault();
+      setError("");
 
-     try {
-      const response = await fetch("/api/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      try {
+          const formData = new FormData();
+          formData.append("email", email);
+          formData.append("password", password);
 
-      if (response.status === 409) {
-        setError("User already exists. Redirecting to login...");
-        setTimeout(() => {
-          router.push("/api/auth/signin"); // Redirect to the login page
-        }, 2000); // Wait 2 seconds before redirecting
-        return;
+          await signup(formData);
+          router.push("/api/auth/signin"); // Redirect to login after successful signup
+      } catch (err: any) {
+          setError(err.message); // Display validation or API error
       }
-
-      if (!response.ok) {
-        throw new Error("Failed to sign up");
-      }
-
-      const data = await response.json();
-      console.log(data.message); // "User created"
-      router.push("/api/auth/signin"); // Redirect to login after successful signup
-    } catch (err) {
-        console.error(err);
-      setError("An error occurred. Please try again.");
-    }
    }
  
    return (
@@ -67,6 +50,7 @@
              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
            />
          </div>
+         {error && <p className="text-red-500 mb-4">{error}</p>}
          <button
            type="submit"
            className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200"
