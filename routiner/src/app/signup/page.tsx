@@ -21,8 +21,12 @@
 
           await signup(formData);
           router.push("/api/auth/signin"); // Redirect to login after successful signup
-      } catch (err: any) {
+      } catch (err: unknown) {
+        if (err instanceof Error) {
           setError(err.message); // Display validation or API error
+        } else {
+          setError("An unexpected error occurred."); // Handle non-Error objects
+        }
       }
    }
  
