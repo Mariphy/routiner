@@ -11,6 +11,24 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+
+        base: {
+          DEFAULT: "#bac1c7", 
+          light: "#d1d5d9",
+          dark: "#9ba5ae",
+        },
+        neutral: {
+          100: "#f9fafb",
+          200: "#e5e7eb",
+          300: "#d1d5db",
+          900: "#111827",
+        },
+        accent: {
+          DEFAULT: "#5d5f71",
+          hover: "#85879b",
+        },
+        success: "#22c55e",
+        error: "#ef4444",
       },
     },
   },
