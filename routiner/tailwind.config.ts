@@ -18,10 +18,10 @@ export default {
           dark: "#9ba5ae",
         },
         neutral: {
-          100: "#f9fafb",
-          200: "#e5e7eb",
-          300: "#d1d5db",
-          900: "#111827",
+          100: "#f8fafc",  // cool off-white
+          200: "#e2e8f0",  // slate-100
+          300: "#cbd5e1",  // slate-200
+          900: "#0f172a",  // slate-900 (dark navy-gray)
         },
         accent: {
           DEFAULT: "#5d5f71",
