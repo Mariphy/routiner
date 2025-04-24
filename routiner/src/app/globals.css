@@ -8,10 +8,6 @@
   align-items: center;
 }
 
-.header {
-  margin-bottom: 20px;
-}
-
 .body {
   display: grid;
   grid-template-columns: repeat(7, 1fr);

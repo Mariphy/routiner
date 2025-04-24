@@ -24,7 +24,7 @@ export default {
           900: "#0f172a",  // slate-900 (dark navy-gray)
         },
         accent: {
-          DEFAULT: "#5d5f71",
+          DEFAULT: "#5d5f71", //buttons, NavBar
           hover: "#85879b",
         },
         success: "#22c55e",

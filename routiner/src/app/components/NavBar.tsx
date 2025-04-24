@@ -2,12 +2,12 @@ import Link from 'next/link';
 
 export default function NavBar() {
     return (
-        <nav className="flex-row justify-between items-stretch p-4 bg-accent text-neutral-100">
-            <h1 className="text-2xl">Routiner App</h1>
-            <div className="flex space-x-4">
-                <Link className="text-neutral-100 m-4" href="/"> Home </Link>
-                <Link className="text-neutral-100e m-4" href="/board"> Board </Link>
-                <Link className="text-neutral-100 m-4" href="/calendar"> Calendar </Link>
+        <nav className="flex items-center justify-between p-4 bg-accent text-neutral-100 shadow-sm">
+            <Link href="/" className="text-2xl font-semibold">Routiner</Link>
+            <div className="flex space-x-6 text-sm">
+                <Link href="/" className="text-xl hover:underline">Home</Link>
+                <Link href="/board" className="text-xl hover:underline">Board</Link>
+                <Link href="/calendar" className="text-xl hover:underline">Calendar</Link>
             </div>
         </nav>
     );

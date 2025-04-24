@@ -32,7 +32,7 @@ export default function RootLayout({
           <header className="fixed top-0 left-0 w-full z-50">
             <NavBar /> 
           </header>
-          <main className="flex-grow pt-20">{children}</main> {/* Add padding to account for the fixed NavBar */}
+          <main className="flex-grow pt-30">{children}</main> {/* Add padding to account for the fixed NavBar */}
         </div>
       </body>
     </html>
