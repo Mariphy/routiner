@@ -25,9 +25,9 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
   };
 
   return (
-    <div className="board-container w-full overflow-x-auto scroll-px-4">
-      <div className="board flex gap-2 p-4 min-w-fit min-h-[600px]">
-        <div className="column border p-4 sm:w-64 md:w-72 lg:w-80 flex-shrink-0 rounded-lg bg-gray-100 shadow-md">
+    <div className="board-container w-full overflow-x-auto">
+      <div className="board flex gap-2 p-4 min-w-max min-h-[600px]">
+        <div className="column border p-4 sm:w-64 md:w-72 lg:w-auto flex-shrink-0 rounded-lg bg-gray-100 shadow-md">
           <h2 className="text-xl font-bold mb-4">Task List</h2>
           {tasks.map((task, index) => (
             <div key={index} className="task border p-2 mb-2">
@@ -44,7 +44,7 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
             />
             <button
               onClick={() => handleAddTask()}
-              className="bg-accent text-white px-4 py-2 rounded"
+              className="bg-accent text-white px-4 py-2 rounded hover:bg-accent-hover"
             >
               +
             </button>
@@ -79,7 +79,7 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
                 />
                 <button
                   onClick={() => handleAddTask(dayName)}
-                  className="bg-accent text-white px-4 py-2 rounded"
+                  className="bg-accent text-white px-4 py-2 rounded hover:bg-accent-hover"
                 >
                   +
                 </button>

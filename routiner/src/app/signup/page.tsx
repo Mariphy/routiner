@@ -57,7 +57,7 @@
          {error && <p className="text-red-500 mb-4">{error}</p>}
          <button
            type="submit"
-           className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200"
+           className="w-full bg-accent text-white py-2 px-4 rounded-lg hover:bg-accent-hover transition duration-200"
          >
            Sign Up
          </button>
