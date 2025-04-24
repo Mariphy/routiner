@@ -27,10 +27,10 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
   return (
     <div className="board-container w-full overflow-x-auto">
       <div className="board flex gap-2 p-4 min-w-max min-h-[600px]">
-        <div className="column border p-4 sm:w-64 md:w-72 lg:w-auto flex-shrink-0 rounded-lg bg-gray-100 shadow-md">
+        <div className="column border p-4 sm:w-72 md:w-72 lg:w-80 flex-shrink-0 rounded-lg bg-neutral-200 shadow-md">
           <h2 className="text-xl font-bold mb-4">Task List</h2>
           {tasks.map((task, index) => (
-            <div key={index} className="task border p-2 mb-2">
+            <div key={index} className="task border p-2 mb-2 rounded-lg bg-neutral-100 shadow-sm">
               <h3 className="font-normal">{task.title}</h3>
             </div>
           ))}
@@ -54,14 +54,14 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
         {daysOfWeek.map((day, index) => {
           const dayName = format(day, 'EEEE'); // Get the full name of the day (e.g., "Monday")
           return (
-            <div key={index} className="column border p-4 sm:w-64 md:w-72 lg:w-80 rounded-lg bg-gray-100 shadow-md">
+            <div key={index} className="column border p-4 sm:w-72 md:w-72 lg:w-80 rounded-lg bg-neutral-200 shadow-md">
               <h2 className="text-xl font-bold mb-4">{dayName}</h2>
               {tasks
                 .filter((task) => task.day === dayName) // Filter tasks for the current day
                 .map((task, taskIndex) => (
                   <div
                     key={taskIndex}
-                    className="task border p-2 mb-2 rounded-lg bg-gray-50 shadow-sm"
+                    className="task border p-2 mb-2 rounded-lg bg-neutral-100 shadow-sm"
                   >
                     <h3 className="font-normal">{task.title}</h3>
                   </div>
@@ -75,11 +75,11 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
                     setSelectedDay(dayName);
                   }}
                   placeholder={`Add a task for ${dayName}`}
-                  className="border p-2 flex-grow"
+                  className="task border p-2 mb-2 rounded-lg bg-neutral-100 shadow-sm flex-grow"
                 />
                 <button
                   onClick={() => handleAddTask(dayName)}
-                  className="bg-accent text-white px-4 py-2 rounded hover:bg-accent-hover"
+                  className="bg-accent text-white px-4 py-2 rounded hover:bg-accent-hover flex-shrink-0"
                 >
                   +
                 </button>

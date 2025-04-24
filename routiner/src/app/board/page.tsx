@@ -53,7 +53,7 @@ export default function BoardPage() {
   } 
 
   return (
-    <main className="flex-grow flex flex-col sm:flex-row pt-12">
+    <main className="flex-grow flex flex-col sm:flex-row pt-12 mt-4">
       <div className="flex-1 p-4">
         <Board tasks={tasks} onAddTask={handleAddTask} />
       </div>
