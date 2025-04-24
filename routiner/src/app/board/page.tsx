@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import NavBar from '../components/NavBar';
 import Board from '../components/Board';
 
 export default function BoardPage() {
@@ -54,15 +53,10 @@ export default function BoardPage() {
   } 
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="fixed top-0 left-0 w-full bg-gray-800 text-white z-50 shadow-md">
-        <NavBar/>
-      </header>
-      <main className="flex-grow flex flex-col sm:flex-row pt-28">
-        <div className="flex-1 p-4">
-          <Board tasks={tasks} onAddTask={handleAddTask} />
-        </div>
-      </main>
-    </div>
+    <main className="flex-grow flex flex-col sm:flex-row pt-12">
+      <div className="flex-1 p-4">
+        <Board tasks={tasks} onAddTask={handleAddTask} />
+      </div>
+    </main>
   );
 }
