@@ -1,6 +1,5 @@
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
-import NavBar from "./components/NavBar";
 import Link from "next/link";
 
 export default async function Home() {
