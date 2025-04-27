@@ -7,13 +7,13 @@ export default async function Home() {
   const session = await getServerSession(options);
 
   return (
-    <main className="flex-grow flex flex-col sm:flex-row pt-12">
+    <main className="flex-grow flex flex-col sm:flex-row items-center justify-center pt-12">
       <div className="m-6">
         {session ? ( 
           <div className="text-center m-6">
             <h1 className="text-2xl font-bold">Welcome, {session.user.name}!</h1>
             <UserHomePage />
-          </div>
+          </div>  
         ) : ( 
           <GuestHomePage />
         )}

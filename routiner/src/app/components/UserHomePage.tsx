@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function UserHomePage() {
 
   return (
-    <div className="text-center m-6">
+    <div>
         <p className="mt-4">
               Use the <span className="font-semibold">Board</span> section to plan your current week. On the <span className="font-semibold">Calendar</span> page you can find your month overview or dig  deeper on your daily plans. 
         </p>

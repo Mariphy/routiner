@@ -21,7 +21,7 @@ export default function GuestHomePage() {
         </div>
         <p className="mt-4">
             We created this app as a way to help you plan and manage your time easier.
-            Add daily routines that won't disrupt your day and are flexible enough to plan around. 
+            Add daily routines that won&apos;t disrupt your day and are flexible enough to plan around. 
             Never lose track of the tasks you record as events, instead, block time for your tasks with flexibility.
         </p>
         <p className="mt-4">
