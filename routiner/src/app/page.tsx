@@ -10,7 +10,7 @@ export default async function Home() {
       <div className="m-6">
         {session ? ( 
           <div>
-            <h1 className="text-2xl font-bold">Welcome, {session.user.email}!</h1>
+            <h1 className="text-2xl font-bold">Welcome, {session.user.name}!</h1>
             <p className="mt-4">You are signed in. Explore your dashboard or manage your tasks.</p>
             <Link href="/api/auth/signout">
                 <button className="bg-green-500 text-white m-6 px-4 py-2 rounded hover:bg-green-600">

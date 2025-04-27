@@ -11,10 +11,10 @@ export async function getUserByEmail(email: string) {
   }
 }
 
-export async function createUser({ email, password }: { email: string; password: string }) {
+export async function createUser({ name, email, password }: { name: string; email: string; password: string }) {
   try {
     const { db } = await connectToDb();
-    const result = await db.collection("Users").insertOne({ email, password, tasks: [] }); // Insert user
+    const result = await db.collection("Users").insertOne({ name, email, password, tasks: [], routines: [], events: [] }); // Insert user
     return result;
   } catch (error) {
     console.error("Error creating user:", error);

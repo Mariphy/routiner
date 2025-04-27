@@ -32,7 +32,7 @@ export const options: NextAuthOptions = {
         const isValid = await verifyPassword(credentials!.password, user.password); // Verify password
         if (!isValid) return null;
 
-        return { id: user.id, email: user.email }; // Return user object
+        return { id: user.id, email: user.email, name: user.name }; // Return user object
       },
     }),
   ], 
@@ -43,8 +43,16 @@ export const options: NextAuthOptions = {
     async session({ session, token }: { session: Session; token: JWT }) {
       if (token && session.user) {
         session.user.id = token.sub ?? "";
+        session.user.name = token.name ?? "";
       }
       return session;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id; // Add user ID to the token
+        token.name = user.name; // Add user name to the token
+      }
+      return token;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,

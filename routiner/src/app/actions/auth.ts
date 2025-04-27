@@ -1,6 +1,7 @@
 export async function signup(formData: FormData) {
     const email = formData.get("email")?.toString().trim();
     const password = formData.get("password")?.toString().trim();
+    const name = formData.get("name")?.toString().trim();
   
     // Validation: Check if email and password are provided
     if (!email || !password) {
@@ -24,7 +25,7 @@ export async function signup(formData: FormData) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ name, email, password }),
     });
   
     if (response.status === 409) {
