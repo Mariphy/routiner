@@ -6,6 +6,7 @@
  
  export default function SignUpPage() {
    const router = useRouter();
+   const [name, setName] = useState("");
    const [email, setEmail] = useState("");
    const [password, setPassword] = useState("");
    const [error, setError] = useState("");
@@ -16,6 +17,7 @@
 
       try {
           const formData = new FormData();
+          formData.append("name", name);
           formData.append("email", email);
           formData.append("password", password);
 
@@ -37,6 +39,14 @@
          className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm"
        >
          <h2 className="text-2xl font-bold mb-4 text-center">Sign Up</h2>
+         <div className="mb-4">
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)} // Update name state
+            placeholder="Name"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+         </div>
          <div className="mb-4">
            <input
              value={email}
