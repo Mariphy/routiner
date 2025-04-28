@@ -4,7 +4,13 @@ import React, { useState, useEffect } from 'react';
 import Board from '../components/Board';
 
 export default function BoardPage() {
-  const [tasks, setTasks] = useState<{ title: string; day?: string }[]>([]);
+  const [tasks, setTasks] = useState<{ 
+    title: string;
+    day?: string;
+    date?: string;
+    startTime?: string;
+    endTime?: string;
+    checked: boolean; }[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,7 +32,14 @@ export default function BoardPage() {
     fetchTasks();
   }, []);
 
-  const handleAddTask = async (newTask: { title: string; day?: string, time?: string }) => {
+  const handleAddTask = async (newTask: { 
+    title: string;
+    day?: string;
+    date?: string;
+    startTime?: string;
+    endTime?: string;
+    checked: boolean;
+  }) => {
     try {
       const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
       const response = await fetch(`${baseUrl}/api/routines`, {

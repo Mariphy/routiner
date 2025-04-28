@@ -1,27 +1,79 @@
 import React, { useState } from 'react';
 import { startOfWeek, addDays, format } from 'date-fns';
+import AddTask from './AddTask';
 
 interface BoardProps {
-  tasks: Array<{ title: string; day?: string; time?: string }>;
-  onAddTask: (newTask: { title: string; day?: string; time?: string }) => void;
+  tasks: Array<{
+    title: string;
+    day?: string;
+    date?: string;
+    startTime?: string;
+    endTime?: string;
+    checked: boolean;
+  }>;
+  onAddTask: (newTask: {
+    title: string;
+    day?: string;
+    date?: string;
+    startTime?: string;
+    endTime?: string;
+    checked: boolean;
+  }) => void;
 }
 
 export default function Board({ tasks, onAddTask }: BoardProps) {
   const [newTask, setNewTask] = useState('');
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [taskToEdit, setTaskToEdit] = useState<
+    | {
+        title: string;
+        day?: string;
+        date?: string;
+        startTime?: string;
+        endTime?: string;
+        checked: boolean;
+      }
+    | null
+  >(null);
 
   const startDate = startOfWeek(new Date(), { weekStartsOn: 0 });
   const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
 
-  const handleAddTask = (day?: string) => {
+  const handleQuickAddTask = (day?: string) => {
     const taskDay = day ?? selectedDay; // Use the passed day or the selectedDay state
     if (newTask.trim()) {
       // Always create a task object with the correct format
-      const newTaskObject = { title: newTask.trim(), day: taskDay ?? undefined };
+      const newTaskObject = { title: newTask.trim(), day: taskDay ?? undefined, checked: false };
       onAddTask(newTaskObject); // Pass the task object to the parent-provided callback
       setNewTask(''); // Clear the input field
       setSelectedDay(null); // Reset the selected day
     }
+  };
+
+  const openModalForTask = (task: {
+    title: string;
+    day?: string;
+    date?: string;
+    startTime?: string;
+    endTime?: string;
+    checked: boolean;
+  }) => {
+    setTaskToEdit(task);
+    setIsModalOpen(true);
+  };
+
+  const handleAddTask = (task: {
+    title: string;
+    day?: string;
+    date?: string;
+    startTime?: string;
+    endTime?: string;
+    checked: boolean;
+  }) => {
+    onAddTask(task);
+    setIsModalOpen(false);
+    setTaskToEdit(null);
   };
 
   return (
@@ -30,7 +82,11 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
         <div className="column border p-4 sm:w-72 md:w-72 lg:w-80 flex-shrink-0 rounded-lg bg-neutral-200 shadow-md">
           <h2 className="text-xl font-bold mb-4">Task List</h2>
           {tasks.map((task, index) => (
-            <div key={index} className="task border p-2 mb-2 rounded-lg bg-neutral-100 shadow-sm">
+            <div 
+              key={index} 
+              className="task border p-2 mb-2 rounded-lg bg-neutral-100 shadow-sm cursor-pointer"
+              onClick={() => openModalForTask(task)} 
+            >
               <h3 className="font-normal">{task.title}</h3>
             </div>
           ))}
@@ -43,7 +99,7 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
               className="border p-2 flex-grow"
             />
             <button
-              onClick={() => handleAddTask()}
+              onClick={() => handleQuickAddTask()}
               className="bg-accent text-white px-4 py-2 rounded hover:bg-accent-hover"
             >
               +
@@ -61,7 +117,8 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
                 .map((task, taskIndex) => (
                   <div
                     key={taskIndex}
-                    className="task border p-2 mb-2 rounded-lg bg-neutral-100 shadow-sm"
+                    className="task border p-2 mb-2 rounded-lg bg-neutral-100 shadow-sm cursor-pointer"
+                    onClick={() => openModalForTask(task)} 
                   >
                     <h3 className="font-normal">{task.title}</h3>
                   </div>
@@ -78,12 +135,18 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
                   className="task border p-2 mb-2 rounded-lg bg-neutral-100 shadow-sm flex-grow"
                 />
                 <button
-                  onClick={() => handleAddTask(dayName)}
+                  onClick={() => handleQuickAddTask(dayName)}
                   className="bg-accent text-white px-4 py-2 rounded hover:bg-accent-hover flex-shrink-0"
                 >
                   +
                 </button>
               </div>
+              {isModalOpen && (
+                <AddTask
+                  onAddTask={handleAddTask}
+                  onClose={() => setIsModalOpen(false)}
+                />
+              )}
             </div>
           );
         })}
