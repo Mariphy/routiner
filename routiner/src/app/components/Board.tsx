@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { startOfWeek, addDays, format } from 'date-fns';
 import AddTask from './AddTask';
+import Task from './Task';  
 
 interface BoardProps {
   tasks: Array<{
@@ -82,13 +83,11 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
         <div className="column border p-4 sm:w-72 md:w-72 lg:w-80 flex-shrink-0 rounded-lg bg-neutral-200 shadow-md">
           <h2 className="text-xl font-bold mb-4">Task List</h2>
           {tasks.map((task, index) => (
-            <div 
+            <Task 
               key={index} 
-              className="task border p-2 mb-2 rounded-lg bg-neutral-100 shadow-sm cursor-pointer"
+              task={task}
               onClick={() => openModalForTask(task)} 
-            >
-              <h3 className="font-normal">{task.title}</h3>
-            </div>
+            />
           ))}
           <div className="flex items-center gap-2 mb-4">
             <input
