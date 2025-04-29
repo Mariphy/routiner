@@ -95,7 +95,7 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
               value={newTask}
               onChange={(e) => setNewTask(e.target.value)}
               placeholder="Add a new task"
-              className="border p-2 flex-grow"
+              className="task border p-2 rounded-lg bg-neutral-100 shadow-sm flex-grow"
             />
             <button
               onClick={() => handleQuickAddTask()}
@@ -114,15 +114,13 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
               {tasks
                 .filter((task) => task.day === dayName) // Filter tasks for the current day
                 .map((task, taskIndex) => (
-                  <div
+                  <Task
                     key={taskIndex}
-                    className="task border p-2 mb-2 rounded-lg bg-neutral-100 shadow-sm cursor-pointer"
+                    task={task}
                     onClick={() => openModalForTask(task)} 
-                  >
-                    <h3 className="font-normal">{task.title}</h3>
-                  </div>
+                  />
                 ))}
-              <div className="flex items-center gap-2 mt-4">
+              <div className="flex items-center gap-2 mb-4">
                 <input
                   type="text"
                   value={selectedDay === dayName ? newTask : ''}
@@ -131,7 +129,7 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
                     setSelectedDay(dayName);
                   }}
                   placeholder={`Add a task for ${dayName}`}
-                  className="task border p-2 mb-2 rounded-lg bg-neutral-100 shadow-sm flex-grow"
+                  className="task border p-2 rounded-lg bg-neutral-100 shadow-sm flex-grow"
                 />
                 <button
                   onClick={() => handleQuickAddTask(dayName)}

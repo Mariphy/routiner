@@ -16,12 +16,12 @@ interface TaskProps {
 export default function Task({ task, onClick }: TaskProps) {
     return (
       <div 
-        className="task border p-2 mb-2 rounded-lg bg-neutral-100 shadow-sm cursor-pointer"
+        className="task relative border p-2 mb-2 rounded-lg bg-neutral-100 shadow-sm cursor-pointer"
         onClick={onClick} 
       >
         <h3 className="font-normal">{task.title}</h3>
         <div 
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 cursor-pointer"
+          className="absolute top-2 right-2 text-gray-500 cursor-pointer"
           onClick={(e) => {
             e.stopPropagation(); // Prevent triggering the parent onClick
             if (onClick) onClick();
