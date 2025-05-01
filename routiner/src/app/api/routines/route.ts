@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import { connectToDb } from "../db";
+import { generateUniqueId } from "@/app/utils/helpers";
 
 export async function GET() {
     try {
@@ -35,7 +36,7 @@ export async function GET() {
             },
         });
     }
-}
+};
 
 export async function POST(req: Request) {
     try {
@@ -56,10 +57,15 @@ export async function POST(req: Request) {
             headers: { "Content-Type": "application/json" },
           });
         }
+
+        const taskWithId = {
+          ...task,
+          id: generateUniqueId()
+        };
     
         const result = await db.collection("Users").updateOne(
           { email: session.user.email },
-          { $push: { tasks: task } }
+          { $push: { tasks: taskWithId } }
         );
     
         if (result.modifiedCount === 0) {
@@ -82,4 +88,97 @@ export async function POST(req: Request) {
             },
         });
     }
-}
+};
+
+export async function PUT(req: Request) {
+    try {
+        const session = await getServerSession(options);
+        if (!session?.user?.email) {
+          return new Response(JSON.stringify({ error: "Unauthorized" }), {
+            status: 401,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+    
+        const { db } = await connectToDb();
+        const { task } = await req.json();
+    
+        if (!task) {
+          return new Response(JSON.stringify({ error: "Task is required" }), {
+            status: 400,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+    
+        const result = await db.collection("Users").updateOne(
+          { email: session.user.email, "tasks.id": task.id },
+          { $set: { "tasks.$": task } }
+        );
+    
+        if (result.modifiedCount === 0) {
+          return new Response(JSON.stringify({ error: "Failed to update task" }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+    
+        return new Response(JSON.stringify({ message: "Task updated successfully" }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+    } catch (error) {
+        console.error("Error updating task:", error);
+        return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+            status: 500,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+    }
+};
+/* export async function DELETE(req: Request) {
+    try {
+        const session = await getServerSession(options);
+        if (!session?.user?.email) {
+          return new Response(JSON.stringify({ error: "Unauthorized" }), {
+            status: 401,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+    
+        const { db } = await connectToDb();
+        const { task } = await req.json();
+    
+        if (!task) {
+          return new Response(JSON.stringify({ error: "Title is required" }), {
+            status: 400,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+    
+        const result = await db.collection("Users").updateOne(
+          { email: session.user.email },
+          { $pull: { tasks: { task.id } } }
+        );
+    
+        if (result.modifiedCount === 0) {
+          return new Response(JSON.stringify({ error: "Failed to delete task" }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+    
+        return new Response(JSON.stringify({ message: "Task deleted successfully" }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+    } catch (error) {
+        console.error("Error deleting task:", error);
+        return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+            status: 500,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+    }
+}*/

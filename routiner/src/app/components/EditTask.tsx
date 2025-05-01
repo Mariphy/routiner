@@ -1,8 +1,18 @@
 import React, { useState }  from 'react';
 
-interface AddTaskProps {
-    onAddTask: (task: {
+interface EditTaskProps {
+    task: {
       title: string;
+      id: string;
+      day?: string;
+      date?: string;
+      startTime?: string;
+      endTime?: string;
+      checked: boolean;
+    };
+    onEditTask: (task: {
+      title: string;
+      id: string;
       day?: string;
       date?: string;
       startTime?: string;
@@ -12,27 +22,33 @@ interface AddTaskProps {
     onClose: () => void;
 }
 
-export default function AddTask({ onAddTask, onClose }: AddTaskProps) {
-    const [title, setTitle] = useState("");
-    const [day, setDay] = useState("");
-    const [date, setDate] = useState("");
-    const [startTime, setStartTime] = useState("");
-    const [endTime, setEndTime] = useState("");
-    const [checked, setChecked] = useState(false);
+export default function EditTask({ task, onEditTask, onClose }: EditTaskProps) {
+    const [title, setTitle] = useState(task.title);
+    const [day, setDay] = useState(task.day || "");
+    const [date, setDate] = useState(task.date || "");  
+    const [startTime, setStartTime] = useState(task.startTime || "");
+    const [endTime, setEndTime] = useState(task.endTime || "");
+    const [checked, setChecked] = useState(task.checked || false);
+    const id = task.id;  
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (title.trim()) {
-          onAddTask({ title, day, date, startTime, endTime, checked });
+          onEditTask({ title, id, day, date, startTime, endTime, checked });
           onClose(); // Close the modal after adding the task
         }
     };
 
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-                <h2 className="text-xl font-bold mb-4">Add New Task</h2>
+        <div 
+            className="fixed inset-0 bg-white bg-opacity-25 flex items-center justify-center z-50"
+            onClick={onClose}
+        >
+            <div className="bg-white p-6 m-2 rounded-lg shadow-lg w-full max-w-lg"
+                onClick={(e) => e.stopPropagation()} 
+            >
+                <h2 className="text-xl font-bold mb-4">Edit Task</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium">Title</label>
@@ -101,9 +117,9 @@ export default function AddTask({ onAddTask, onClose }: AddTaskProps) {
                         </button>
                         <button
                             type="submit"
-                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                            className="bg-accent text-white px-4 py-2 rounded hover:bg-blue-600"
                             >
-                            Add Task
+                            Save Changes
                         </button>
                     </div>
                 </form>

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { startOfWeek, addDays, format } from 'date-fns';
-import AddTask from './AddTask';
+import EditTask from './EditTask';
 import Task from './Task';  
 
 interface BoardProps {
   tasks: Array<{
     title: string;
+    id: string;
     day?: string;
     date?: string;
     startTime?: string;
@@ -20,15 +21,34 @@ interface BoardProps {
     endTime?: string;
     checked: boolean;
   }) => void;
+  onEditTask: (task: {
+    title: string;
+    id: string;
+    day?: string;
+    date?: string;
+    startTime?: string;
+    endTime?: string;
+    checked: boolean;
+  }) => void;
+  onDeleteTask: (task: {
+    title: string;
+    id: string;
+    day?: string;
+    date?: string;
+    startTime?: string;
+    endTime?: string;
+    checked: boolean;
+  }) => void;
 }
 
-export default function Board({ tasks, onAddTask }: BoardProps) {
+export default function Board({ tasks, onAddTask, onEditTask, onDeleteTask }: BoardProps) {
   const [newTask, setNewTask] = useState('');
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<
     | {
         title: string;
+        id: string;
         day?: string;
         date?: string;
         startTime?: string;
@@ -41,19 +61,41 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
   const startDate = startOfWeek(new Date(), { weekStartsOn: 0 });
   const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
 
-  const handleQuickAddTask = (day?: string) => {
+  const handleAddTask = async (day?: string) => {
     const taskDay = day ?? selectedDay; // Use the passed day or the selectedDay state
+    let newTaskObject;
+
     if (newTask.trim()) {
-      // Always create a task object with the correct format
-      const newTaskObject = { title: newTask.trim(), day: taskDay ?? undefined, checked: false };
-      onAddTask(newTaskObject); // Pass the task object to the parent-provided callback
+      newTaskObject = { title: newTask.trim(), day: taskDay ?? undefined, checked: false };
+    }
+    
+    try {
+      // Send the task to the backend
+      const response = await fetch('/api/routines', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ task: newTaskObject }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to add task: ${response.status}`);
+      }
+
+      const { task: createdTask } = await response.json();
+
+      onAddTask(createdTask); // Pass the task to the parent-provided callback
       setNewTask(''); // Clear the input field
       setSelectedDay(null); // Reset the selected day
+    } catch (error) {
+      console.error('Error adding task:', error);
     }
   };
 
   const openModalForTask = (task: {
     title: string;
+    id: string;
     day?: string;
     date?: string;
     startTime?: string;
@@ -64,15 +106,16 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
     setIsModalOpen(true);
   };
 
-  const handleAddTask = (task: {
+  const handleEditTask = (task: {
     title: string;
+    id: string;
     day?: string;
     date?: string;
     startTime?: string;
     endTime?: string;
     checked: boolean;
   }) => {
-    onAddTask(task);
+    onEditTask(task);
     setIsModalOpen(false);
     setTaskToEdit(null);
   };
@@ -98,7 +141,7 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
               className="task border p-2 rounded-lg bg-neutral-100 shadow-sm flex-grow"
             />
             <button
-              onClick={() => handleQuickAddTask()}
+              onClick={() => handleAddTask()}
               className="bg-accent text-white px-4 py-2 rounded hover:bg-accent-hover"
             >
               +
@@ -132,15 +175,16 @@ export default function Board({ tasks, onAddTask }: BoardProps) {
                   className="task border p-2 rounded-lg bg-neutral-100 shadow-sm flex-grow"
                 />
                 <button
-                  onClick={() => handleQuickAddTask(dayName)}
+                  onClick={() => handleAddTask(dayName)}
                   className="bg-accent text-white px-4 py-2 rounded hover:bg-accent-hover flex-shrink-0"
                 >
                   +
                 </button>
               </div>
-              {isModalOpen && (
-                <AddTask
-                  onAddTask={handleAddTask}
+              {isModalOpen && taskToEdit && (
+                <EditTask
+                  task={taskToEdit}
+                  onEditTask={handleEditTask}
                   onClose={() => setIsModalOpen(false)}
                 />
               )}
