@@ -63,34 +63,13 @@ export default function Board({ tasks, onAddTask, onEditTask, onDeleteTask }: Bo
 
   const handleAddTask = async (day?: string) => {
     const taskDay = day ?? selectedDay; // Use the passed day or the selectedDay state
-    let newTaskObject;
+    if (!newTask.trim()) return;
 
-    if (newTask.trim()) {
-      newTaskObject = { title: newTask.trim(), day: taskDay ?? undefined, checked: false };
-    }
-    
-    try {
-      // Send the task to the backend
-      const response = await fetch('/api/routines', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ task: newTaskObject }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to add task: ${response.status}`);
-      }
-
-      const { task: createdTask } = await response.json();
-
-      onAddTask(createdTask); // Pass the task to the parent-provided callback
-      setNewTask(''); // Clear the input field
-      setSelectedDay(null); // Reset the selected day
-    } catch (error) {
-      console.error('Error adding task:', error);
-    }
+    const newTaskObject = { title: newTask.trim(), day: taskDay ?? undefined, checked: false };
+  
+    onAddTask(newTaskObject); // Pass the task to the parent-provided callback
+    setNewTask(''); // Clear the input field
+    setSelectedDay(null); // Reset the selected day
   };
 
   const openModalForTask = (task: {

@@ -75,7 +75,7 @@ export async function POST(req: Request) {
           });
         }
     
-        return new Response(JSON.stringify({ message: "Task added successfully" }), {
+        return new Response(JSON.stringify({ task: taskWithId }), {
           status: 201,
           headers: { "Content-Type": "application/json" },
         });
