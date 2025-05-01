@@ -99,6 +99,18 @@ export default function Board({ tasks, onAddTask, onEditTask, onDeleteTask }: Bo
     setTaskToEdit(null);
   };
 
+  const handleDeleteTask = (task: {
+    title: string;
+    id: string;
+    day?: string;
+    date?: string;
+    startTime?: string;
+    endTime?: string;
+    checked: boolean;
+  }) => {
+    onDeleteTask(task);
+  };
+
   return (
     <div className="board-container w-full overflow-x-auto">
       <div className="board flex gap-2 p-4 min-w-max min-h-[600px]">
@@ -164,6 +176,7 @@ export default function Board({ tasks, onAddTask, onEditTask, onDeleteTask }: Bo
                 <EditTask
                   task={taskToEdit}
                   onEditTask={handleEditTask}
+                  onDeleteTask={handleDeleteTask}
                   onClose={() => setIsModalOpen(false)}
                 />
               )}

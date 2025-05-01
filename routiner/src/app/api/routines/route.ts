@@ -3,6 +3,26 @@ import { options } from "@/app/api/auth/[...nextauth]/options";
 import { connectToDb } from "../db";
 import { generateUniqueId } from "@/app/utils/helpers";
 
+interface Task {
+  id: string;
+  title: string;
+  day?: string;
+  date?: string;
+  startTime?: string;
+  endTime?: string;
+  checked: boolean;
+}
+
+interface UserDocument {
+  _id: string;
+  name: string;
+  email: string;
+  password: string;
+  routines: string[];
+  events: string[];
+  tasks: Task[];
+}
+
 export async function GET() {
     try {
         const session = await getServerSession(options);
@@ -136,7 +156,7 @@ export async function PUT(req: Request) {
         });
     }
 };
-/* export async function DELETE(req: Request) {
+export async function DELETE(req: Request) {
     try {
         const session = await getServerSession(options);
         if (!session?.user?.email) {
@@ -150,15 +170,15 @@ export async function PUT(req: Request) {
         const { task } = await req.json();
     
         if (!task) {
-          return new Response(JSON.stringify({ error: "Title is required" }), {
+          return new Response(JSON.stringify({ error: "Task is required" }), {
             status: 400,
             headers: { "Content-Type": "application/json" },
           });
         }
     
-        const result = await db.collection("Users").updateOne(
-          { email: session.user.email },
-          { $pull: { tasks: { task.id } } }
+        const result = await db.collection<UserDocument>("Users").updateOne(
+          { email: session.user.email, "tasks.id": task.id },
+          { $pull: { tasks: { id: task.id } } }
         );
     
         if (result.modifiedCount === 0) {
@@ -181,4 +201,4 @@ export async function PUT(req: Request) {
             },
         });
     }
-}*/
+}

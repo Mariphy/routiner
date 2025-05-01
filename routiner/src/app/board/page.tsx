@@ -98,7 +98,35 @@ export default function BoardPage() {
     }
   };
 
-  const handleDeleteTask = async () => {};
+  const handleDeleteTask = async (taskToDelete: { 
+    title: string;
+    id: string;
+    day?: string;
+    date?: string;
+    startTime?: string;
+    endTime?: string;
+    checked: boolean;
+  }) => {
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+      const response = await fetch(`${baseUrl}/api/routines`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ task: taskToDelete }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete task: ${response.status}`);
+      }
+
+      // Update the local state to remove the deleted task
+      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskToDelete.id));
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>;

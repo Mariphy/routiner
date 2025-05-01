@@ -1,3 +1,4 @@
+'use client';
 import React, { useState }  from 'react';
 
 interface EditTaskProps {
@@ -19,10 +20,19 @@ interface EditTaskProps {
       endTime?: string;
       checked: boolean;
     }) => void;
+    onDeleteTask: (task: {
+      title: string;
+      id: string;
+      day?: string;
+      date?: string;
+      startTime?: string;
+      endTime?: string;
+      checked: boolean;
+    }) => void;
     onClose: () => void;
 }
 
-export default function EditTask({ task, onEditTask, onClose }: EditTaskProps) {
+export default function EditTask({ task, onEditTask, onDeleteTask, onClose }: EditTaskProps) {
     const [title, setTitle] = useState(task.title);
     const [day, setDay] = useState(task.day || "");
     const [date, setDate] = useState(task.date || "");  
@@ -37,6 +47,11 @@ export default function EditTask({ task, onEditTask, onClose }: EditTaskProps) {
           onEditTask({ title, id, day, date, startTime, endTime, checked });
           onClose(); // Close the modal after adding the task
         }
+    };
+
+    const handleDelete = () => {
+        onDeleteTask(task);
+        onClose();
     };
 
 
@@ -120,6 +135,14 @@ export default function EditTask({ task, onEditTask, onClose }: EditTaskProps) {
                             className="bg-accent text-white px-4 py-2 rounded hover:bg-blue-600"
                             >
                             Save Changes
+                        </button>
+                    </div>
+                    <div>
+                        <button
+                            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                            onClick={handleDelete}
+                        >
+                            Delete
                         </button>
                     </div>
                 </form>
