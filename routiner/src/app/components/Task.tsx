@@ -4,6 +4,7 @@ import { CiEdit } from "react-icons/ci";
 interface TaskProps {
   task: {
     title: string; 
+    id: string;
     day?: string;
     date?: string;
     startTime?: string;
@@ -19,7 +20,11 @@ export default function Task({ task, onClick }: TaskProps) {
         className="task relative border p-2 mb-2 rounded-lg bg-neutral-100 shadow-sm cursor-pointer group"
         onClick={onClick} 
       >
-        <h3 className="font-normal">{task.title}</h3>
+        <h3 className="font-medium">{task.title}</h3>
+        {task.date ? (
+          <p className='font-light mt-2' >{task.date}</p>
+        ): null}
+        
         <div 
           className="absolute top-2 right-2 text-gray-500 cursor-pointer hidden group-hover:block"
           onClick={(e) => {
