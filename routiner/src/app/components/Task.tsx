@@ -20,7 +20,21 @@ export default function Task({ task, onClick }: TaskProps) {
         className="task relative border p-2 mb-2 rounded-lg bg-neutral-100 shadow-sm cursor-pointer group"
         onClick={onClick} 
       >
-        <h3 className="font-medium">{task.title}</h3>
+        <div className="flex items-center mb-2">
+
+          <input
+            type="checkbox"
+            checked={task.checked}
+            onClick={(e) => e.stopPropagation()}
+            onChange={(e) => {
+              e.stopPropagation(); // Prevent triggering the parent onClick
+              // Handle checkbox change logic here
+              console.log(`Task ${task.id} checked:`, e.target.checked);
+            }}
+            className="mr-2 cursor-pointer"
+          />
+          <h3 className="font-medium">{task.title}</h3>
+        </div>  
         {task.date ? (
           <p className='font-light mt-2' >{task.date}</p>
         ): null}

@@ -77,12 +77,20 @@ export default function EditTask({ task, onEditTask, onDeleteTask, onClose }: Ed
                     </div>
                     <div>
                         <label className="block text-sm font-medium">Day</label>
-                        <input
-                            type="text"
+                        <select
                             value={day}
                             onChange={(e) => setDay(e.target.value)}
                             className="w-full border p-2 rounded"
-                        />
+                        >
+                            <option value="">Select a day</option>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                        </select>
                     </div>
                     <div>
                         <label className="block text-sm font-medium">Date</label>
