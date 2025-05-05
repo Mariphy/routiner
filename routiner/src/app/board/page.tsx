@@ -12,25 +12,36 @@ export default function BoardPage() {
     startTime?: string;
     endTime?: string;
     checked: boolean; }[]>([]);
+
+  const [routines, setRoutines] = useState<{ 
+    title: string;
+    id: string;
+    day?: string;
+    startTime?: string;
+    endTime?: string;
+    repeat?: string;
+  }[]>([]);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchTasks() {
+    async function fetchData() {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-        const response = await fetch(`${baseUrl}/api/routines`);
+        const response = await fetch(`${baseUrl}/api/users`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
         setTasks(data.tasks);
+        setRoutines(data.routines);
         setLoading(false);
       } catch (error) {
         console.error('Fetch error:', error);
         setLoading(false);
       }
     }
-    fetchTasks();
+    fetchData();
   }, []);
 
   const handleAddTask = async (newTask: { 
@@ -43,7 +54,7 @@ export default function BoardPage() {
   }) => {
     try {
       const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-      const response = await fetch(`${baseUrl}/api/routines`, {
+      const response = await fetch(`${baseUrl}/api/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -75,7 +86,7 @@ export default function BoardPage() {
   }) => {
     try {
       const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-      const response = await fetch(`${baseUrl}/api/routines`, {
+      const response = await fetch(`${baseUrl}/api/users`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -109,7 +120,7 @@ export default function BoardPage() {
   }) => {
     try {
       const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-      const response = await fetch(`${baseUrl}/api/routines`, {
+      const response = await fetch(`${baseUrl}/api/users`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -137,6 +148,7 @@ export default function BoardPage() {
       <div className="flex-1 p-4">
         <Board 
           tasks={tasks} 
+          routines={routines}
           onAddTask={handleAddTask} 
           onEditTask={handleEditTask} 
           onDeleteTask={handleDeleteTask} />
