@@ -8,6 +8,7 @@ interface RoutineProps {
     date?: string;
     startTime?: string;
     endTime?: string;
+    subissue?: string;
     repeat?: string;
   };
   onClick?: () => void;

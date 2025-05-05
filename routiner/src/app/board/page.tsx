@@ -20,7 +20,16 @@ export default function BoardPage() {
     day?: string;
     startTime?: string;
     endTime?: string;
+    subissue?: string;
     repeat?: string;
+  }[]>([]);
+
+  const [events, setEvents] = useState<{ 
+    title: string;
+    id: string;
+    date: string;
+    startTime?: string;
+    endTime?: string;
   }[]>([]);
 
   const [loading, setLoading] = useState(true);
@@ -47,13 +56,22 @@ export default function BoardPage() {
       if (!userId) return;
       try {
         const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-        const response = await fetch(`${baseUrl}/api/users/${userId}/tasks`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        const [tasksResponse, routinesResponse, eventsResponse] = await Promise.all([
+          fetch(`${baseUrl}/api/users/${userId}/tasks`),
+          fetch(`${baseUrl}/api/users/${userId}/routines`),
+          fetch(`${baseUrl}/api/users/${userId}/events`),
+        ]);
+
+        if (!tasksResponse.ok || !routinesResponse.ok || !eventsResponse.ok) {
+          throw new Error("Failed to fetch data");
         }
-        const data = await response.json();
-        setTasks(data.tasks);
-        setRoutines(data.routines);
+        const tasksData = await tasksResponse.json();
+        const routinesData = await routinesResponse.json();
+        const eventsData = await eventsResponse.json();
+
+        setTasks(tasksData.tasks || []);
+        setRoutines(routinesData.routines || []);
+        setEvents(eventsData.events || []);
         setLoading(false);
       } catch (error) {
         console.error('Fetch error:', error);
@@ -168,6 +186,7 @@ export default function BoardPage() {
         <Board 
           tasks={tasks} 
           routines={routines}
+          events={events}
           onAddTask={handleAddTask} 
           onEditTask={handleEditTask} 
           onDeleteTask={handleDeleteTask} />

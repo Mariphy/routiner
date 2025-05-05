@@ -22,6 +22,18 @@ interface BoardProps {
     endTime?: string;
     repeat?: string;
   }>;
+  events: Array<{
+    title: string;
+    id: string;
+    day?: string;
+    description?: string;
+    location?: string;
+    url?: string;
+    date?: string;
+    startTime?: string;
+    endTime?: string;
+    repeat?: string;
+  }>;
   onAddTask: (newTask: {
     title: string;
     day?: string;
@@ -53,6 +65,7 @@ interface BoardProps {
 export default function Board({ 
   tasks, 
   routines,
+  events,
   onAddTask, onEditTask, onDeleteTask 
 }: BoardProps) {
   const [newTask, setNewTask] = useState('');
@@ -167,7 +180,26 @@ export default function Board({
                     onClick={() => openModalForTask(task)} 
                   />
                 ))}
-                
+                {routines
+                  .filter((routine) => routine.day === dayName)
+                  .map((routine, routineIndex) => (
+                    <Routine
+                      key={routineIndex}
+                      routine={routine}
+                    />
+                ))}
+                {events
+                  .filter((event) => event.day === dayName)
+                  .map((event, eventIndex) => (
+                    <div key={eventIndex} className="event border p-2 mb-2 rounded-lg bg-green-100 shadow-sm">
+                      <h3 className="font-medium">{event.title}</h3>
+                      {event.startTime && event.endTime && (
+                        <p className="text-sm text-gray-600">
+                          {event.startTime} - {event.endTime}
+                        </p>
+                      )}
+                    </div>
+                ))}
               <div className="flex items-center gap-2 mb-4">
                 <input
                   type="text"
