@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { startOfWeek, addDays, format } from 'date-fns';
 import EditTask from './EditTask';
 import Task from './Task';  
+import Routine from './Routine';
 
 interface BoardProps {
   tasks: Array<{
@@ -12,6 +13,26 @@ interface BoardProps {
     startTime?: string;
     endTime?: string;
     checked: boolean;
+  }>;
+  routines: Array<{
+    title: string;
+    id: string;
+    day?: string;
+    startTime?: string;
+    endTime?: string;
+    repeat?: string;
+  }>;
+  events: Array<{
+    title: string;
+    id: string;
+    day?: string;
+    description?: string;
+    location?: string;
+    url?: string;
+    date?: string;
+    startTime?: string;
+    endTime?: string;
+    repeat?: string;
   }>;
   onAddTask: (newTask: {
     title: string;
@@ -41,7 +62,12 @@ interface BoardProps {
   }) => void;
 }
 
-export default function Board({ tasks, onAddTask, onEditTask, onDeleteTask }: BoardProps) {
+export default function Board({ 
+  tasks, 
+  routines,
+  events,
+  onAddTask, onEditTask, onDeleteTask 
+}: BoardProps) {
   const [newTask, setNewTask] = useState('');
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -153,6 +179,26 @@ export default function Board({ tasks, onAddTask, onEditTask, onDeleteTask }: Bo
                     task={task}
                     onClick={() => openModalForTask(task)} 
                   />
+                ))}
+                {routines
+                  .filter((routine) => routine.day === dayName)
+                  .map((routine, routineIndex) => (
+                    <Routine
+                      key={routineIndex}
+                      routine={routine}
+                    />
+                ))}
+                {events
+                  .filter((event) => event.day === dayName)
+                  .map((event, eventIndex) => (
+                    <div key={eventIndex} className="event border p-2 mb-2 rounded-lg bg-green-100 shadow-sm">
+                      <h3 className="font-medium">{event.title}</h3>
+                      {event.startTime && event.endTime && (
+                        <p className="text-sm text-gray-600">
+                          {event.startTime} - {event.endTime}
+                        </p>
+                      )}
+                    </div>
                 ))}
               <div className="flex items-center gap-2 mb-4">
                 <input

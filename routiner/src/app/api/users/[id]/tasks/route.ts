@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
-import { connectToDb } from "../db";
+import { connectToDb } from "@/app/api/db";
 import { generateUniqueId } from "@/app/utils/helpers";
 
 interface Task {
