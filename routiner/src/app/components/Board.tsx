@@ -167,14 +167,7 @@ export default function Board({
                     onClick={() => openModalForTask(task)} 
                   />
                 ))}
-                {routines
-                  .filter((routine) => routine.day === dayName)
-                  .map((routine, routineIndex) => (
-                    <Routine
-                      key={routineIndex}
-                      routine={routine}
-                    />
-                ))}
+                
               <div className="flex items-center gap-2 mb-4">
                 <input
                   type="text"

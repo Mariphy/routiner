@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Board from '../components/Board';
 
 export default function BoardPage() {
+  const [userId, setUserId] = useState<string | null>(null); 
   const [tasks, setTasks] = useState<{ 
     title: string;
     id: string;
@@ -25,10 +26,28 @@ export default function BoardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    async function fetchUserId() {
+      try {
+        const response = await fetch('/api/auth/session');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch user ID: ${response.status}`);
+        }
+        const data = await response.json();
+        setUserId(data.userId);
+      } catch (error) {
+        console.error('Error fetching user ID:', error);
+      }
+    }
+
+    fetchUserId();
+  }, []);
+
+  useEffect(() => {
     async function fetchData() {
+      if (!userId) return;
       try {
         const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-        const response = await fetch(`${baseUrl}/api/users`);
+        const response = await fetch(`${baseUrl}/api/users/${userId}/tasks`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -42,7 +61,7 @@ export default function BoardPage() {
       }
     }
     fetchData();
-  }, []);
+  }, [userId]);
 
   const handleAddTask = async (newTask: { 
     title: string;
@@ -54,7 +73,7 @@ export default function BoardPage() {
   }) => {
     try {
       const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-      const response = await fetch(`${baseUrl}/api/users`, {
+      const response = await fetch(`${baseUrl}/api/users/${userId}/tasks`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -86,7 +105,7 @@ export default function BoardPage() {
   }) => {
     try {
       const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-      const response = await fetch(`${baseUrl}/api/users`, {
+      const response = await fetch(`${baseUrl}/api/users/${userId}/tasks`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -120,7 +139,7 @@ export default function BoardPage() {
   }) => {
     try {
       const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-      const response = await fetch(`${baseUrl}/api/users`, {
+      const response = await fetch(`${baseUrl}/api/users/${userId}/tasks`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
