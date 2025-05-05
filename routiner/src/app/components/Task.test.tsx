@@ -40,7 +40,7 @@ describe('Task Component', () => {
 
   it('calls the onClick handler when the edit button is clicked', () => {
     render(<Task task={mockTask} onClick={mockOnClick} />);
-    const editButton = screen.getByRole('button', { name: /edit/i });
+    const editButton = screen.getByTestId('edit-button');
     fireEvent.click(editButton);
     expect(mockOnClick).toHaveBeenCalledTimes(1);
   });

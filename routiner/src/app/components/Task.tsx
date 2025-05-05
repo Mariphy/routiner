@@ -40,6 +40,7 @@ export default function Task({ task, onClick }: TaskProps) {
         ): null}
         
         <div 
+          data-testid="edit-button"
           className="absolute top-2 right-2 text-gray-500 cursor-pointer hidden group-hover:block"
           onClick={(e) => {
             e.stopPropagation(); // Prevent triggering the parent onClick
