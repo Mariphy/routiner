@@ -1,4 +1,4 @@
-export async function addTask(userId: string, task: { title: string; day?: string; date?: string; startTime?: string; endTime?: string; checked?: boolean }) {
+export async function addTask(userId: string, task: { title: string; day?: string; date?: string; startTime?: string; endTime?: string; checked: boolean }) {
     const response = await fetch(`/api/users/${userId}/tasks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -12,7 +12,7 @@ export async function addTask(userId: string, task: { title: string; day?: strin
     return response.json();
 }
   
-export async function editTask(userId: string, task: { id: string; title: string; day?: string; date?: string; startTime?: string; endTime?: string; checked?: boolean }) {
+export async function editTask(userId: string, task: { id: string; title: string; day?: string; date?: string; startTime?: string; endTime?: string; checked: boolean }) {
     const response = await fetch(`/api/users/${userId}/tasks`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },

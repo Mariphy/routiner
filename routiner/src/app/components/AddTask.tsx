@@ -1,7 +1,19 @@
 import React, { useState } from 'react';
 
+interface Task {
+    title: string; 
+    id: string;
+    day?: string;
+    date?: string;
+    startTime?: string;
+    endTime?: string;
+    checked: boolean;
+}
+
+type TaskInput = Omit<Task, 'id'>;
+
 interface AddTaskProps {
-  onSave: (task: { title: string; day?: string; date?: string; startTime?: string; endTime?: string; checked: boolean }) => void;
+  onSave: (task: TaskInput) => void;
   onClose: () => void;
 }
 
