@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Board from '../components/Board';
+import AddButton from '../components/AddButton';
 
 export default function BoardPage() {
   const [userId, setUserId] = useState<string | null>(null); 
@@ -189,7 +190,9 @@ export default function BoardPage() {
           events={events}
           onAddTask={handleAddTask} 
           onEditTask={handleEditTask} 
-          onDeleteTask={handleDeleteTask} />
+          onDeleteTask={handleDeleteTask} 
+        />
+        <AddButton />
       </div>
     </main>
   );
