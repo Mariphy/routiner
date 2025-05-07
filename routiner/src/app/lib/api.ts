@@ -1,3 +1,17 @@
+export async function fetchUserId() {
+    const response = await fetch('/api/auth/session', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch user ID: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.user.id;
+}
+
 export async function addTask(userId: string, task: { title: string; day?: string; date?: string; startTime?: string; endTime?: string; checked: boolean }) {
     const response = await fetch(`/api/users/${userId}/tasks`, {
         method: 'POST',
@@ -143,4 +157,14 @@ export async function deleteEvent(userId: string, eventId: string) {
 
     return response.json();
 }   
+
+export async function getEvents(userId: string) {
+    const response = await fetch(`/api/users/${userId}/events`);
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch events: ${response.status}`);
+    }
+
+    return response.json();
+}
 

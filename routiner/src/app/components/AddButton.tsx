@@ -4,7 +4,7 @@ import AddEvent from './AddEvent';
 import AddRoutine from './AddRoutine';
 import { addTask, addEvent, addRoutine } from '@/app/lib/api';
 
-interface Task {
+export interface Task {
     title: string; 
     id: string;
     day?: string;
@@ -14,9 +14,9 @@ interface Task {
     checked: boolean;
 }
 
-type TaskInput = Omit<Task, 'id'>;
+export type TaskInput = Omit<Task, 'id'>;
 
-interface Event {
+export interface Event {
     title: string;
     id: string;
     day?: string;
@@ -29,9 +29,9 @@ interface Event {
     repeat?: string;
 }
 
-type EventInput = Omit<Event, 'id'>;
+export type EventInput = Omit<Event, 'id'>;
 
-interface Routine {
+export interface Routine {
     title: string;
     id: string;
     day?: string;
@@ -42,7 +42,7 @@ interface Routine {
     repeat?: string; 
 }
 
-type RoutineInput = Omit<Routine, 'id'>;
+export type RoutineInput = Omit<Routine, 'id'>;
 
 interface AddButtonProps {
     userId: string;
