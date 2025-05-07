@@ -9,7 +9,7 @@ export async function fetchUserId() {
     }
 
     const data = await response.json();
-    return data.user.id;
+    return data.userId;
 }
 
 export async function addTask(userId: string, task: { title: string; day?: string; date?: string; startTime?: string; endTime?: string; checked: boolean }) {
