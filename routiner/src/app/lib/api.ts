@@ -23,7 +23,8 @@ export async function addTask(userId: string, task: { title: string; day?: strin
         throw new Error(`Failed to add task: ${response.status}`);
     }
 
-    return response.json();
+    const newTask = await response.json();
+    return newTask;
 }
   
 export async function editTask(userId: string, task: { id: string; title: string; day?: string; date?: string; startTime?: string; endTime?: string; checked: boolean }) {

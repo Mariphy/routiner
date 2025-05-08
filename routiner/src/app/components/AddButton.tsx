@@ -57,7 +57,7 @@ export default function AddButton({userId, onTaskAdded, onEventAdded, onRoutineA
 
     const handleSaveTask = async (task: TaskInput) => {
         try {
-            const newTask: Task = await addTask(userId, task);
+            const newTask = await addTask(userId, task);
             onTaskAdded(newTask);
             setCurrentForm(null);
         } catch (error) {
