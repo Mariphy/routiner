@@ -69,7 +69,7 @@ export default function BoardPage() {
     }
   };
 
-  const handleDeleteTask = async (taskToDelete: Task) => {
+  const handleDeleteTask = async (taskToDelete: {id: string}) => {
     try {
       await deleteTask(userId!, taskToDelete.id); // Use the `deleteTask` function from `api.ts`
       setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskToDelete.id)); // Remove the deleted task from the local state
