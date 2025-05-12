@@ -24,7 +24,6 @@ export async function addTask(userId: string, task: { title: string; day?: strin
     }
 
     const newTask = await response.json();
-    console.log(2)
     return newTask;
 }
   

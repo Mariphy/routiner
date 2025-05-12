@@ -56,7 +56,6 @@ export default function AddButton({ onTaskAdded, onEventAdded, onRoutineAdded }:
     const handleSaveTask = (task: TaskInput) => {
         onTaskAdded(task); // Pass the task data to the parent
         setCurrentForm(null); // Close the modal
-        console.log(1)
     };
 
     const handleSaveEvent = (event: EventInput) => {
