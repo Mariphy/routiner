@@ -3,9 +3,14 @@
  * https://jestjs.io/docs/configuration
  */
 
+import nextJest from 'next/jest';
 import type {Config} from 'jest';
 
-const config: Config = {
+const createJestConfig = nextJest({
+  dir: './', 
+});
+
+const customJestConfig: Config = {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
@@ -148,7 +153,7 @@ const config: Config = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: "jsdom",
+  //testEnvironment: "jsdom",
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
@@ -205,4 +210,4 @@ const config: Config = {
   // watchman: true,
 };
 
-export default config;
+export default createJestConfig(customJestConfig);

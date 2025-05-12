@@ -142,7 +142,7 @@ export async function PUT(req: Request) {
           });
         }
     
-        return new Response(JSON.stringify({ message: "Task updated successfully" }), {
+        return new Response(JSON.stringify({ task }), {
           status: 200,
           headers: { "Content-Type": "application/json" },
         });
@@ -167,9 +167,9 @@ export async function DELETE(req: Request) {
         }
     
         const { db } = await connectToDb();
-        const { task } = await req.json();
+        const { id } = await req.json();
     
-        if (!task) {
+        if (!id) {
           return new Response(JSON.stringify({ error: "Task is required" }), {
             status: 400,
             headers: { "Content-Type": "application/json" },
@@ -177,8 +177,8 @@ export async function DELETE(req: Request) {
         }
     
         const result = await db.collection<UserDocument>("Users").updateOne(
-          { email: session.user.email, "tasks.id": task.id },
-          { $pull: { tasks: { id: task.id } } }
+          { email: session.user.email, "tasks.id": id },
+          { $pull: { tasks: { id: id } } }
         );
     
         if (result.modifiedCount === 0) {

@@ -2,179 +2,99 @@
 
 import React, { useState, useEffect } from 'react';
 import Board from '../components/Board';
+import AddButton from '../components/AddButton';
+import { Task, Event, Routine, TaskInput, EventInput, RoutineInput} from '../components/AddButton';
+import { 
+  fetchUserId, getTasks, getRoutines, getEvents, 
+  addTask, editTask, deleteTask, 
+  addEvent,
+  addRoutine
+} from '../lib/api';
 
 export default function BoardPage() {
-  const [userId, setUserId] = useState<string | null>(null); 
-  const [tasks, setTasks] = useState<{ 
-    title: string;
-    id: string;
-    day?: string;
-    date?: string;
-    startTime?: string;
-    endTime?: string;
-    checked: boolean; }[]>([]);
-
-  const [routines, setRoutines] = useState<{ 
-    title: string;
-    id: string;
-    day?: string;
-    startTime?: string;
-    endTime?: string;
-    subissue?: string;
-    repeat?: string;
-  }[]>([]);
-
-  const [events, setEvents] = useState<{ 
-    title: string;
-    id: string;
-    date: string;
-    startTime?: string;
-    endTime?: string;
-  }[]>([]);
-
+  const [userId, setUserId] = useState<string | null>(null);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [routines, setRoutines] = useState<Routine[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchUserId() {
-      try {
-        const response = await fetch('/api/auth/session');
-        if (!response.ok) {
-          throw new Error(`Failed to fetch user ID: ${response.status}`);
+    async function initialize() {
+      const id = await fetchUserId();
+      setUserId(id);
+      
+      if (id) {
+        try {
+          const [tasksData, routinesData, eventsData] = await Promise.all([
+            getTasks(id),
+            getRoutines(id),
+            getEvents(id),
+          ]);
+
+          setTasks(tasksData.tasks || []);
+          setRoutines(routinesData.routines || []);
+          setEvents(eventsData.events || []);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } finally {
+          setLoading(false);
         }
-        const data = await response.json();
-        setUserId(data.userId);
-      } catch (error) {
-        console.error('Error fetching user ID:', error);
+      } else {
+        setLoading(false);
       }
     }
 
-    fetchUserId();
+    initialize();
   }, []);
 
-  useEffect(() => {
-    async function fetchData() {
-      if (!userId) return;
-      try {
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-        const [tasksResponse, routinesResponse, eventsResponse] = await Promise.all([
-          fetch(`${baseUrl}/api/users/${userId}/tasks`),
-          fetch(`${baseUrl}/api/users/${userId}/routines`),
-          fetch(`${baseUrl}/api/users/${userId}/events`),
-        ]);
-
-        if (!tasksResponse.ok || !routinesResponse.ok || !eventsResponse.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const tasksData = await tasksResponse.json();
-        const routinesData = await routinesResponse.json();
-        const eventsData = await eventsResponse.json();
-
-        setTasks(tasksData.tasks || []);
-        setRoutines(routinesData.routines || []);
-        setEvents(eventsData.events || []);
-        setLoading(false);
-      } catch (error) {
-        console.error('Fetch error:', error);
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, [userId]);
-
-  const handleAddTask = async (newTask: { 
-    title: string;
-    day?: string;
-    date?: string;
-    startTime?: string;
-    endTime?: string;
-    checked: boolean;
-  }) => {
+  const handleAddTask = async (newTask: TaskInput) => {
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-      const response = await fetch(`${baseUrl}/api/users/${userId}/tasks`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ task: newTask }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to add task: ${response.status}`);
-      }
-
-      const { task: createdTask } = await response.json();
-
-      // Update the local state with the new task
-      setTasks((prevTasks) => [...prevTasks, createdTask]);
+      const createdTask = await addTask(userId!, newTask);
+      setTasks((prevTasks) => [...prevTasks, createdTask]); 
     } catch (error) {
       console.error('Error adding task:', error);
     }
   };
 
-  const handleEditTask = async (updatedTask: { 
-    title: string;
-    id: string;
-    day?: string;
-    date?: string;
-    startTime?: string;
-    endTime?: string;
-    checked: boolean;
-  }) => {
+  const handleEditTask = async (updatedTask: Task) => {
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-      const response = await fetch(`${baseUrl}/api/users/${userId}/tasks`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ task: updatedTask }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to edit task: ${response.status}`);
-      }
-
-      // Update the local state with the edited task
+      const editedTask = await editTask(userId!, updatedTask); 
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
-          task.id === updatedTask.id ? updatedTask : task
+          task.id === editedTask.id ? editedTask : task
         )
-      );
+      ); 
     } catch (error) {
       console.error('Error editing task:', error);
     }
   };
 
-  const handleDeleteTask = async (taskToDelete: { 
-    title: string;
-    id: string;
-    day?: string;
-    date?: string;
-    startTime?: string;
-    endTime?: string;
-    checked: boolean;
-  }) => {
+  const handleDeleteTask = async (taskToDelete: {id: string}) => {
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-      const response = await fetch(`${baseUrl}/api/users/${userId}/tasks`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ task: taskToDelete }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to delete task: ${response.status}`);
-      }
-
-      // Update the local state to remove the deleted task
-      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskToDelete.id));
+      await deleteTask(userId!, taskToDelete.id); // Use the `deleteTask` function from `api.ts`
+      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskToDelete.id)); // Remove the deleted task from the local state
     } catch (error) {
       console.error('Error deleting task:', error);
     }
   };
+
+  const handleAddEvent = async (newEvent: EventInput) => {
+    try {
+      const createdEvent = await addEvent(userId!, newEvent); 
+      setEvents((prevEvents) => [...prevEvents, createdEvent]); 
+    } catch (error) {
+      console.error('Error adding event:', error);
+    }
+  };
+
+  const handleAddRoutine = async (newRoutine: RoutineInput) => {
+    try {
+      const createdRoutine = await addRoutine(userId!, newRoutine); 
+      setRoutines((prevRoutines) => [...prevRoutines, createdRoutine]); 
+    } catch (error) {
+      console.error('Error adding routine:', error);
+    }
+  }
 
   if (loading) {
     return <div>Loading...</div>;
@@ -189,7 +109,15 @@ export default function BoardPage() {
           events={events}
           onAddTask={handleAddTask} 
           onEditTask={handleEditTask} 
-          onDeleteTask={handleDeleteTask} />
+          onDeleteTask={handleDeleteTask} 
+        />
+        {userId && (
+          <AddButton 
+            onTaskAdded={handleAddTask} 
+            onEventAdded={handleAddEvent} 
+            onRoutineAdded={handleAddRoutine}
+          />
+        )}
       </div>
     </main>
   );
