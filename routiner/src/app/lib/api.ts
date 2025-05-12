@@ -23,7 +23,8 @@ export async function addTask(userId: string, task: { title: string; day?: strin
         throw new Error(`Failed to add task: ${response.status}`);
     }
 
-    const newTask = await response.json();
+    const responseData = await response.json();
+    const newTask = responseData.task; // Extract the task object
     return newTask;
 }
   
