@@ -39,7 +39,9 @@ export async function editTask(userId: string, task: { id: string; title: string
         throw new Error(`Failed to edit task: ${response.status}`);
     }
 
-    return response.json();
+    const responseData = await response.json();
+    const updatedTask = responseData.task; // Extract the updated task
+    return updatedTask;
 }
   
 export async function deleteTask(userId: string, taskId: string) {
