@@ -96,6 +96,7 @@ export default function Board({
     onAddTask(newTaskObject); // Pass the task to the parent-provided callback
     setNewTask(''); // Clear the input field
     setSelectedDay(null); // Reset the selected day
+    console.log(3)
   };
 
   const openModalForTask = (task: {

@@ -51,6 +51,7 @@ export default function BoardPage() {
     try {
       const createdTask = await addTask(userId!, newTask);
       setTasks((prevTasks) => [...prevTasks, createdTask]); 
+      console.log(4)
     } catch (error) {
       console.error('Error adding task:', error);
     }
@@ -113,7 +114,6 @@ export default function BoardPage() {
         />
         {userId && (
           <AddButton 
-            userId={userId} 
             onTaskAdded={handleAddTask} 
             onEventAdded={handleAddEvent} 
             onRoutineAdded={handleAddRoutine}
