@@ -79,7 +79,9 @@ export async function addRoutine(userId: string, routine: { title: string; day?:
         throw new Error(`Failed to add routine: ${response.status}`);
     }
 
-    return response.json();
+    const responseData = await response.json();
+    const newRoutine = responseData.routine; // Extract the routine object
+    return newRoutine;
 }
 
 export async function editRoutine(userId: string, routine: { id: string; title: string; day?: string; date?: string; startTime?: string; endTime?: string }) {
