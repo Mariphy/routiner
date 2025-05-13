@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "./components/NavBar";
-import { ThemeModeScript } from 'flowbite-react'
+import { ThemeModeScript } from 'flowbite-react';
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,7 @@ export default function RootLayout({
           </header>
           <main className="flex-grow pt-30">{children}</main> {/* Add padding to account for the fixed NavBar */}
         </div>
+        <Analytics />
       </body>
     </html>
   );

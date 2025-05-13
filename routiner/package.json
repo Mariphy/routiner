@@ -12,6 +12,7 @@
     "postinstall": "flowbite-react patch"
   },
   "dependencies": {
+    "@vercel/analytics": "^1.5.0",
     "bcryptjs": "^3.0.2",
     "date-fns": "^4.1.0",
     "flowbite-react": "^0.11.7",
