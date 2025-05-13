@@ -2,42 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.calendar {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.body {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
-}
-
-.row {
-  display: contents;
-}
-
-.cell {
-  padding: 10px;
-  border: 1px solid #ddd;
-  text-align: center;
-}
-
-.cell.disabled {
-  background-color: #f9f9f9;
-  color: #ccc;
-}
-
-.cell.selected {
-  background-color: #4caf50;
-  color: white;
-}
-
-.number {
-  font-size: 1.2em;
-}
-
 .day-view {
   display: flex;
   flex-direction: column;

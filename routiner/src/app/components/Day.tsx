@@ -6,7 +6,7 @@ export default function Day() {
 
   return (
     <div className="day-view">
-      <h2 className="text-2xl font-bold mb-4">Day View</h2>
+      <h2 className="text-2xl font-bold mb-4 p-4">Day View</h2>
       <p>Today is {format(today, 'EEEE, MMMM do, yyyy')}</p>
       {/* Add more details for the day view here */}
     </div>
