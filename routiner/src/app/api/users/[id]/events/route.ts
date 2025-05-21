@@ -10,7 +10,7 @@ interface Event {
     description?: string;
     location?: string;
     url?: string;
-    date?: string;
+    date?: Date;
     startTime?: string;
     endTime?: string;
     repeat?: string;

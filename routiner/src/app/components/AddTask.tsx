@@ -4,7 +4,7 @@ interface Task {
     title: string; 
     id: string;
     day?: string;
-    date?: string;
+    date?: Date;
     startTime?: string;
     endTime?: string;
     checked: boolean;
@@ -20,7 +20,7 @@ interface AddTaskProps {
 export default function AddTask({ onSave, onClose }: AddTaskProps) {
   const [title, setTitle] = useState("");
   const [day, setDay] = useState("");
-  const [date, setDate] = useState("");  
+  const [date, setDate] = useState<Date | undefined>(undefined);  
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [checked, setChecked] = useState(false);
@@ -66,8 +66,11 @@ export default function AddTask({ onSave, onClose }: AddTaskProps) {
                     <label className="block text-sm font-medium">Date</label>
                     <input
                     type="date"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
+                    value={date ? date.toISOString().substring(0, 10) : ""}
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        setDate(value ? new Date(value) : undefined);
+                    }}
                     className="w-full border p-2 rounded"
                     />
                 </div>

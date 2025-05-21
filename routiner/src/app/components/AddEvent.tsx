@@ -7,7 +7,7 @@ interface Event {
     description?: string;
     location?: string;
     url?: string;
-    date?: string;
+    date?: Date;
     startTime?: string;
     endTime?: string;
     repeat?: string;
@@ -22,7 +22,7 @@ interface AddEventProps {
 
 export default function AddEvent( { onSave, onClose }: AddEventProps) {
   const [title, setTitle] = useState('');
-  const [date, setDate] = useState('');
+  const [date, setDate] = useState<Date | undefined>(undefined);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
 
@@ -47,8 +47,11 @@ export default function AddEvent( { onSave, onClose }: AddEventProps) {
           />
           <input
             type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
+            value={date ? date.toISOString().substring(0, 10) : ""}
+            onChange={(e) => {
+              const value = e.target.value;
+              setDate(value ? new Date(value) : undefined);
+            }}
             className="border p-2 rounded"
             required
           />

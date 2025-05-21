@@ -7,7 +7,7 @@ export interface Task {
     title: string; 
     id: string;
     day?: string;
-    date?: string;
+    date?: Date;
     startTime?: string;
     endTime?: string;
     checked: boolean;
@@ -22,7 +22,7 @@ export interface Event {
     description?: string;
     location?: string;
     url?: string;
-    date?: string;
+    date?: Date;
     startTime?: string;
     endTime?: string;
     repeat?: string;
@@ -34,7 +34,7 @@ export interface Routine {
     title: string;
     id: string;
     day?: string;
-    date?: string;
+    date?: Date;
     startTime?: string;
     endTime?: string;
     subissue?: string;

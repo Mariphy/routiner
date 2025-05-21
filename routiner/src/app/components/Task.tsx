@@ -6,7 +6,7 @@ interface TaskProps {
     title: string; 
     id: string;
     day?: string;
-    date?: string;
+    date?: Date;
     startTime?: string;
     endTime?: string;
     checked: boolean;
@@ -35,9 +35,9 @@ export default function Task({ task, onClick }: TaskProps) {
           />
           <h3 className="font-medium">{task.title}</h3>
         </div>  
-        {task.date ? (
-          <p className='font-light mt-2' >{task.date}</p>
-        ): null}
+        {task.date instanceof Date && !isNaN(task.date.getTime()) ? (
+          <p className="font-light mt-2">{task.date.toLocaleDateString()}</p>
+        ) : null}
         
         <div 
           data-testid="edit-button"

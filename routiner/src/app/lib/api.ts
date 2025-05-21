@@ -1,3 +1,43 @@
+interface Event {
+    title: string;
+    id: string;
+    day?: string;
+    description?: string;
+    location?: string;
+    url?: string;
+    date?: Date;
+    startTime?: string;
+    endTime?: string;
+    repeat?: string;
+}
+
+type EventInput = Omit<Event, 'id'>;
+
+interface Task {
+  id: string;
+  title: string;
+  day?: string;
+  date?: Date;
+  startTime?: string;
+  endTime?: string;
+  checked: boolean;
+}
+
+type TaskInput = Omit<Task, 'id'>;
+
+interface Routine {
+    title: string;
+    id: string;
+    day?: string;
+    date?: Date;
+    startTime?: string;
+    endTime?: string;
+    subissue?: string;
+    repeat?: string;
+}
+
+type RoutineInput = Omit<Routine, 'id'>;
+
 export async function fetchUserId() {
     const response = await fetch('/api/auth/session', {
         method: 'GET',
@@ -12,7 +52,7 @@ export async function fetchUserId() {
     return data.userId;
 }
 
-export async function addTask(userId: string, task: { title: string; day?: string; date?: string; startTime?: string; endTime?: string; checked: boolean }) {
+export async function addTask(userId: string, task: TaskInput) {
     const response = await fetch(`/api/users/${userId}/tasks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -28,7 +68,7 @@ export async function addTask(userId: string, task: { title: string; day?: strin
     return newTask;
 }
   
-export async function editTask(userId: string, task: { id: string; title: string; day?: string; date?: string; startTime?: string; endTime?: string; checked: boolean }) {
+export async function editTask(userId: string, task: Task) {
     const response = await fetch(`/api/users/${userId}/tasks`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -68,7 +108,7 @@ export async function getTasks(userId: string) {
     return response.json();
 }
 
-export async function addRoutine(userId: string, routine: { title: string; day?: string; date?: string; startTime?: string; endTime?: string }) {
+export async function addRoutine(userId: string, routine: RoutineInput) {
     const response = await fetch(`/api/users/${userId}/routines`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -84,7 +124,7 @@ export async function addRoutine(userId: string, routine: { title: string; day?:
     return newRoutine;
 }
 
-export async function editRoutine(userId: string, routine: { id: string; title: string; day?: string; date?: string; startTime?: string; endTime?: string }) {
+export async function editRoutine(userId: string, routine: Routine) {
     const response = await fetch(`/api/users/${userId}/routines`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -122,7 +162,7 @@ export async function getRoutines(userId: string) {
     return response.json();
 }   
 
-export async function addEvent(userId: string, event: { title: string; date?: string; startTime?: string; endTime?: string }) {
+export async function addEvent(userId: string, event: EventInput) {
     const response = await fetch(`/api/users/${userId}/events`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -136,7 +176,7 @@ export async function addEvent(userId: string, event: { title: string; date?: st
     return response.json();
 }       
 
-export async function editEvent(userId: string, event: { id: string; title: string; date?: string; startTime?: string; endTime?: string }) {
+export async function editEvent(userId: string, event: Event) {
     const response = await fetch(`/api/users/${userId}/events`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },

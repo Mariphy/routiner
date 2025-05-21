@@ -6,7 +6,7 @@ interface EditTaskProps {
       title: string;
       id: string;
       day?: string;
-      date?: string;
+      date?: Date;
       startTime?: string;
       endTime?: string;
       checked: boolean;
@@ -15,7 +15,7 @@ interface EditTaskProps {
       title: string;
       id: string;
       day?: string;
-      date?: string;
+      date?: Date;
       startTime?: string;
       endTime?: string;
       checked: boolean;
@@ -24,7 +24,7 @@ interface EditTaskProps {
       title: string;
       id: string;
       day?: string;
-      date?: string;
+      date?: Date;
       startTime?: string;
       endTime?: string;
       checked: boolean;
@@ -35,7 +35,7 @@ interface EditTaskProps {
 export default function EditTask({ task, onEditTask, onDeleteTask, onClose }: EditTaskProps) {
     const [title, setTitle] = useState(task.title);
     const [day, setDay] = useState(task.day || "");
-    const [date, setDate] = useState(task.date || "");  
+    const [date, setDate] = useState<Date | undefined>(task.date);  
     const [startTime, setStartTime] = useState(task.startTime || "");
     const [endTime, setEndTime] = useState(task.endTime || "");
     const [checked, setChecked] = useState(task.checked || false);
@@ -95,10 +95,13 @@ export default function EditTask({ task, onEditTask, onDeleteTask, onClose }: Ed
                     <div>
                         <label className="block text-sm font-medium">Date</label>
                         <input
-                        type="date"
-                        value={date}
-                        onChange={(e) => setDate(e.target.value)}
-                        className="w-full border p-2 rounded"
+                            type="date"
+                            value={date ? date.toISOString().substring(0, 10) : ""}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                setDate(value ? new Date(value) : undefined);
+                            }}
+                            className="w-full border p-2 rounded"
                         />
                     </div>
                     <div className="flex gap-4">

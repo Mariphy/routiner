@@ -7,12 +7,12 @@ interface Routine {
     title: string;
     id: string;
     day?: string;
-    date?: string;
+    date?: Date;
     startTime?: string;
     endTime?: string;
     subissue?: string;
     repeat?: string;
-  }
+}
   
   interface UserDocument {
     _id: string;
@@ -22,7 +22,7 @@ interface Routine {
     routines: Routine[];
     events: string[];
     tasks: string[];
-  }
+}
 
 export async function GET() {
     try {

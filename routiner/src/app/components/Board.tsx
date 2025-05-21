@@ -9,7 +9,7 @@ interface BoardProps {
     title: string;
     id: string;
     day?: string;
-    date?: string;
+    date?: Date;
     startTime?: string;
     endTime?: string;
     checked: boolean;
@@ -18,6 +18,7 @@ interface BoardProps {
     title: string;
     id: string;
     day?: string;
+    date?: Date;
     startTime?: string;
     endTime?: string;
     repeat?: string;
@@ -29,7 +30,7 @@ interface BoardProps {
     description?: string;
     location?: string;
     url?: string;
-    date?: string;
+    date?: Date;
     startTime?: string;
     endTime?: string;
     repeat?: string;
@@ -37,7 +38,7 @@ interface BoardProps {
   onAddTask: (newTask: {
     title: string;
     day?: string;
-    date?: string;
+    date?: Date;
     startTime?: string;
     endTime?: string;
     checked: boolean;
@@ -46,7 +47,7 @@ interface BoardProps {
     title: string;
     id: string;
     day?: string;
-    date?: string;
+    date?: Date;
     startTime?: string;
     endTime?: string;
     checked: boolean;
@@ -55,7 +56,7 @@ interface BoardProps {
     title: string;
     id: string;
     day?: string;
-    date?: string;
+    date?: Date;
     startTime?: string;
     endTime?: string;
     checked: boolean;
@@ -76,7 +77,7 @@ export default function Board({
         title: string;
         id: string;
         day?: string;
-        date?: string;
+        date?: Date;
         startTime?: string;
         endTime?: string;
         checked: boolean;
@@ -102,7 +103,7 @@ export default function Board({
     title: string;
     id: string;
     day?: string;
-    date?: string;
+    date?: Date;
     startTime?: string;
     endTime?: string;
     checked: boolean;
@@ -115,7 +116,7 @@ export default function Board({
     title: string;
     id: string;
     day?: string;
-    date?: string;
+    date?: Date;
     startTime?: string;
     endTime?: string;
     checked: boolean;
@@ -129,7 +130,7 @@ export default function Board({
     title: string;
     id: string;
     day?: string;
-    date?: string;
+    date?: Date;
     startTime?: string;
     endTime?: string;
     checked: boolean;

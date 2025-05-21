@@ -4,7 +4,7 @@ interface Routine {
     title: string;
     id: string;
     day?: string;
-    date?: string;
+    date?: Date;
     startTime?: string;
     endTime?: string;
     subissue?: string;
@@ -21,6 +21,7 @@ interface AddRoutineProps {
 export default function AddRoutine({ onSave, onClose }: AddRoutineProps) {
   const [title, setTitle] = useState('');
   const [day, setDay] = useState('');
+  const [date, setDate] = useState<Date | undefined>(undefined);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [repeat, setRepeat] = useState('');
@@ -59,6 +60,15 @@ export default function AddRoutine({ onSave, onClose }: AddRoutineProps) {
             <option value="Saturday">Saturday</option>
             <option value="Sunday">Sunday</option>
           </select>
+          <input
+            type="date"
+            value={date ? date.toISOString().substring(0, 10) : ""}
+            onChange={(e) => {
+              const value = e.target.value;
+              setDate(value ? new Date(value) : undefined);
+            }}
+            className="border p-2 rounded"
+          />
           <input
             type="time"
             value={startTime}

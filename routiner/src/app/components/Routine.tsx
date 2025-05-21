@@ -5,7 +5,7 @@ interface RoutineProps {
     title: string;
     id: string;
     day?: string;
-    date?: string;
+    date?: Date;
     startTime?: string;
     endTime?: string;
     subissue?: string;

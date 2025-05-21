@@ -7,7 +7,7 @@ interface Task {
   id: string;
   title: string;
   day?: string;
-  date?: string;
+  date?: Date;
   startTime?: string;
   endTime?: string;
   checked: boolean;
@@ -80,7 +80,8 @@ export async function POST(req: Request) {
 
         const taskWithId = {
           ...task,
-          id: generateUniqueId()
+          id: generateUniqueId(),
+          date: task.date ? new Date(task.date) : undefined,
         };
     
         const result = await db.collection("Users").updateOne(
