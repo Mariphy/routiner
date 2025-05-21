@@ -15,7 +15,7 @@ export async function signup(formData: FormData) {
     }
   
     // Validation: Check if password meets minimum requirements
-    if (password.length < 3) {
+    if (password.length < 6) {
       throw new Error("Password must be at least 6 characters long");
     }
   
