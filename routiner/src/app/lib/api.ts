@@ -1,3 +1,5 @@
+import { parseISO, isSameDay } from 'date-fns';
+
 interface Event {
     title: string;
     id: string;
@@ -106,6 +108,42 @@ export async function getTasks(userId: string) {
     }
 
     return response.json();
+}
+
+function isMongoDate(obj: unknown): obj is { $date: string } {
+    return (
+        typeof obj === 'object' &&
+        obj !== null &&
+        '$date' in obj &&
+        typeof (obj as { $date: unknown }).$date === 'string'
+    );
+}
+
+export async function getTasksByDate(userId: string, date: string) {
+    const response = await fetch(`/api/users/${userId}/tasks`);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch tasks: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const tasks = data.tasks || [];
+
+    const filteredTasks = tasks.filter((task: Task) => {
+        if (!task.date) return false;
+   
+        let taskDate: Date | null = null;
+        if (typeof task.date === 'string') {
+            taskDate = parseISO(task.date);
+         } else if (isMongoDate(task.date)) {
+            taskDate = parseISO(task.date.$date);
+        } else if (task.date instanceof Date) {
+            taskDate = task.date;
+        }
+        // Compare only the date part
+        return taskDate && isSameDay(taskDate, parseISO(date));
+    });
+    return filteredTasks;
+
 }
 
 export async function addRoutine(userId: string, routine: RoutineInput) {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { format, getDay } from 'date-fns';
+import { fetchUserId, getTasksByDate } from '../lib/api';
 
 interface Task {
   id: string;
@@ -44,9 +45,9 @@ export default function Day({ selectedDate }: { selectedDate: Date }) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const tasksResponse = await fetch(`/api/users/[id]/tasks?date=${format(selectedDate, 'yyyy-MM-dd')}`);
-        const tasksData = await tasksResponse.json();
-        setTasks(tasksData.tasks || []);
+        const userId = await fetchUserId();
+        const tasks = await getTasksByDate(userId, format(selectedDate, 'yyyy-MM-dd'));
+        setTasks(tasks || []);
 
         const eventsResponse = await fetch(`/api/users/[id]/events?date=${format(selectedDate, 'yyyy-MM-dd')}`);
         const eventsData = await eventsResponse.json();
