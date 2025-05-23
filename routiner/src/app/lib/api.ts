@@ -52,13 +52,20 @@ function isMongoDate(obj: unknown): obj is { $date: string } {
 
 function parsePossibleDate(date: unknown): Date | null {
     if (typeof date === 'string') {
-        return parseISO(date);
+        return new Date(date);
     } else if (isMongoDate(date)) {
-        return parseISO(date.$date);
+        return new Date(date.$date);
     } else if (date instanceof Date) {
         return date;
     }
     return null;
+}
+
+function normalizeTask(task: Task) {
+    return {
+        ...task,
+        date: task.date ? parsePossibleDate(task.date) ?? undefined : undefined,
+    };
 }
 
 //user id
@@ -130,7 +137,11 @@ export async function getTasks(userId: string) {
         throw new Error(`Failed to fetch tasks: ${response.status}`);
     }
 
-    return response.json();
+    const data = await response.json();
+    return {
+        ...data,
+        tasks: (data.tasks || []).map(normalizeTask),
+    };
 }
 
 export async function getTasksByDate(userId: string, date: string) {

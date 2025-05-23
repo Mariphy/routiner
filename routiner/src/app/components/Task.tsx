@@ -35,7 +35,7 @@ export default function Task({ task, onClick }: TaskProps) {
           />
           <h3 className="font-medium">{task.title}</h3>
         </div>  
-        {task.date instanceof Date && !isNaN(task.date.getTime()) ? (
+        {task.date && task.date instanceof Date && !isNaN(task.date.getTime()) ? (
           <p className="font-light mt-2">{task.date.toLocaleDateString()}</p>
         ) : null}
         
