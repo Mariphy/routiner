@@ -40,6 +40,28 @@ interface Routine {
 
 type RoutineInput = Omit<Routine, 'id'>;
 
+//helpers
+function isMongoDate(obj: unknown): obj is { $date: string } {
+    return (
+        typeof obj === 'object' &&
+        obj !== null &&
+        '$date' in obj &&
+        typeof (obj as { $date: unknown }).$date === 'string'
+    );
+}
+
+function parsePossibleDate(date: unknown): Date | null {
+    if (typeof date === 'string') {
+        return parseISO(date);
+    } else if (isMongoDate(date)) {
+        return parseISO(date.$date);
+    } else if (date instanceof Date) {
+        return date;
+    }
+    return null;
+}
+
+//user id
 export async function fetchUserId() {
     const response = await fetch('/api/auth/session', {
         method: 'GET',
@@ -54,6 +76,7 @@ export async function fetchUserId() {
     return data.userId;
 }
 
+//tasks
 export async function addTask(userId: string, task: TaskInput) {
     const response = await fetch(`/api/users/${userId}/tasks`, {
         method: 'POST',
@@ -110,15 +133,6 @@ export async function getTasks(userId: string) {
     return response.json();
 }
 
-function isMongoDate(obj: unknown): obj is { $date: string } {
-    return (
-        typeof obj === 'object' &&
-        obj !== null &&
-        '$date' in obj &&
-        typeof (obj as { $date: unknown }).$date === 'string'
-    );
-}
-
 export async function getTasksByDate(userId: string, date: string) {
     const response = await fetch(`/api/users/${userId}/tasks`);
     if (!response.ok) {
@@ -128,24 +142,13 @@ export async function getTasksByDate(userId: string, date: string) {
     const data = await response.json();
     const tasks = data.tasks || [];
 
-    const filteredTasks = tasks.filter((task: Task) => {
-        if (!task.date) return false;
-   
-        let taskDate: Date | null = null;
-        if (typeof task.date === 'string') {
-            taskDate = parseISO(task.date);
-         } else if (isMongoDate(task.date)) {
-            taskDate = parseISO(task.date.$date);
-        } else if (task.date instanceof Date) {
-            taskDate = task.date;
-        }
-        // Compare only the date part
+    return tasks.filter((task: Task) => {
+        const taskDate = parsePossibleDate(task.date);
         return taskDate && isSameDay(taskDate, parseISO(date));
     });
-    return filteredTasks;
-
 }
 
+//routines
 export async function addRoutine(userId: string, routine: RoutineInput) {
     const response = await fetch(`/api/users/${userId}/routines`, {
         method: 'POST',
@@ -198,8 +201,21 @@ export async function getRoutines(userId: string) {
     }
 
     return response.json();
-}   
+}  
 
+export async function getRoutinesByDate(userId: string, date: string) {
+    const response = await fetch(`/api/users/${userId}/routines`);
+    if (!response.ok) throw new Error(`Failed to fetch routines: ${response.status}`);
+    const data = await response.json();
+    const routines = data.routines || [];
+
+    return routines.filter((routine: Routine) => {
+        const routineDate = parsePossibleDate(routine.date);
+        return routineDate && isSameDay(routineDate, parseISO(date));
+    });
+}
+
+//events
 export async function addEvent(userId: string, event: EventInput) {
     const response = await fetch(`/api/users/${userId}/events`, {
         method: 'POST',
@@ -252,3 +268,14 @@ export async function getEvents(userId: string) {
     return response.json();
 }
 
+export async function getEventsByDate(userId: string, date: string) {
+    const response = await fetch(`/api/users/${userId}/events`);
+    if (!response.ok) throw new Error(`Failed to fetch events: ${response.status}`);
+    const data = await response.json();
+    const events = data.events || [];
+
+    return events.filter((event: Event) => {
+        const eventDate = parsePossibleDate(event.date);
+        return eventDate && isSameDay(eventDate, parseISO(date));
+    });
+}
