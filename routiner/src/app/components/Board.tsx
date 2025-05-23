@@ -155,7 +155,7 @@ export default function Board({
               type="text"
               value={newTask}
               onChange={(e) => setNewTask(e.target.value)}
-              placeholder="Add a new task"
+              placeholder="Click + to add a new task"
               className="task border p-2 rounded-lg bg-neutral-100 shadow-sm flex-grow"
             />
             <button
@@ -209,7 +209,7 @@ export default function Board({
                     setNewTask(e.target.value);
                     setSelectedDay(dayName);
                   }}
-                  placeholder={`Add a task for ${dayName}`}
+                  placeholder={`Click + to add task on ${dayName}`}
                   className="task border p-2 rounded-lg bg-neutral-100 shadow-sm flex-grow"
                 />
                 <button
