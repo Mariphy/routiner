@@ -83,7 +83,8 @@ export async function POST(req: Request) {
 
         const eventWithId = {
           ...event,
-          id: generateUniqueId()
+          id: generateUniqueId(),
+          date: event.date ? new Date(event.date) : undefined,
         };
     
         const result = await db.collection("Users").updateOne(

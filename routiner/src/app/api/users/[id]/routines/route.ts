@@ -81,7 +81,8 @@ export async function POST(req: Request) {
 
         const routineWithId = {
           ...routine,
-          id: generateUniqueId()
+          id: generateUniqueId(),
+          date: routine.date ? new Date(routine.date) : undefined,
         };
     
         const result = await db.collection("Users").updateOne(
@@ -130,10 +131,15 @@ export async function PUT(req: Request) {
             headers: { "Content-Type": "application/json" },
           });
         }
+
+        const updatedRoutine = {
+          ...routine,
+          date: routine.date ? new Date(routine.date) : undefined,
+        };
     
         const result = await db.collection("Users").updateOne(
           { email: session.user.email, "routines.id": routine.id },
-          { $set: { "routines.$": routine } }
+          { $set: { "routines.$": updatedRoutine } }
         );
     
         if (result.modifiedCount === 0) {
@@ -143,7 +149,7 @@ export async function PUT(req: Request) {
           });
         }
     
-        return new Response(JSON.stringify({ message: "Routine updated successfully" }), {
+        return new Response(JSON.stringify({ updatedRoutine }), {
           status: 200,
           headers: { "Content-Type": "application/json" },
         });

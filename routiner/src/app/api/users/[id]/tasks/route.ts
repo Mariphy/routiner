@@ -130,10 +130,15 @@ export async function PUT(req: Request) {
             headers: { "Content-Type": "application/json" },
           });
         }
+
+        const updatedTask = {
+          ...task,
+          date: task.date ? new Date(task.date) : undefined,
+        };
     
         const result = await db.collection("Users").updateOne(
           { email: session.user.email, "tasks.id": task.id },
-          { $set: { "tasks.$": task } }
+          { $set: { "tasks.$": updatedTask } }
         );
     
         if (result.modifiedCount === 0) {
@@ -143,7 +148,7 @@ export async function PUT(req: Request) {
           });
         }
     
-        return new Response(JSON.stringify({ task }), {
+        return new Response(JSON.stringify({ updatedTask }), {
           status: 200,
           headers: { "Content-Type": "application/json" },
         });
