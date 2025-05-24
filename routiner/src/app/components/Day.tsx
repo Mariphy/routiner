@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { format, getDay } from 'date-fns';
-import { fetchUserId, getTasksByDate } from '../lib/api';
+import { fetchUserId, getTasksByDate, getEventsByDate, getRoutinesByDate } from '../lib/api';
 
 interface Task {
   id: string;
@@ -37,9 +37,9 @@ interface Routine {
 }
 
 export default function Day({ selectedDate }: { selectedDate: Date }) {
-  const [tasks, setTasks] = useState([]);
-  const [routines, setRoutines] = useState([]);
-  const [events, setEvents] = useState([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [routines, setRoutines] = useState<Routine[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const dayOfWeek = getDay(selectedDate);
 
   useEffect(() => {
@@ -49,13 +49,11 @@ export default function Day({ selectedDate }: { selectedDate: Date }) {
         const tasks = await getTasksByDate(userId, format(selectedDate, 'yyyy-MM-dd'));
         setTasks(tasks || []);
 
-        const eventsResponse = await fetch(`/api/users/[id]/events?date=${format(selectedDate, 'yyyy-MM-dd')}`);
-        const eventsData = await eventsResponse.json();
-        setEvents(eventsData);
+        const events = await getEventsByDate(userId, format(selectedDate, 'yyyy-MM-dd'));
+        setEvents(events || []);
 
-        const routinesResponse = await fetch(`/api/users/[id]/routines?dayOfWeek=${dayOfWeek}`);
-        const routinesData = await routinesResponse.json();
-        setRoutines(routinesData);
+        const routines = await getRoutinesByDate(userId, format(selectedDate, 'yyyy-MM-dd'));
+        setRoutines(routines || []);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
