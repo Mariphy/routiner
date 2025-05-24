@@ -148,7 +148,7 @@ export async function PUT(req: Request) {
           });
         }
     
-        return new Response(JSON.stringify({ updatedTask }), {
+        return new Response(JSON.stringify({ task: updatedTask }), {
           status: 200,
           headers: { "Content-Type": "application/json" },
         });
