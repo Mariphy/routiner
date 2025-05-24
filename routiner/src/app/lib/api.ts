@@ -281,14 +281,18 @@ export async function getEvents(userId: string) {
     return response.json();
 }
 
-export async function getEventsByDate(userId: string, date: string) {
-    const response = await fetch(`/api/users/${userId}/events`);
-    if (!response.ok) throw new Error(`Failed to fetch events: ${response.status}`);
-    const data = await response.json();
-    const events = data.events || [];
+export async function getEventsByDate(userId: string, date: string): Promise<Event[]> {
+  const response = await fetch(`/api/users/${userId}/events?date=${date}`);
+  if (!response.ok) throw new Error(`Failed to fetch events: ${response.status}`);
+  
+  const data = await response.json();
+  return data.events || [];
+}
 
-    return events.filter((event: Event) => {
-        const eventDate = parsePossibleDate(event.date);
-        return eventDate && isSameDay(eventDate, parseISO(date));
-    });
+export async function getEventsByMonth(userId: string, month: string): Promise<Event[]> {
+  const response = await fetch(`/api/users/${userId}/events?month=${month}`);
+  if (!response.ok) throw new Error(`Failed to fetch events: ${response.status}`);
+  
+  const data = await response.json();
+  return data.events || [];
 }
