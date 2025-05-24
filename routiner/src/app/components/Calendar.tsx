@@ -14,12 +14,15 @@ export default function Calendar() {
 
   // Calculate leading empty days for the first week
   const startDayOfWeek = getDay(monthStart);
-  const allDays: Date[] = [];
+  const allDays = React.useMemo(() => {
+  const days: Date[] = [];
   let day = monthStart;
   while (day <= monthEnd) {
-    allDays.push(day);
+    days.push(day);
     day = addDays(day, 1);
   }
+  return days;
+}, [monthStart, monthEnd]);
 
   return (
     <div className="flex flex-col h-screen">
