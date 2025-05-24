@@ -5,11 +5,12 @@ import Board from '../components/Board';
 import AddButton from '../components/AddButton';
 import { Task, Event, Routine, TaskInput, EventInput, RoutineInput} from '../components/AddButton';
 import { 
-  fetchUserId, getTasks, getRoutines, getEvents, 
+  fetchUserId, getTasks, getRoutines, getEventsForCurrentWeek, 
   addTask, editTask, deleteTask, 
   addEvent,
   addRoutine
 } from '../lib/api';
+import { format } from 'date-fns';
 
 export default function BoardPage() {
   const [userId, setUserId] = useState<string | null>(null);
@@ -28,12 +29,21 @@ export default function BoardPage() {
           const [tasksData, routinesData, eventsData] = await Promise.all([
             getTasks(id),
             getRoutines(id),
-            getEvents(id),
+            getEventsForCurrentWeek(id),
           ]);
 
           setTasks(tasksData.tasks || []);
           setRoutines(routinesData.routines || []);
-          setEvents(eventsData.events || []);
+          const eventsWithDay = (eventsData || []).map((event: Event) => ({
+            ...event,
+            date: event.date
+              ? (event.date instanceof Date ? event.date : new Date(event.date))
+              : undefined,
+            day: event.date
+              ? format(event.date instanceof Date ? event.date : new Date(event.date), 'EEEE')
+              : undefined,
+          }));
+          setEvents(eventsWithDay);
         } catch (error) {
           console.error('Error fetching data:', error);
         } finally {

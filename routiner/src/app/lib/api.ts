@@ -1,4 +1,5 @@
 import { parseISO, isSameDay } from 'date-fns';
+import { getCurrentWeekRange } from '../utils/helpers';
 
 interface Event {
     title: string;
@@ -271,7 +272,7 @@ export async function deleteEvent(userId: string, eventId: string) {
     return response.json();
 }   
 
-export async function getEvents(userId: string) {
+/*export async function getEvents(userId: string) {
     const response = await fetch(`/api/users/${userId}/events`);
 
     if (!response.ok) {
@@ -279,10 +280,10 @@ export async function getEvents(userId: string) {
     }
 
     return response.json();
-}
+}*/
 
 export async function getEventsByDate(userId: string, date: string): Promise<Event[]> {
-  const response = await fetch(`/api/users/${userId}/events?date=${date}`);
+  const response = await fetch(`/api/users/${userId}/events/search?date=${date}`);
   if (!response.ok) throw new Error(`Failed to fetch events: ${response.status}`);
   
   const data = await response.json();
@@ -290,9 +291,17 @@ export async function getEventsByDate(userId: string, date: string): Promise<Eve
 }
 
 export async function getEventsByMonth(userId: string, month: string): Promise<Event[]> {
-  const response = await fetch(`/api/users/${userId}/events?month=${month}`);
+  const response = await fetch(`/api/users/${userId}/events/search?month=${month}`);
   if (!response.ok) throw new Error(`Failed to fetch events: ${response.status}`);
   
+  const data = await response.json();
+  return data.events || [];
+}
+
+export async function getEventsForCurrentWeek(userId: string) {
+  const { start, end } = getCurrentWeekRange();
+  const response = await fetch(`/api/users/${userId}/events/search?start=${start}&end=${end}`);
+  if (!response.ok) throw new Error(`Failed to fetch events for week: ${response.status}`);
   const data = await response.json();
   return data.events || [];
 }
