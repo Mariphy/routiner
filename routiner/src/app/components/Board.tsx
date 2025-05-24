@@ -3,6 +3,7 @@ import { startOfWeek, addDays, format } from 'date-fns';
 import EditTask from './EditTask';
 import Task from './Task';  
 import Routine from './Routine';
+import type { Task, TaskInput } from '@/app/types.ts';
 
 interface BoardProps {
   tasks: Array<{
@@ -35,32 +36,9 @@ interface BoardProps {
     endTime?: string;
     repeat?: string;
   }>;
-  onAddTask: (newTask: {
-    title: string;
-    day?: string;
-    date?: Date;
-    startTime?: string;
-    endTime?: string;
-    checked: boolean;
-  }) => void;
-  onEditTask: (task: {
-    title: string;
-    id: string;
-    day?: string;
-    date?: Date;
-    startTime?: string;
-    endTime?: string;
-    checked: boolean;
-  }) => void;
-  onDeleteTask: (task: {
-    title: string;
-    id: string;
-    day?: string;
-    date?: Date;
-    startTime?: string;
-    endTime?: string;
-    checked: boolean;
-  }) => void;
+  onAddTask: (newTask: TaskInput) => void;
+  onEditTask: (task: Task) => void;
+  onDeleteTask: (task: Task) => void;
 }
 
 export default function Board({ 
@@ -72,18 +50,7 @@ export default function Board({
   const [newTask, setNewTask] = useState('');
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [taskToEdit, setTaskToEdit] = useState<
-    | {
-        title: string;
-        id: string;
-        day?: string;
-        date?: Date;
-        startTime?: string;
-        endTime?: string;
-        checked: boolean;
-      }
-    | null
-  >(null);
+  const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
 
   const startDate = startOfWeek(new Date(), { weekStartsOn: 0 });
   const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
@@ -99,42 +66,18 @@ export default function Board({
     setSelectedDay(null); // Reset the selected day
   };
 
-  const openModalForTask = (task: {
-    title: string;
-    id: string;
-    day?: string;
-    date?: Date;
-    startTime?: string;
-    endTime?: string;
-    checked: boolean;
-  }) => {
+  const openModalForTask = (task: Task) => {
     setTaskToEdit(task);
     setIsModalOpen(true);
   };
 
-  const handleEditTask = (task: {
-    title: string;
-    id: string;
-    day?: string;
-    date?: Date;
-    startTime?: string;
-    endTime?: string;
-    checked: boolean;
-  }) => {
+  const handleEditTask = (task: Task) => {
     onEditTask(task);
     setIsModalOpen(false);
     setTaskToEdit(null);
   };
 
-  const handleDeleteTask = (task: {
-    title: string;
-    id: string;
-    day?: string;
-    date?: Date;
-    startTime?: string;
-    endTime?: string;
-    checked: boolean;
-  }) => {
+  const handleDeleteTask = (task: Task) => {
     onDeleteTask(task);
   };
 
