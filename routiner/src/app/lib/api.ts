@@ -187,7 +187,9 @@ export async function editRoutine(userId: string, routine: Routine) {
         throw new Error(`Failed to edit routine: ${response.status}`);
     }
 
-    return response.json();
+    const responseData = await response.json();
+    const updatedRoutine = responseData.routine; // Extract the updated routine
+    return updatedRoutine;
 }
 
 export async function deleteRoutine(userId: string, routineId: string) {

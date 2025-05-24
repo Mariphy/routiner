@@ -28,7 +28,7 @@ export default function AddRoutine({ onSave, onClose }: AddRoutineProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ title, day, startTime, endTime, repeat });
+    onSave({ title, day, date, startTime, endTime, repeat });
     onClose();
   };
 
