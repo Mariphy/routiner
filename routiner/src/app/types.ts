@@ -13,7 +13,6 @@ export type TaskInput = Omit<Task, 'id'>;
 export interface Event {
     title: string;
     id: string;
-    day?: string;
     description?: string;
     location?: string;
     url?: string;

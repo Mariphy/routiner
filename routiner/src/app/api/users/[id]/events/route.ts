@@ -2,19 +2,7 @@ import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import { connectToDb } from "@/app/api/db";
 import { generateUniqueId } from "@/app/utils/helpers";
-
-interface Event {
-    title: string;
-    id: string;
-    day?: string;
-    description?: string;
-    location?: string;
-    url?: string;
-    date?: Date;
-    startTime?: string;
-    endTime?: string;
-    repeat?: string;
-}
+import type { Event } from "@/app/types.ts"
 
 interface UserDocument {
 _id: string;

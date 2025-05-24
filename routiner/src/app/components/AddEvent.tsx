@@ -1,19 +1,5 @@
 import React, { useState } from 'react';
-
-interface Event {
-    title: string;
-    id: string;
-    day?: string;
-    description?: string;
-    location?: string;
-    url?: string;
-    date?: Date;
-    startTime?: string;
-    endTime?: string;
-    repeat?: string;
-}
-
-type EventInput = Omit<Event, 'id'>;
+import type { EventInput } from '@/app/types.ts'
 
 interface AddEventProps {
   onSave: (event:EventInput) => void;  

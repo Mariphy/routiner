@@ -1,20 +1,6 @@
 import { parseISO, isSameDay } from 'date-fns';
 import { getCurrentWeekRange } from '../utils/helpers';
-
-interface Event {
-    title: string;
-    id: string;
-    day?: string;
-    description?: string;
-    location?: string;
-    url?: string;
-    date?: Date;
-    startTime?: string;
-    endTime?: string;
-    repeat?: string;
-}
-
-type EventInput = Omit<Event, 'id'>;
+import type { Event, EventInput } from '@/app/types.ts';
 
 interface Task {
   id: string;

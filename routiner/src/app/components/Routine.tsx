@@ -1,16 +1,8 @@
 import React from 'react';
+import type { Routine } from '@/app/types'
 
 interface RoutineProps {
-  routine: {
-    title: string;
-    id: string;
-    day?: string;
-    date?: Date;
-    startTime?: string;
-    endTime?: string;
-    subissue?: string;
-    repeat?: string;
-  };
+  routine: Routine;
   onClick?: () => void;
 }
 

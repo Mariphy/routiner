@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Board from '../components/Board';
 import AddButton from '../components/AddButton';
-import { Task, Event, Routine, TaskInput, EventInput, RoutineInput} from '../components/AddButton';
+import { Task, Routine, TaskInput, RoutineInput} from '../components/AddButton';
+import type { Event, EventInput } from '@/app/types.ts';
 import { 
   fetchUserId, getTasks, getRoutines, getEventsForCurrentWeek, 
   addTask, editTask, deleteTask, 
