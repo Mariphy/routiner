@@ -6,11 +6,13 @@ export default function DayCell({
   today,
   selectedDate,
   onClick,
+  events = [],
 }: {
   day: Date;
   today: Date;
   selectedDate: Date;
   onClick: (date: Date) => void;
+  events?: Array<{ id?: string; title?: string }>;
 }) {
   const isCurrentMonth = isSameMonth(day, today);
   const isToday = isSameDay(day, today);
@@ -26,6 +28,15 @@ export default function DayCell({
       onClick={() => onClick(day)}
     >
       <span className="text-sm font-bold">{format(day, 'd')}</span>
+      {/* Event previews */}
+      {events.slice(0, 2).map((event, idx) => (
+        <span key={event.id || idx} className="text-xs truncate bg-green-100 rounded px-1 mt-1">
+          {event.title}
+        </span>
+      ))}
+      {events.length > 2 && (
+        <span className="text-xs text-gray-400 mt-1">+{events.length - 2} more</span>
+      )}
     </div>
   );
 }
