@@ -7,10 +7,14 @@ interface AddEventProps {
 }  
 
 export default function AddEvent( { onSave, onClose }: AddEventProps) {
+  const now = new Date();
+  const currentTime = now.toTimeString().slice(0, 5); // HH:MM format
+  const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000).toTimeString().slice(0, 5);
+  
   const [title, setTitle] = useState('');
-  const [date, setDate] = useState<Date | undefined>(undefined);
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
+  const [date, setDate] = useState<Date>(now);
+  const [startTime, setStartTime] = useState(currentTime);
+  const [endTime, setEndTime] = useState(oneHourLater);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,10 +37,12 @@ export default function AddEvent( { onSave, onClose }: AddEventProps) {
           />
           <input
             type="date"
-            value={date ? date.toISOString().substring(0, 10) : ""}
+            value={date.toISOString().substring(0, 10)}
             onChange={(e) => {
               const value = e.target.value;
-              setDate(value ? new Date(value) : undefined);
+              if (value) {
+                setDate(new Date(value));
+              }
             }}
             className="border p-2 rounded"
             required
@@ -46,12 +52,14 @@ export default function AddEvent( { onSave, onClose }: AddEventProps) {
             value={startTime}
             onChange={(e) => setStartTime(e.target.value)}
             className="border p-2 rounded"
+            required
           />
           <input
             type="time"
             value={endTime}
             onChange={(e) => setEndTime(e.target.value)}
             className="border p-2 rounded"
+            required
           />
           <div className="flex justify-end gap-4">
             <button
