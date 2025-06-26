@@ -118,9 +118,11 @@ export default function Board({
                 {eventsForDay.map(event => (
                   <div key={event.id} className="event border p-2 mb-2 rounded-lg bg-green-100 shadow-sm">
                     <h3 className="font-medium">{event.title}</h3>
-                     {event.date && event.date instanceof Date && !isNaN(event.date.getTime()) ? (
-                        <p className="font-light text-sm text-gray-600">Date: {event.date.toLocaleDateString()}</p>
-                      ) : null}
+                     {event.date && (
+                        <p className="font-light text-sm text-gray-600">
+                          Date: {event.date instanceof Date ? event.date.toLocaleDateString() : new Date(event.date).toLocaleDateString()}
+                        </p>
+                      )}
                       {event.startTime && event.endTime && (
                         <p className="text-sm text-gray-600">
                           {event.startTime} - {event.endTime}
