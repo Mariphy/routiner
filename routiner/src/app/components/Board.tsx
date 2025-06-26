@@ -22,10 +22,9 @@ export default function Board({
   tasks, 
   routines,
   events,
-  onAddTask, onEditTask, onDeleteTask,
-  onAddEvent,
-  onAddRoutine
+  onAddTask, onEditTask, onDeleteTask
 }: BoardProps) {
+  const [newTask, setNewTask] = useState('');
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<TaskType | null>(null);
@@ -33,7 +32,7 @@ export default function Board({
   const startDate = startOfWeek(new Date(), { weekStartsOn: 0 });
   const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
 
-  const handleAddTask = async (day?: string) => {
+  const handleQuickAddTask = async (day?: string) => {
     const taskDay = day ?? selectedDay; // Use the passed day or the selectedDay state
     if (!newTask.trim()) return;
 
@@ -80,7 +79,7 @@ export default function Board({
               className="task border p-2 rounded-lg bg-neutral-100 shadow-sm flex-grow"
             />
             <button
-              onClick={() => handleAddTask()}
+              onClick={() => handleQuickAddTask()}
               className="bg-accent text-white px-4 py-2 rounded hover:bg-accent-hover"
             >
               +
@@ -141,7 +140,7 @@ export default function Board({
                   className="task border p-2 rounded-lg bg-neutral-100 shadow-sm flex-grow"
                 />
                 <button
-                  onClick={() => handleAddTask(dayName)}
+                  onClick={() => handleQuickAddTask(dayName)}
                   className="bg-accent text-white px-4 py-2 rounded hover:bg-accent-hover flex-shrink-0"
                 >
                   +
