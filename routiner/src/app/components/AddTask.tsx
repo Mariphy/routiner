@@ -27,7 +27,11 @@ export default function AddTask({ onSave, onClose }: AddTaskProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ title, day, date, startTime, endTime, checked });
+    
+    // Apply the same date fix as AddEvent
+    const taskDate = date ? new Date(date.getFullYear(), date.getMonth(), date.getDate()) : undefined;
+    
+    onSave({ title, day, date: taskDate, startTime, endTime, checked });
   };
 
   return (
@@ -69,7 +73,13 @@ export default function AddTask({ onSave, onClose }: AddTaskProps) {
                     value={date ? date.toISOString().substring(0, 10) : ""}
                     onChange={(e) => {
                         const value = e.target.value;
-                        setDate(value ? new Date(value) : undefined);
+                        if (value) {
+                          // Create date in local timezone at midnight (same as AddEvent)
+                          const [year, month, day] = value.split('-').map(Number);
+                          setDate(new Date(year, month - 1, day));
+                        } else {
+                          setDate(undefined);
+                        }
                     }}
                     className="w-full border p-2 rounded"
                     />

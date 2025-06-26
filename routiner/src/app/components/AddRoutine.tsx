@@ -28,7 +28,11 @@ export default function AddRoutine({ onSave, onClose }: AddRoutineProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ title, day, date, startTime, endTime, repeat });
+    
+    // Apply the same date fix as AddEvent
+    const routineDate = date ? new Date(date.getFullYear(), date.getMonth(), date.getDate()) : undefined;
+    
+    onSave({ title, day, date: routineDate, startTime, endTime, repeat });
     onClose();
   };
 
@@ -65,7 +69,13 @@ export default function AddRoutine({ onSave, onClose }: AddRoutineProps) {
             value={date ? date.toISOString().substring(0, 10) : ""}
             onChange={(e) => {
               const value = e.target.value;
-              setDate(value ? new Date(value) : undefined);
+              if (value) {
+                // Create date in local timezone at midnight (same as AddEvent)
+                const [year, month, day] = value.split('-').map(Number);
+                setDate(new Date(year, month - 1, day));
+              } else {
+                setDate(undefined);
+              }
             }}
             className="border p-2 rounded"
           />

@@ -44,8 +44,11 @@ export default function EditTask({ task, onEditTask, onDeleteTask, onClose }: Ed
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (title.trim()) {
-          onEditTask({ title, id, day, date, startTime, endTime, checked });
-          onClose(); // Close the modal after adding the task
+          // Apply the same date fix as AddEvent
+          const taskDate = date ? new Date(date.getFullYear(), date.getMonth(), date.getDate()) : undefined;
+          
+          onEditTask({ title, id, day, date: taskDate, startTime, endTime, checked });
+          onClose();
         }
     };
 
@@ -99,7 +102,13 @@ export default function EditTask({ task, onEditTask, onDeleteTask, onClose }: Ed
                             value={date ? date.toISOString().substring(0, 10) : ""}
                             onChange={(e) => {
                                 const value = e.target.value;
-                                setDate(value ? new Date(value) : undefined);
+                                if (value) {
+                                    // Create date in local timezone at midnight (same as AddEvent)
+                                    const [year, month, day] = value.split('-').map(Number);
+                                    setDate(new Date(year, month - 1, day));
+                                } else {
+                                    setDate(undefined);
+                                }
                             }}
                             className="w-full border p-2 rounded"
                         />
