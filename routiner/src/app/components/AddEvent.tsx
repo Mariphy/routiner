@@ -8,7 +8,7 @@ interface AddEventProps {
 
 export default function AddEvent( { onSave, onClose }: AddEventProps) {
   const now = new Date();
-  const currentTime = now.toTimeString().slice(0, 5); // HH:MM format
+  const currentTime = now.toTimeString().slice(0, 5);
   const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000).toTimeString().slice(0, 5);
   
   const [title, setTitle] = useState('');
@@ -18,7 +18,11 @@ export default function AddEvent( { onSave, onClose }: AddEventProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ title, date, startTime, endTime });
+    
+    // Create a date-only object (no time component)
+    const eventDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    
+    onSave({ title, date: eventDate, startTime, endTime });
     onClose();
   };
 
@@ -41,7 +45,9 @@ export default function AddEvent( { onSave, onClose }: AddEventProps) {
             onChange={(e) => {
               const value = e.target.value;
               if (value) {
-                setDate(new Date(value));
+                // Create date in local timezone at midnight
+                const [year, month, day] = value.split('-').map(Number);
+                setDate(new Date(year, month - 1, day));
               }
             }}
             className="border p-2 rounded"
