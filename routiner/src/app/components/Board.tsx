@@ -68,6 +68,7 @@ export default function Board({
               key={task.id} 
               task={task}
               onClick={() => openModalForTask(task)} 
+              onEditTask={onEditTask}
             />
           ))}
           <div className="flex items-center gap-2 mb-4">
@@ -105,6 +106,7 @@ export default function Board({
                     key={taskIndex}
                     task={task}
                     onClick={() => openModalForTask(task)} 
+                    onEditTask={onEditTask}
                   />
                 ))}
                 {routines
