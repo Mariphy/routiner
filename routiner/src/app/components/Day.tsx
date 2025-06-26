@@ -14,7 +14,12 @@ type PlannerItem = {
   url?: string;
 };
 
-export default function Day({ selectedDate }: { selectedDate: Date }) {
+interface DayProps {
+  selectedDate: Date;
+  events?: Event[];  // Optional pre-filtered events
+}
+
+export default function Day({ selectedDate, events: passedEvents }: DayProps) {
   const [plannerItems, setPlannerItems] = useState<PlannerItem[]>([]);
   const dayOfWeek = getDay(selectedDate);
 
@@ -22,11 +27,24 @@ export default function Day({ selectedDate }: { selectedDate: Date }) {
     async function fetchData() {
       try {
         const userId = await fetchUserId();
-        const [tasks, events, routines] = await Promise.all([
-          getTasksByDate(userId, format(selectedDate, 'yyyy-MM-dd')),
-          getEventsByDate(userId, format(selectedDate, 'yyyy-MM-dd')),
-          getRoutinesByDate(userId, format(selectedDate, 'yyyy-MM-dd')),
-        ]);
+        const dateString = selectedDate.toISOString().split('T')[0];
+        
+        // Only fetch what we don't already have
+        const promises = [
+          getTasksByDate(userId, dateString),
+          getRoutinesByDate(userId, dateString),
+        ];
+        
+        // Only fetch events if not passed
+        if (!passedEvents) {
+          promises.push(getEventsByDate(userId, dateString));
+        }
+        
+        const results = await Promise.all(promises);
+        const [tasks, routines, fetchedEvents] = results;
+        
+        // Use passed events or fetched events
+        const eventsToUse = passedEvents || fetchedEvents || [];
 
         // Normalize and combine all items
         const allItems: PlannerItem[] = [
@@ -37,7 +55,7 @@ export default function Day({ selectedDate }: { selectedDate: Date }) {
             startTime: task.startTime,
             endTime: task.endTime,
           })),
-          ...(events || []).map((event: Event) => ({
+          ...(eventsToUse).map((event: Event) => ({
             id: event.id,
             type: 'Event',
             title: event.title,
@@ -63,7 +81,7 @@ export default function Day({ selectedDate }: { selectedDate: Date }) {
     }
 
     fetchData();
-  }, [selectedDate, dayOfWeek]);
+  }, [selectedDate, dayOfWeek, passedEvents]);
 
   // Separate timed and untimed items
   const untimedItems = plannerItems.filter(item => !item.startTime);

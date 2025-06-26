@@ -14,6 +14,14 @@ export default function Calendar({events}: CalendarProps) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
+  // Filter events for the selected date
+  const eventsForSelectedDate = events.filter(event => 
+    event.date && isSameDay(
+      event.date instanceof Date ? event.date : new Date(event.date),
+      selectedDate
+    )
+  );
+
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
 
@@ -33,6 +41,7 @@ export default function Calendar({events}: CalendarProps) {
 
   return (
     <div className="flex flex-col h-screen">
+      {/* Calendar grid */}
       <div className="flex flex-col justify-between items-center flex-shrink p-4">
         <div className="text-center mb-4 p-4 flex items-center justify-center gap-4">
           <button
@@ -89,8 +98,13 @@ export default function Calendar({events}: CalendarProps) {
           })}
         </div>
       </div>
+      
+      {/* Day view */}
       <div className="p-6">
-        <Day selectedDate={selectedDate} />
+        <Day 
+          selectedDate={selectedDate} 
+          events={eventsForSelectedDate}  // Pass pre-filtered events
+        />
       </div>
     </div>
   );
