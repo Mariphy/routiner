@@ -3,30 +3,8 @@ import AddTask from './AddTask';
 import AddEvent from './AddEvent';
 import AddRoutine from './AddRoutine';
 import type { EventInput } from '@/app/types.ts'
-export interface Task {
-    title: string; 
-    id: string;
-    day?: string;
-    date?: Date;
-    startTime?: string;
-    endTime?: string;
-    checked: boolean;
-}
-
-export type TaskInput = Omit<Task, 'id'>;
-
-export interface Routine {
-    title: string;
-    id: string;
-    day?: string;
-    date?: Date;
-    startTime?: string;
-    endTime?: string;
-    subissue?: string;
-    repeat?: string; 
-}
-
-export type RoutineInput = Omit<Routine, 'id'>;
+import type { TaskInput } from '@/app/types.ts';
+import type { RoutineInput } from '@/app/types.ts';
 
 interface AddButtonProps {
     onTaskAdded: (task: TaskInput) => void;
