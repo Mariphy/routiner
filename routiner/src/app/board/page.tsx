@@ -3,15 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import Board from '../components/Board';
 import AddButton from '../components/AddButton';
-import { Task, Routine, TaskInput, RoutineInput} from '../components/AddButton';
-import type { Event, EventInput } from '@/app/types.ts';
+import type { Task, Routine, TaskInput, RoutineInput, Event, EventInput } from '@/app/types.ts';
 import { 
   fetchUserId, getTasks, getRoutines, getEventsForCurrentWeek, 
   addTask, editTask, deleteTask, 
   addEvent,
   addRoutine
 } from '../lib/api';
-import { format } from 'date-fns';
 
 export default function BoardPage() {
   const [userId, setUserId] = useState<string | null>(null);
@@ -35,16 +33,8 @@ export default function BoardPage() {
 
           setTasks(tasksData.tasks || []);
           setRoutines(routinesData.routines || []);
-          const eventsWithDay = (eventsData || []).map((event: Event) => ({
-            ...event,
-            date: event.date
-              ? (event.date instanceof Date ? event.date : new Date(event.date))
-              : undefined,
-            day: event.date
-              ? format(event.date instanceof Date ? event.date : new Date(event.date), 'EEEE')
-              : undefined,
-          }));
-          setEvents(eventsWithDay);
+          setEvents(eventsData || []);
+
         } catch (error) {
           console.error('Error fetching data:', error);
         } finally {
@@ -120,7 +110,9 @@ export default function BoardPage() {
           events={events}
           onAddTask={handleAddTask} 
           onEditTask={handleEditTask} 
-          onDeleteTask={handleDeleteTask} 
+          onDeleteTask={handleDeleteTask}
+          onAddRoutine={handleAddRoutine}
+          onAddEvent={handleAddEvent}
         />
         {userId && (
           <AddButton 
