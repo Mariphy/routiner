@@ -16,9 +16,9 @@ export interface Event {
     description?: string;
     location?: string;
     url?: string;
-    date?: Date;
-    startTime?: string;
-    endTime?: string;
+    date: Date;
+    startTime: string;
+    endTime: string;
     repeat?: string;
 }
 
@@ -34,3 +34,5 @@ export interface Routine {
     subissue?: string;
     repeat?: string; 
 }
+
+export type RoutineInput = Omit<Routine, 'id'>;

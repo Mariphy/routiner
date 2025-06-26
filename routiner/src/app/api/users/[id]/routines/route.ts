@@ -2,18 +2,8 @@ import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import { connectToDb } from "@/app/api/db";
 import { generateUniqueId } from "@/app/utils/helpers";
+import type { Routine } from "@/app/types.ts";
 
-interface Routine {
-    title: string;
-    id: string;
-    day?: string;
-    date?: Date;
-    startTime?: string;
-    endTime?: string;
-    subissue?: string;
-    repeat?: string;
-}
-  
   interface UserDocument {
     _id: string;
     name: string;
