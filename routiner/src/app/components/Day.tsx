@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getDay } from 'date-fns';
 import { Calendar, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
-import { fetchUserId, getTasksByDate, getEventsByDate, getRoutinesByDate } from '../lib/api';
+import { fetchUserId, getTasksByDate, getEventsByDate } from '../lib/api';
 import type { Event, Task, Routine } from '@/app/types.ts';
 
 type PlannerItem = {
@@ -41,7 +41,6 @@ export default function Day({
         
         const promises = [
           getTasksByDate(userId, dateString),
-          getRoutinesByDate(userId, dateString),
         ];
         
         if (!passedEvents) {

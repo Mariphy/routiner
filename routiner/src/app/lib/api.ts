@@ -1,6 +1,6 @@
 import { parseISO, isSameDay } from 'date-fns';
 import { getCurrentWeekRange } from '../utils/helpers';
-import type { Event, EventInput } from '@/app/types.ts';
+import type { Event, EventInput, Routine, RoutineInput } from '@/app/types.ts';
 
 interface Task {
   id: string;
@@ -13,19 +13,6 @@ interface Task {
 }
 
 type TaskInput = Omit<Task, 'id'>;
-
-interface Routine {
-    title: string;
-    id: string;
-    day?: string;
-    date?: Date;
-    startTime?: string;
-    endTime?: string;
-    subissue?: string;
-    repeat?: string;
-}
-
-type RoutineInput = Omit<Routine, 'id'>;
 
 //helpers
 function isMongoDate(obj: unknown): obj is { $date: string } {
@@ -202,18 +189,6 @@ export async function getRoutines(userId: string) {
 
     return response.json();
 }  
-
-export async function getRoutinesByDate(userId: string, date: string) {
-    const response = await fetch(`/api/users/${userId}/routines`);
-    if (!response.ok) throw new Error(`Failed to fetch routines: ${response.status}`);
-    const data = await response.json();
-    const routines = data.routines || [];
-
-    return routines.filter((routine: Routine) => {
-        const routineDate = parsePossibleDate(routine.date);
-        return routineDate && isSameDay(routineDate, parseISO(date));
-    });
-}
 
 //events
 export async function addEvent(userId: string, event: EventInput) {
