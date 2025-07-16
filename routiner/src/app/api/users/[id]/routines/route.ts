@@ -72,7 +72,6 @@ export async function POST(req: Request) {
         const routineWithId = {
           ...routine,
           id: generateUniqueId(),
-          date: routine.date ? new Date(routine.date) : undefined,
         };
     
         const result = await db.collection("Users").updateOne(
@@ -124,7 +123,6 @@ export async function PUT(req: Request) {
 
         const updatedRoutine = {
           ...routine,
-          date: routine.date ? new Date(routine.date) : undefined,
         };
     
         const result = await db.collection("Users").updateOne(
