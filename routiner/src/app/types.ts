@@ -27,12 +27,11 @@ export type EventInput = Omit<Event, 'id'>;
 export interface Routine {
     title: string;
     id: string;
-    day?: string;
-    date?: Date;
+    daily: boolean;
+    repeat: string[]; 
     startTime?: string;
     endTime?: string;
     subissue?: string;
-    repeat?: string; 
 }
 
 export type RoutineInput = Omit<Routine, 'id'>;

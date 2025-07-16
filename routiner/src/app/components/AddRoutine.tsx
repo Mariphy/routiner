@@ -1,17 +1,6 @@
 import React, { useState } from 'react';
-
-interface Routine {
-    title: string;
-    id: string;
-    day?: string;
-    date?: Date;
-    startTime?: string;
-    endTime?: string;
-    subissue?: string;
-    repeat?: string; 
-}
-
-type RoutineInput = Omit<Routine, 'id'>;
+import Select from 'react-select';
+import type { RoutineInput } from '@/app/types.ts';
 
 interface AddRoutineProps {
   onSave: (routine:RoutineInput) => void;
@@ -20,64 +9,77 @@ interface AddRoutineProps {
 
 export default function AddRoutine({ onSave, onClose }: AddRoutineProps) {
   const [title, setTitle] = useState('');
-  const [day, setDay] = useState('');
-  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [daily, setDaily] = useState(false);
+  const [repeat, setRepeat] = useState<string[]>(["Monday"]);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const [repeat, setRepeat] = useState('');
+  
+
+  const repeatOptions = [
+    { value: 'Monday', label: 'Monday' },
+    { value: 'Tuesday', label: 'Tuesday' },
+    { value: 'Wednesday', label: 'Wednesday' },
+    { value: 'Thursday', label: 'Thursday' },
+    { value: 'Friday', label: 'Friday' },
+    { value: 'Saturday', label: 'Saturday' },
+    { value: 'Sunday', label: 'Sunday' }
+  ];
+
+  const handleDailyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const isChecked = e.target.checked;
+    setDaily(isChecked);
+    if (isChecked) {
+      setRepeat(repeatOptions.map(option => option.value))
+    }
+  }  
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!daily && repeat.length === 0) {
+      alert('Please select either daily routine or specific days');
+      return;
+    }
     
-    // Apply the same date fix as AddEvent
-    const routineDate = date ? new Date(date.getFullYear(), date.getMonth(), date.getDate()) : undefined;
-    
-    onSave({ title, day, date: routineDate, startTime, endTime, repeat });
+    onSave({ title, daily, repeat, startTime, endTime });
     onClose();
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96 overflow-y-auto">
         <h2 className="text-lg font-bold mb-4">Add Routine</h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Routine Title"
+            placeholder="Morning Routine"
             className="border p-2 rounded"
             required
           />
-          <select
-            value={day}
-            onChange={(e) => setDay(e.target.value)}
-            className="border p-2 rounded"
-            required
-          >
-            <option value="">Select Day</option>
-            <option value="Monday">Monday</option>
-            <option value="Tuesday">Tuesday</option>
-            <option value="Wednesday">Wednesday</option>
-            <option value="Thursday">Thursday</option>
-            <option value="Friday">Friday</option>
-            <option value="Saturday">Saturday</option>
-            <option value="Sunday">Sunday</option>
-          </select>
-          <input
-            type="date"
-            value={date ? date.toISOString().substring(0, 10) : ""}
-            onChange={(e) => {
-              const value = e.target.value;
-              if (value) {
-                // Create date in local timezone at midnight (same as AddEvent)
-                const [year, month, day] = value.split('-').map(Number);
-                setDate(new Date(year, month - 1, day));
-              } else {
-                setDate(undefined);
-              }
+
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={daily}
+              onChange={handleDailyChange}
+              className="form-checkbox"
+            />
+            <span>Repeat Daily</span>
+          </label>  
+          <span>Or choose which days of week to repeat:</span>
+          <Select
+            isOptionDisabled={() => daily}
+            defaultValue={repeatOptions[0]}
+            isMulti
+            name="repeat"
+            options={repeatOptions}
+            className="basic-multi-select"
+            classNamePrefix="select"
+            onChange={(selectedOptions) => {
+              setRepeat(selectedOptions.map(option => option.value))
             }}
-            className="border p-2 rounded"
           />
           <input
             type="time"
@@ -91,13 +93,7 @@ export default function AddRoutine({ onSave, onClose }: AddRoutineProps) {
             onChange={(e) => setEndTime(e.target.value)}
             className="border p-2 rounded"
           />
-          <input
-            type="text"
-            value={repeat}
-            onChange={(e) => setRepeat(e.target.value)}
-            placeholder="Repeat (e.g., Weekly)"
-            className="border p-2 rounded"
-          />
+
           <div className="flex justify-end gap-4">
             <button
               type="button"
