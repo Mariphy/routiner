@@ -130,9 +130,10 @@ export default function Board({
             event.date && isSameDay(
               event.date instanceof Date ? event.date : new Date(event.date),
               day
-            )
+            )  
           );
-          
+          const routinesForDay = routines.filter(routine => routine.repeat.includes(dayName));  
+
           return (
             <div key={index} className="column border p-4 sm:w-72 md:w-72 lg:w-80 rounded-lg bg-neutral-200 shadow-md">
               <h2 className="text-xl font-bold mb-4">
@@ -151,8 +152,7 @@ export default function Board({
                   />
                 ))}
                 
-              {routines
-                .filter((routine) => routine.day === dayName)
+              {routinesForDay
                 .map((routine, routineIndex) => (
                   <Routine
                     key={routineIndex}
