@@ -3,36 +3,31 @@ import Image from "next/image";
 
 export default function GuestHomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen">
       {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative z-10 pb-8 sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
-            <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
-              <div className="sm:text-center lg:text-left">
-                <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-                  <span className="block">Plan your life with</span>
-                  <span className="block text-accent">Routiner</span>
-                </h1>
-                <p className="m-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                  A modern productivity app that helps you manage routines, track habits, schedule events, and organize tasks—all in one beautifully designed interface.
-                </p>
-                <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-                  <div className="rounded-md shadow">
-                    <Link href="/signup" className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-accent hover:bg-accent-hover md:py-4 md:text-lg md:px-10 transition-colors duration-200">
-                      Get Started Free
-                    </Link>
-                  </div>
-                  <div className="mt-3 sm:mt-0 sm:ml-3">
-                    <Link href="/api/auth/signin" className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-accent bg-white hover:bg-gray-50 md:py-4 md:text-lg md:px-10 transition-colors duration-200">
-                      Sign In
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </main>
+      <section className="relative overflow-hidden flex flex-col md:flex-row py-12 md:py-20">
+        <div className="sm:text-center lg:text-left">
+          <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+            <span className="block">Plan your life with</span>
+            <span className="block text-accent">Routiner</span>
+          </h1>
+          <p className="m-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
+            A modern productivity app that helps you manage routines, track habits, schedule events, and organize tasks—all in one beautifully designed interface.
+          </p>
+          <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
+            <div className="rounded-md shadow">
+              <Link href="/signup" className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-accent hover:bg-accent-hover md:py-4 md:text-lg md:px-10 transition-colors duration-200">
+                Get Started Free
+              </Link>
+            </div>
+            <div className="mt-3 sm:mt-0 sm:ml-3">
+              <Link href="/api/auth/signin" className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-accent bg-white hover:bg-gray-50 md:py-4 md:text-lg md:px-10 transition-colors duration-200">
+                Sign In
+              </Link>
+            </div>
           </div>
         </div>
+          
         <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
           <Image 
             src="/calendar.png"
@@ -42,10 +37,10 @@ export default function GuestHomePage() {
             className="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-full rounded-lg shadow-xl"
           />
         </div>
-      </div>
+      </section>
 
       {/* Features Section */}
-      <div className="py-12 bg-white">
+      <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:text-center">
             <h2 className="text-base text-accent font-semibold tracking-wide uppercase">Features</h2>
@@ -100,7 +95,7 @@ export default function GuestHomePage() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* How it Works Section */}
       <div className="py-16 bg-gray-50">
