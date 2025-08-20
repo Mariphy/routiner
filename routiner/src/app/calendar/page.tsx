@@ -1,8 +1,11 @@
 import Calendar from "../components/Calendar";
-import { fetchUserId, getEventsByMonth } from '@/app/lib/api'; // or your fetch function
+import { fetchUserId, getEventsByMonth } from '@/app/lib/api';
+import { preloadCalendarData } from '../lib/preload';
 
 export default async function CalendarPage() {
   const userId = await fetchUserId();
+  // Start preloading data
+  preloadCalendarData(userId);
   const month = new Date().toISOString().slice(0, 7); // 'YYYY-MM'
   const events = await getEventsByMonth(userId, month);
      
