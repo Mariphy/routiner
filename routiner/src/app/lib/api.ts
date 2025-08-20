@@ -1,18 +1,6 @@
 import { parseISO, isSameDay } from 'date-fns';
 import { getCurrentWeekRange } from '../utils/helpers';
-import type { Event, EventInput, Routine, RoutineInput } from '@/app/types.ts';
-
-interface Task {
-  id: string;
-  title: string;
-  day?: string;
-  date?: Date;
-  startTime?: string;
-  endTime?: string;
-  checked: boolean;
-}
-
-type TaskInput = Omit<Task, 'id'>;
+import type { Event, EventInput, Routine, RoutineInput, Task } from '@/app/types.ts';
 
 //helpers
 function isMongoDate(obj: unknown): obj is { $date: string } {
@@ -44,7 +32,8 @@ function normalizeTask(task: Task) {
 
 //user id
 export async function fetchUserId() {
-    const response = await fetch('/api/auth/session', {
+    console.log(process.env.NEXTAUTH_URL)
+    const response = await fetch(`${process.env.NEXTAUTH_URL}/api/auth/session`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     });
@@ -57,22 +46,86 @@ export async function fetchUserId() {
     return data.userId;
 }
 
-//tasks
-export async function addTask(userId: string, task: TaskInput) {
-    const response = await fetch(`/api/users/${userId}/tasks`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ task }),
-    });
+//fetching 
+//tasks:
+export async function getTasks(userId: string) {
+    const response = await fetch(`/api/users/${userId}/tasks`);
 
     if (!response.ok) {
-        throw new Error(`Failed to add task: ${response.status}`);
+        throw new Error(`Failed to fetch tasks: ${response.status}`);
     }
 
-    const responseData = await response.json();
-    const newTask = responseData.task; // Extract the task object
-    return newTask;
+    const data = await response.json();
+    return {
+        ...data,
+        tasks: (data.tasks || []).map(normalizeTask),
+    };
 }
+
+export async function getTasksByDate(userId: string, date: string) {
+    const response = await fetch(`/api/users/${userId}/tasks`);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch tasks: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const tasks = data.tasks || [];
+
+    return tasks.filter((task: Task) => {
+        const taskDate = parsePossibleDate(task.date);
+        return taskDate && isSameDay(taskDate, parseISO(date));
+    });
+}
+
+//fetching routines
+
+export async function getRoutines(userId: string) {
+    const response = await fetch(`/api/users/${userId}/routines`);
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch routines: ${response.status}`);
+    }
+
+    return response.json();
+}  
+
+//fetching events
+/*export async function getEvents(userId: string) {
+    const response = await fetch(`/api/users/${userId}/events`);
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch events: ${response.status}`);
+    }
+
+    return response.json();
+}*/
+
+export async function getEventsByDate(userId: string, date: string): Promise<Event[]> {
+  const response = await fetch(`/api/users/${userId}/events/search?date=${date}`);
+  if (!response.ok) throw new Error(`Failed to fetch events: ${response.status}`);
+  
+  const data = await response.json();
+  return data.events || [];
+}
+
+export async function getEventsByMonth(userId: string, month: string): Promise<Event[]> {
+  const response = await fetch(`/api/users/${userId}/events/search?month=${month}`);
+  if (!response.ok) throw new Error(`Failed to fetch events: ${response.status}`);
+  
+  const data = await response.json();
+  return data.events || [];
+}
+
+export async function getEventsForCurrentWeek(userId: string) {
+  const { start, end } = getCurrentWeekRange();
+  const response = await fetch(`/api/users/${userId}/events/search?start=${start}&end=${end}`);
+  if (!response.ok) throw new Error(`Failed to fetch events for week: ${response.status}`);
+  const data = await response.json();
+  return data.events || [];
+}
+
+//tasks
+
   
 export async function editTask(userId: string, task: Task) {
     const response = await fetch(`/api/users/${userId}/tasks`, {
@@ -102,35 +155,6 @@ export async function deleteTask(userId: string, taskId: string) {
     }
 
     return response.json();
-}
-  
-export async function getTasks(userId: string) {
-    const response = await fetch(`/api/users/${userId}/tasks`);
-
-    if (!response.ok) {
-        throw new Error(`Failed to fetch tasks: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return {
-        ...data,
-        tasks: (data.tasks || []).map(normalizeTask),
-    };
-}
-
-export async function getTasksByDate(userId: string, date: string) {
-    const response = await fetch(`/api/users/${userId}/tasks`);
-    if (!response.ok) {
-        throw new Error(`Failed to fetch tasks: ${response.status}`);
-    }
-
-    const data = await response.json();
-    const tasks = data.tasks || [];
-
-    return tasks.filter((task: Task) => {
-        const taskDate = parsePossibleDate(task.date);
-        return taskDate && isSameDay(taskDate, parseISO(date));
-    });
 }
 
 //routines
@@ -180,16 +204,6 @@ export async function deleteRoutine(userId: string, routineId: string) {
     return response.json();
 }
 
-export async function getRoutines(userId: string) {
-    const response = await fetch(`/api/users/${userId}/routines`);
-
-    if (!response.ok) {
-        throw new Error(`Failed to fetch routines: ${response.status}`);
-    }
-
-    return response.json();
-}  
-
 //events
 export async function addEvent(userId: string, event: EventInput) {
     const response = await fetch(`/api/users/${userId}/events`, {
@@ -233,36 +247,3 @@ export async function deleteEvent(userId: string, eventId: string) {
     return response.json();
 }   
 
-/*export async function getEvents(userId: string) {
-    const response = await fetch(`/api/users/${userId}/events`);
-
-    if (!response.ok) {
-        throw new Error(`Failed to fetch events: ${response.status}`);
-    }
-
-    return response.json();
-}*/
-
-export async function getEventsByDate(userId: string, date: string): Promise<Event[]> {
-  const response = await fetch(`/api/users/${userId}/events/search?date=${date}`);
-  if (!response.ok) throw new Error(`Failed to fetch events: ${response.status}`);
-  
-  const data = await response.json();
-  return data.events || [];
-}
-
-export async function getEventsByMonth(userId: string, month: string): Promise<Event[]> {
-  const response = await fetch(`/api/users/${userId}/events/search?month=${month}`);
-  if (!response.ok) throw new Error(`Failed to fetch events: ${response.status}`);
-  
-  const data = await response.json();
-  return data.events || [];
-}
-
-export async function getEventsForCurrentWeek(userId: string) {
-  const { start, end } = getCurrentWeekRange();
-  const response = await fetch(`/api/users/${userId}/events/search?start=${start}&end=${end}`);
-  if (!response.ok) throw new Error(`Failed to fetch events for week: ${response.status}`);
-  const data = await response.json();
-  return data.events || [];
-}
