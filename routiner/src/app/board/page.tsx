@@ -1,11 +1,7 @@
 import Board from '../components/Board';
 import AddButton from '../components/AddButton';
-import type { Task, Routine, TaskInput, RoutineInput, Event, EventInput } from '@/app/types.ts';
 import { 
   fetchUserId, getTasks, getRoutines, getEventsForCurrentWeek, 
-  addTask, editTask, deleteTask, 
-  addEvent,
-  addRoutine
 } from '../lib/api';
 import { preloadBoardData } from '../lib/preload';
 
@@ -42,9 +38,7 @@ export default async function BoardPage() {
           routines={routines}
           events={events}
         />
-        {userId && (
-          <AddButton />
-        )}
+        <AddButton />
       </div>
     </main>
   );
