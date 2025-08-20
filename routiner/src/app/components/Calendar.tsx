@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useMemo } from 'react';
 import { startOfMonth, endOfMonth, addDays, subMonths, addMonths, format, getDay, isSameDay } from 'date-fns';
 import Day from './Day';
