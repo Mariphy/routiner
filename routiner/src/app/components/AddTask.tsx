@@ -1,16 +1,5 @@
 import React, { useState } from 'react';
-
-interface Task {
-    title: string; 
-    id: string;
-    day?: string;
-    date?: Date;
-    startTime?: string;
-    endTime?: string;
-    checked: boolean;
-}
-
-type TaskInput = Omit<Task, 'id'>;
+import type { TaskInput } from '@/app/types.ts';
 
 interface AddTaskProps {
   onSave: (task: TaskInput) => void;
