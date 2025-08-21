@@ -2,7 +2,7 @@ import { Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import type { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from "next-auth/providers/credentials";
-import { getUserByEmail } from "@/app/lib/user";
+import { getUserByEmail } from "@/app/lib/actions/user";
 import { verifyPassword } from "@/app/lib/bcrypt";
 
 declare module "next-auth" {
