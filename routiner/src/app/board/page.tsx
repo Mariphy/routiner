@@ -1,14 +1,17 @@
+"use server";
 import Board from '../components/Board';
 import AddButton from '../components/AddButton';
-import { 
-  fetchUserId, getTasks, getRoutines, getEventsForCurrentWeek, 
-} from '../lib/api';
+import {  getRoutines } from '../lib/actions/routines';
+import { getEventsForCurrentWeek } from '../lib/actions/events';
+import { getTasks } from '@/app/lib/actions/tasks'
+import { fetchUserId } from '@/app/lib/actions/actions';
 import { preloadBoardData } from '../lib/preload';
+import type { Routine, Task, Event } from '@/app/types';
 
 export default async function BoardPage() {
-  let tasks = [];
-  let routines = [];
-  let events = [];
+  let tasks: Task[] = [];
+  let routines: Routine[] = [];
+  let events: Event[] = [];
   
   const userId = await fetchUserId();
   if (userId) {
@@ -17,9 +20,9 @@ export default async function BoardPage() {
     
     try {
       const [tasksData, routinesData, eventsData] = await Promise.all([
-        getTasks(userId),
-        getRoutines(userId),
-        getEventsForCurrentWeek(userId),
+        getTasks(),
+        getRoutines(),
+        getEventsForCurrentWeek(),
       ]);
       
       tasks = tasksData;
@@ -37,6 +40,7 @@ export default async function BoardPage() {
           tasks={tasks} 
           routines={routines}
           events={events}
+          userId={userId}
         />
         <AddButton />
       </div>
