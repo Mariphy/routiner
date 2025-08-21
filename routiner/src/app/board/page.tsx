@@ -16,7 +16,7 @@ export default async function BoardPage() {
   const userId = await fetchUserId();
   if (userId) {
     // Start preloading data
-    preloadBoardData(userId);
+    preloadBoardData();
     
     try {
       const [tasksData, routinesData, eventsData] = await Promise.all([

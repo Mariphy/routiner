@@ -8,7 +8,7 @@ import AddButton from '../components/AddButton';
 export default async function CalendarPage() {
   const userId = await fetchUserId();
   // Start preloading data
-  preloadCalendarData(userId);
+  preloadCalendarData();
   const month = new Date().toISOString().slice(0, 7); // 'YYYY-MM'
   const events = await getEventsByMonth(userId, month);
      
