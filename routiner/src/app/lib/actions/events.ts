@@ -12,8 +12,11 @@ export async function getEventsForCurrentWeek(): Promise<Event[]>{
             return [];
         }
 
-        const response = await fetch(`/api/users/${session.user.id}/events/search?start=${start}&end=${end}`);
-        if (!response.ok) throw new Error(`Failed to fetch events for week: ${response.status}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${session.user.id}/events/search?start=${start}&end=${end}`);
+        if (!response.ok) {
+            console.error(`Failed to fetch events for week: ${response.status}`);
+            return [];
+        }
         const data = await response.json();
         return data.events || [];
     } catch (error) {
@@ -29,9 +32,11 @@ export async function getEventsByMonth(month: string): Promise<Event[]> {
             console.error("User not authenticated");
             return [];
         }
-        const response = await fetch(`/api/users/${session.user.id}/events/search?month=${month}`);
-        if (!response.ok) throw new Error(`Failed to fetch events: ${response.status}`);
-
+        const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${session.user.id}/events/search?month=${month}`);
+        if (!response.ok) {
+            console.error(`Failed to fetch events for month: ${response.status}`);
+            return [];
+        }
         const data = await response.json();
         return data.events || [];
     } catch (error) {
