@@ -1,20 +1,20 @@
 import {
-  getTasks,
-  getRoutines,
   getEventsForCurrentWeek,
   getEventsByMonth,
-} from './api';
+} from '@/app/lib/actions/events';
+import { getTasks } from '@/app/lib/actions/tasks';
+import { getRoutines } from '@/app/lib/actions/routines';
 
-export function preloadBoardData(userId: string) {
+export function preloadBoardData() {
   // void evaluates the given expression and returns undefined
   void Promise.all([
-    getTasks(userId),
-    getRoutines(userId),
-    getEventsForCurrentWeek(userId),
+    getTasks(),
+    getRoutines(),
+    getEventsForCurrentWeek(),
   ]);
 }
 
-export function preloadCalendarData(userId: string) {
+export function preloadCalendarData() {
   const month = new Date().toISOString().slice(0, 7); // 'YYYY-MM'
-  void getEventsByMonth(userId, month);
+  void getEventsByMonth(month);
 }
