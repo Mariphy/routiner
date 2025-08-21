@@ -43,7 +43,7 @@ export default function AddRoutine({ onSave, onClose }: AddRoutineProps) {
     
     onSave({ title, daily, repeat, startTime, endTime });
     onClose();
-  };
+  }; 
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

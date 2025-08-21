@@ -1,29 +1,29 @@
+"use client";
+
 import React, { useState } from 'react';
 import { startOfWeek, addDays, format, isSameDay } from 'date-fns';
 import EditTask from './EditTask';
 import Task from './Task';  
 import Routine from './Routine';
-import type { Task as TaskType, TaskInput } from '@/app/types.ts';
-import type { Routine as RoutineType, RoutineInput } from '@/app/types.ts';
-import type { Event as EventType, EventInput } from '@/app/types.ts';
+import type { Task as TaskType } from '@/app/types.ts';
+import type { Routine as RoutineType } from '@/app/types.ts';
+import type { Event as EventType } from '@/app/types.ts';
+import { 
+  editTask, deleteTask
+} from '@/app/lib/api';
+import { addTask } from '@/app/lib/actions'
 
 interface BoardProps {
   tasks: TaskType[];
   routines: RoutineType[];
   events: EventType[];
-  onAddTask: (newTask: TaskInput) => void;
-  onEditTask: (task: TaskType) => void;
-  onDeleteTask: (task: TaskType) => void;
-  onAddRoutine: (newRoutine: RoutineInput) => void;
-  onAddEvent: (newEvent: EventInput) => void;
+  userId: string;
 }
 
-export default function Board({ 
-  tasks, 
-  routines,
-  events,
-  onAddTask, onEditTask, onDeleteTask
-}: BoardProps) {
+export default function Board({ tasks: initialTasks, routines: initialRoutines, events: initialEvents, userId: userId }: BoardProps) {
+  const [tasks, setTasks] = useState<TaskType[]>(initialTasks);
+  const [routines, setRoutines] = useState<RoutineType[]>(initialRoutines  ?? []);
+  const [events, setEvents] = useState<EventType[]>(initialEvents ?? []);
   const [newTask, setNewTask] = useState('');
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,7 +44,7 @@ export default function Board({
 
     const newTaskObject = { title: newTask.trim(), day: taskDay ?? undefined, checked: false };
   
-    onAddTask(newTaskObject);
+    addTask(newTaskObject as unknown as FormData); // toodoo avoid the cast
     setNewTask('');
     setSelectedDay(null);
   };
@@ -54,15 +54,31 @@ export default function Board({
     setIsModalOpen(true);
   };
 
-  const handleEditTask = (task: TaskType) => {
-    onEditTask(task);
+  const handleEditTask = async (task: TaskType) => {
+    try {
+      const editedTask = await editTask(userId!, task); 
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === editedTask.id ? editedTask : task
+        )
+      ); 
+    } catch (error) {
+      console.error('Error editing task:', error);
+    }
+
     setIsModalOpen(false);
     setTaskToEdit(null);
   };
 
-  const handleDeleteTask = (task: TaskType) => {
-    onDeleteTask(task);
+  const handleDeleteTask = async (taskToDelete: {id: string}) => {
+    try {
+      await deleteTask(userId!, taskToDelete.id); // Use the `deleteTask` function from `api.ts`
+      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskToDelete.id)); // Remove the deleted task from the local state
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    }
   };
+
   
   return (
     <div className="board-container w-full overflow-x-auto">
@@ -100,7 +116,7 @@ export default function Board({
               key={task.id} 
               task={task}
               onClick={() => openModalForTask(task)} 
-              onEditTask={onEditTask}
+              onEditTask={handleEditTask}
             />
           ))}
           
@@ -148,7 +164,7 @@ export default function Board({
                     key={taskIndex}
                     task={task}
                     onClick={() => openModalForTask(task)} 
-                    onEditTask={onEditTask}
+                    onEditTask={handleEditTask}
                   />
                 ))}
                 

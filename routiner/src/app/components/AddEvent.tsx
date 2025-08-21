@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import type { EventInput } from '@/app/types.ts'
 
 interface AddEventProps {
-  onSave: (event:EventInput) => void;  
+  onSave: (event:EventInput) => void;   
   onClose: () => void;
 }  
 

@@ -1,35 +1,13 @@
+'use client';
 import React, { useState } from 'react';
 import AddTask from './AddTask';
 import AddEvent from './AddEvent';
 import AddRoutine from './AddRoutine';
-import type { EventInput } from '@/app/types.ts'
-import type { TaskInput } from '@/app/types.ts';
-import type { RoutineInput } from '@/app/types.ts';
 
-interface AddButtonProps {
-    onTaskAdded: (task: TaskInput) => void;
-    onEventAdded: (event: EventInput) => void;
-    onRoutineAdded: (routine: RoutineInput) => void;
-}    
-
-export default function AddButton({ onTaskAdded, onEventAdded, onRoutineAdded }: AddButtonProps) {
+export default function AddButton() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentForm, setCurrentForm] = useState<'task' | 'event' | 'routine' | null>(null);
-
-    const handleSaveTask = (task: TaskInput) => {
-        onTaskAdded(task); // Pass the task data to the parent
-        setCurrentForm(null); // Close the modal
-    };
-
-    const handleSaveEvent = (event: EventInput) => {
-        onEventAdded(event); // Pass the event data to the parent
-        setCurrentForm(null); // Close the modal
-    };
-
-    const handleSaveRoutine = (routine: RoutineInput) => {
-        onRoutineAdded(routine); // Pass the routine data to the parent
-        setCurrentForm(null); // Close the modal
-    };
+    
 
     return (
         <div>
@@ -86,20 +64,26 @@ export default function AddButton({ onTaskAdded, onEventAdded, onRoutineAdded }:
             )}
             {currentForm === 'task' && (
                 <AddTask 
-                    onSave={handleSaveTask}
-                    onClose={() => setCurrentForm(null)}
+                    onClose={() => {
+                        setCurrentForm(null);
+                        setIsModalOpen(false);
+                    }} 
                 />
             )}
             {currentForm === 'event' && (
                 <AddEvent 
-                    onSave={handleSaveEvent}
-                    onClose={() => setCurrentForm(null)}
+                    onClose={() => {
+                        setCurrentForm(null);
+                        setIsModalOpen(false);
+                    }} 
                 />
             )}
             {currentForm === 'routine' && (
                 <AddRoutine 
-                    onSave={handleSaveRoutine}
-                    onClose={() => setCurrentForm(null)}
+                    onClose={() => {
+                        setCurrentForm(null);
+                        setIsModalOpen(false);
+                    }} 
                 />
             )}
         </div>
