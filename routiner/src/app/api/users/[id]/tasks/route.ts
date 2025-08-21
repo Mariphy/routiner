@@ -2,16 +2,7 @@ import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import { connectToDb } from "@/app/api/db";
 import { generateUniqueId } from "@/app/utils/helpers";
-
-interface Task {
-  id: string;
-  title: string;
-  day?: string;
-  date?: Date;
-  startTime?: string;
-  endTime?: string;
-  checked: boolean;
-}
+import type { Task } from '@/app/types';
 
 interface UserDocument {
   _id: string;

@@ -1,5 +1,5 @@
 import { hashPassword } from "@/app/lib/bcrypt";
- import { createUser, getUserByEmail } from "@/app/lib/user";
+ import { createUser, getUserByEmail } from "@/app/lib/actions/user";
  
  export async function POST(req: Request) {
    const { name, email, password } = await req.json();
