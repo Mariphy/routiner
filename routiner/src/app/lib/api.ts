@@ -1,6 +1,24 @@
+//fetches data through API
+import { parseISO, isSameDay } from 'date-fns';
+import { getCurrentWeekRange } from '../utils/helpers';
 import type { Event, EventInput, Routine, RoutineInput, Task } from '@/app/types.ts';
 
-//fetching routines
+//user id for client 
+export async function fetchUserIdClient() {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/session`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch user ID: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.userId;
+}
+
+//fetching events
 
 export async function getEventsByDate(userId: string, date: string): Promise<Event[]> {
     const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/events/search?date=${date}`);
@@ -18,10 +36,36 @@ export async function getEventsByMonth(userId: string, month: string): Promise<E
     return data.events || [];
 }
 
-
-
 //tasks
+//tasks:
+export async function getTasks(userId: string) {
+    const response = await fetch(`/api/users/${userId}/tasks`);
 
+    if (!response.ok) {
+        throw new Error(`Failed to fetch tasks: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return {
+        ...data,
+        tasks: (data.tasks || []).map(normalizeTask),
+    };
+}
+
+export async function getTasksByDate(userId: string, date: string) {
+    const response = await fetch(`/api/users/${userId}/tasks`);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch tasks: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const tasks = data.tasks || [];
+
+    return tasks.filter((task: Task) => {
+        const taskDate = parsePossibleDate(task.date);
+        return taskDate && isSameDay(taskDate, parseISO(date));
+    });
+}
 
 export async function editTask(userId: string, task: Task) {
     const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/tasks`, {
@@ -54,6 +98,7 @@ export async function deleteTask(userId: string, taskId: string) {
 }
 
 //routines
+//to-do: move to /actions/events
 export async function addRoutine(userId: string, routine: RoutineInput) {
     const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/routines`, {
         method: 'POST',
@@ -101,6 +146,7 @@ export async function deleteRoutine(userId: string, routineId: string) {
 }
 
 //events
+//to-do: move to /actions/events
 export async function addEvent(userId: string, event: EventInput) {
     const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/events`, {
         method: 'POST',
