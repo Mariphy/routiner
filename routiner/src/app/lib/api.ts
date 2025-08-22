@@ -1,11 +1,50 @@
-//fetches data through API
 import { parseISO, isSameDay } from 'date-fns';
 import { getCurrentWeekRange } from '../utils/helpers';
-import type { Event, EventInput, Routine, RoutineInput, Task } from '@/app/types.ts';
+import type { Event, EventInput, Routine, RoutineInput } from '@/app/types.ts';
 
-//user id for client 
-export async function fetchUserIdClient() {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/session`, {
+interface Task {
+  id: string;
+  title: string;
+  day?: string;
+  date?: Date;
+  startTime?: string;
+  endTime?: string;
+  checked: boolean;
+}
+
+type TaskInput = Omit<Task, 'id'>;
+
+//helpers
+function isMongoDate(obj: unknown): obj is { $date: string } {
+    return (
+        typeof obj === 'object' &&
+        obj !== null &&
+        '$date' in obj &&
+        typeof (obj as { $date: unknown }).$date === 'string'
+    );
+}
+
+function parsePossibleDate(date: unknown): Date | null {
+    if (typeof date === 'string') {
+        return new Date(date);
+    } else if (isMongoDate(date)) {
+        return new Date(date.$date);
+    } else if (date instanceof Date) {
+        return date;
+    }
+    return null;
+}
+
+function normalizeTask(task: Task) {
+    return {
+        ...task,
+        date: task.date ? parsePossibleDate(task.date) ?? undefined : undefined,
+    };
+}
+
+//user id
+export async function fetchUserId() {
+    const response = await fetch('/api/auth/session', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     });
@@ -18,26 +57,53 @@ export async function fetchUserIdClient() {
     return data.userId;
 }
 
-//fetching events
-
-export async function getEventsByDate(userId: string, date: string): Promise<Event[]> {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/events/search?date=${date}`);
-    if (!response.ok) throw new Error(`Failed to fetch events: ${response.status}`);
-
-    const data = await response.json();
-    return data.events || [];
-}
-
-export async function getEventsByMonth(userId: string, month: string): Promise<Event[]> {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/events/search?month=${month}`);
-    if (!response.ok) throw new Error(`Failed to fetch events: ${response.status}`);
-
-    const data = await response.json();
-    return data.events || [];
-}
-
 //tasks
-//tasks:
+export async function addTask(userId: string, task: TaskInput) {
+    const response = await fetch(`/api/users/${userId}/tasks`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ task }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to add task: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    const newTask = responseData.task; // Extract the task object
+    return newTask;
+}
+  
+export async function editTask(userId: string, task: Task) {
+    const response = await fetch(`/api/users/${userId}/tasks`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ task }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to edit task: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    const updatedTask = responseData.task; // Extract the updated task
+    return updatedTask;
+}
+  
+export async function deleteTask(userId: string, taskId: string) {
+    const response = await fetch(`/api/users/${userId}/tasks`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: taskId }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to delete task: ${response.status}`);
+    }
+
+    return response.json();
+}
+  
 export async function getTasks(userId: string) {
     const response = await fetch(`/api/users/${userId}/tasks`);
 
@@ -67,40 +133,9 @@ export async function getTasksByDate(userId: string, date: string) {
     });
 }
 
-export async function editTask(userId: string, task: Task) {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/tasks`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ task }),
-    });
-
-    if (!response.ok) {
-        throw new Error(`Failed to edit task: ${response.status}`);
-    }
-
-    const responseData = await response.json();
-    const updatedTask = responseData.task; // Extract the updated task
-    return updatedTask;
-}
-
-export async function deleteTask(userId: string, taskId: string) {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/tasks`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: taskId }),
-    });
-
-    if (!response.ok) {
-        throw new Error(`Failed to delete task: ${response.status}`);
-    }
-
-    return response.json();
-}
-
 //routines
-//to-do: move to /actions/events
 export async function addRoutine(userId: string, routine: RoutineInput) {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/routines`, {
+    const response = await fetch(`/api/users/${userId}/routines`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ routine }),
@@ -116,7 +151,7 @@ export async function addRoutine(userId: string, routine: RoutineInput) {
 }
 
 export async function editRoutine(userId: string, routine: Routine) {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/routines`, {
+    const response = await fetch(`/api/users/${userId}/routines`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ routine }),
@@ -132,7 +167,7 @@ export async function editRoutine(userId: string, routine: Routine) {
 }
 
 export async function deleteRoutine(userId: string, routineId: string) {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/routines`, {
+    const response = await fetch(`/api/users/${userId}/routines`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: routineId }),
@@ -145,10 +180,19 @@ export async function deleteRoutine(userId: string, routineId: string) {
     return response.json();
 }
 
+export async function getRoutines(userId: string) {
+    const response = await fetch(`/api/users/${userId}/routines`);
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch routines: ${response.status}`);
+    }
+
+    return response.json();
+}  
+
 //events
-//to-do: move to /actions/events
 export async function addEvent(userId: string, event: EventInput) {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/events`, {
+    const response = await fetch(`/api/users/${userId}/events`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ event }),
@@ -159,10 +203,10 @@ export async function addEvent(userId: string, event: EventInput) {
     }
 
     return response.json();
-}
+}       
 
 export async function editEvent(userId: string, event: Event) {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/events`, {
+    const response = await fetch(`/api/users/${userId}/events`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ event }),
@@ -173,10 +217,10 @@ export async function editEvent(userId: string, event: Event) {
     }
 
     return response.json();
-}
+}   
 
 export async function deleteEvent(userId: string, eventId: string) {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/events`, {
+    const response = await fetch(`/api/users/${userId}/events`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: eventId }),
@@ -187,5 +231,38 @@ export async function deleteEvent(userId: string, eventId: string) {
     }
 
     return response.json();
+}   
+
+/*export async function getEvents(userId: string) {
+    const response = await fetch(`/api/users/${userId}/events`);
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch events: ${response.status}`);
+    }
+
+    return response.json();
+}*/
+
+export async function getEventsByDate(userId: string, date: string): Promise<Event[]> {
+  const response = await fetch(`/api/users/${userId}/events/search?date=${date}`);
+  if (!response.ok) throw new Error(`Failed to fetch events: ${response.status}`);
+  
+  const data = await response.json();
+  return data.events || [];
 }
 
+export async function getEventsByMonth(userId: string, month: string): Promise<Event[]> {
+  const response = await fetch(`/api/users/${userId}/events/search?month=${month}`);
+  if (!response.ok) throw new Error(`Failed to fetch events: ${response.status}`);
+  
+  const data = await response.json();
+  return data.events || [];
+}
+
+export async function getEventsForCurrentWeek(userId: string) {
+  const { start, end } = getCurrentWeekRange();
+  const response = await fetch(`/api/users/${userId}/events/search?start=${start}&end=${end}`);
+  if (!response.ok) throw new Error(`Failed to fetch events for week: ${response.status}`);
+  const data = await response.json();
+  return data.events || [];
+}
