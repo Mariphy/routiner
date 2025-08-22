@@ -1,12 +1,12 @@
 "use server"
 import Calendar from "../components/Calendar";
 import { getEventsByMonth } from '@/app/lib/api';
-import { fetchUserId } from '@/app/lib/actions/actions';
+import { fetchUserIdServer } from '@/app/lib/actions/user';
 import { preloadCalendarData } from '../lib/preload';
 import AddButton from '../components/AddButton';
 
 export default async function CalendarPage() {
-  const userId = await fetchUserId();
+  const userId = await fetchUserIdServer();
   // Start preloading data
   preloadCalendarData();
   const month = new Date().toISOString().slice(0, 7); // 'YYYY-MM'

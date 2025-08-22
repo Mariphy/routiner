@@ -1,10 +1,8 @@
 "use server";
 import Board from '../components/Board';
 import AddButton from '../components/AddButton';
-import {  getRoutines } from '../lib/actions/routines';
-import { getEventsForCurrentWeek } from '../lib/actions/events';
-import { getTasks } from '@/app/lib/actions/tasks'
-import { fetchUserId } from '@/app/lib/actions/actions';
+import {  getEventsForCurrentWeek, getRoutines, getTasks } from '../lib/api';
+import { fetchUserIdServer } from '@/app/lib/actions/user';
 import { preloadBoardData } from '../lib/preload';
 import type { Routine, Task, Event } from '@/app/types';
 
@@ -12,17 +10,17 @@ export default async function BoardPage() {
   let tasks: Task[] = [];
   let routines: Routine[] = [];
   let events: Event[] = [];
-  
-  const userId = await fetchUserId();
+
+  const userId = await fetchUserIdServer();
   if (userId) {
     // Start preloading data
     preloadBoardData();
     
     try {
       const [tasksData, routinesData, eventsData] = await Promise.all([
-        getTasks(),
-        getRoutines(),
-        getEventsForCurrentWeek(),
+        getTasks(userId),
+        getRoutines(userId),
+        getEventsForCurrentWeek(userId),
       ]);
       
       tasks = tasksData;
