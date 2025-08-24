@@ -50,7 +50,7 @@ export async function fetchUserIdClient() {
 //fetching functions:
 //tasks:
 export async function getTasks(userId: string) {
-    const response = await fetch(`/api/users/${userId}/tasks`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/tasks`);
 
     if (!response.ok) {
         throw new Error(`Failed to fetch tasks: ${response.status}`);
@@ -64,7 +64,7 @@ export async function getTasks(userId: string) {
 }
 
 export async function getTasksByDate(userId: string, date: string) {
-    const response = await fetch(`/api/users/${userId}/tasks`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/tasks`);
     if (!response.ok) {
         throw new Error(`Failed to fetch tasks: ${response.status}`);
     }
@@ -80,7 +80,7 @@ export async function getTasksByDate(userId: string, date: string) {
 
 //routines fetching functions:
 export async function getRoutines(userId: string) {
-    const response = await fetch(`/api/users/${userId}/routines`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/routines`);
 
     if (!response.ok) {
         throw new Error(`Failed to fetch routines: ${response.status}`);
@@ -91,7 +91,7 @@ export async function getRoutines(userId: string) {
 
 //events fetching functions:
 export async function getEventsByDate(userId: string, date: string): Promise<Event[]> {
-  const response = await fetch(`/api/users/${userId}/events/search?date=${date}`);
+  const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/events/search?date=${date}`);
   if (!response.ok) throw new Error(`Failed to fetch events: ${response.status}`);
   
   const data = await response.json();
@@ -99,7 +99,7 @@ export async function getEventsByDate(userId: string, date: string): Promise<Eve
 }
 
 export async function getEventsByMonth(userId: string, month: string): Promise<Event[]> {
-  const response = await fetch(`/api/users/${userId}/events/search?month=${month}`);
+  const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/events/search?month=${month}`);
   if (!response.ok) throw new Error(`Failed to fetch events: ${response.status}`);
   
   const data = await response.json();
@@ -108,7 +108,7 @@ export async function getEventsByMonth(userId: string, month: string): Promise<E
 
 export async function getEventsForCurrentWeek(userId: string) {
   const { start, end } = getCurrentWeekRange();
-  const response = await fetch(`/api/users/${userId}/events/search?start=${start}&end=${end}`);
+  const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/events/search?start=${start}&end=${end}`);
   if (!response.ok) throw new Error(`Failed to fetch events for week: ${response.status}`);
   const data = await response.json();
   return data.events || [];

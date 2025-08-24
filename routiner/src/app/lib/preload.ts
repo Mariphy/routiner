@@ -2,14 +2,16 @@ import {
   getEventsForCurrentWeek,
   getEventsByMonth,
 } from '@/app/lib/actions/events';
-import { getTasks } from '@/app/lib/actions/tasks';
-import { getRoutines } from '@/app/lib/actions/routines';
+import { getTasks } from '@/app/lib/api';
+import { getRoutines } from '@/app/lib/api';
+import { fetchUserIdServer } from '@/app/lib/actions/user';
 
-export function preloadBoardData() {
+export async function preloadBoardData() {
+  const userId = await fetchUserIdServer();
   // void evaluates the given expression and returns undefined
   void Promise.all([
-    getTasks(),
-    getRoutines(),
+    getTasks(userId),
+    getRoutines(userId),
     getEventsForCurrentWeek(),
   ]);
 }
