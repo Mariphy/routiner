@@ -40,7 +40,8 @@ export async function fetchUserIdClient() {
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to fetch user ID: ${response.status}`);
+    console.error(`Failed to fetch user ID: ${response.status}`);
+    return '';
     }
 
     const data = await response.json();
@@ -53,7 +54,8 @@ export async function getTasks(userId: string) {
     const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/tasks`);
 
     if (!response.ok) {
-        throw new Error(`Failed to fetch tasks: ${response.status}`);
+    console.error(`Failed to fetch tasks: ${response.status}`);
+    return { tasks: [] };
     }
 
     const data = await response.json();
@@ -66,7 +68,8 @@ export async function getTasks(userId: string) {
 export async function getTasksByDate(userId: string, date: string) {
     const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/tasks`);
     if (!response.ok) {
-        throw new Error(`Failed to fetch tasks: ${response.status}`);
+    console.error(`Failed to fetch tasks: ${response.status}`);
+    return [];
     }
 
     const data = await response.json();
@@ -83,7 +86,8 @@ export async function getRoutines(userId: string) {
     const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/routines`);
 
     if (!response.ok) {
-        throw new Error(`Failed to fetch routines: ${response.status}`);
+    console.error(`Failed to fetch routines: ${response.status}`);
+    return [];
     }
 
     return response.json();
@@ -92,7 +96,10 @@ export async function getRoutines(userId: string) {
 //events fetching functions:
 export async function getEventsByDate(userId: string, date: string): Promise<Event[]> {
   const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/events/search?date=${date}`);
-  if (!response.ok) throw new Error(`Failed to fetch events: ${response.status}`);
+    if (!response.ok) {
+        console.error(`Failed to fetch events: ${response.status}`);
+        return [];
+    }
   
   const data = await response.json();
   return data.events || [];
@@ -100,7 +107,10 @@ export async function getEventsByDate(userId: string, date: string): Promise<Eve
 
 export async function getEventsByMonth(userId: string, month: string): Promise<Event[]> {
   const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/events/search?month=${month}`);
-  if (!response.ok) throw new Error(`Failed to fetch events: ${response.status}`);
+    if (!response.ok) {
+        console.error(`Failed to fetch events: ${response.status}`);
+        return [];
+    }
   
   const data = await response.json();
   return data.events || [];
@@ -109,7 +119,10 @@ export async function getEventsByMonth(userId: string, month: string): Promise<E
 export async function getEventsForCurrentWeek(userId: string) {
   const { start, end } = getCurrentWeekRange();
   const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/events/search?start=${start}&end=${end}`);
-  if (!response.ok) throw new Error(`Failed to fetch events for week: ${response.status}`);
+    if (!response.ok) {
+        console.error(`Failed to fetch events for week: ${response.status}`);
+        return [];
+    }
   const data = await response.json();
   return data.events || [];
 }
@@ -124,7 +137,8 @@ export async function addTask(userId: string, task: TaskInput) {
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to add task: ${response.status}`);
+    console.error(`Failed to add task: ${response.status}`);
+    return null;
     }
 
     const responseData = await response.json();
@@ -140,7 +154,8 @@ export async function editTask(userId: string, task: Task) {
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to edit task: ${response.status}`);
+    console.error(`Failed to edit task: ${response.status}`);
+    return task;
     }
 
     const responseData = await response.json();
@@ -156,7 +171,8 @@ export async function deleteTask(userId: string, taskId: string) {
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to delete task: ${response.status}`);
+    console.error(`Failed to delete task: ${response.status}`);
+    return null;
     }
 
     return response.json();
@@ -172,7 +188,8 @@ export async function addRoutine(userId: string, routine: RoutineInput) {
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to add routine: ${response.status}`);
+    console.error(`Failed to add routine: ${response.status}`);
+    return null;
     }
 
     const responseData = await response.json();
@@ -188,7 +205,8 @@ export async function editRoutine(userId: string, routine: Routine) {
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to edit routine: ${response.status}`);
+    console.error(`Failed to edit routine: ${response.status}`);
+    return routine;
     }
 
     const responseData = await response.json();
@@ -204,7 +222,8 @@ export async function deleteRoutine(userId: string, routineId: string) {
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to delete routine: ${response.status}`);
+    console.error(`Failed to delete routine: ${response.status}`);
+    return null;
     }
 
     return response.json();
@@ -220,7 +239,8 @@ export async function addEvent(userId: string, event: EventInput) {
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to add event: ${response.status}`);
+    console.error(`Failed to add event: ${response.status}`);
+    return null;
     }
 
     return response.json();
@@ -234,7 +254,8 @@ export async function editEvent(userId: string, event: Event) {
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to edit event: ${response.status}`);
+    console.error(`Failed to edit event: ${response.status}`);
+    return event;
     }
 
     return response.json();
@@ -248,7 +269,8 @@ export async function deleteEvent(userId: string, eventId: string) {
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to delete event: ${response.status}`);
+    console.error(`Failed to delete event: ${response.status}`);
+    return null;
     }
 
     return response.json();
