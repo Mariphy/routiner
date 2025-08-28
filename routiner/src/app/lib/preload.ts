@@ -1,7 +1,7 @@
 import {
   getEventsForCurrentWeek,
   getEventsByMonth,
-} from '@/app/lib/actions/events';
+} from '@/app/lib/api';
 import { getTasks } from '@/app/lib/api';
 import { getRoutines } from '@/app/lib/api';
 import { fetchUserIdServer } from '@/app/lib/actions/user';
@@ -12,11 +12,12 @@ export async function preloadBoardData() {
   void Promise.all([
     getTasks(userId),
     getRoutines(userId),
-    getEventsForCurrentWeek(),
+    getEventsForCurrentWeek(userId),
   ]);
 }
 
-export function preloadCalendarData() {
+export async function preloadCalendarData() {
+  const userId = await fetchUserIdServer();
   const month = new Date().toISOString().slice(0, 7); // 'YYYY-MM'
-  void getEventsByMonth(month);
+  void getEventsByMonth(userId, month);
 }
