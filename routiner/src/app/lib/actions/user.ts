@@ -1,6 +1,5 @@
-import { options } from "@/app/api/auth/[...nextauth]/options";
+import { auth } from "@/auth";
 import { connectToDb } from "@/app/api/db";
-import { getServerSession } from "next-auth";
 
 export async function getUserByEmail(email: string) {
   try {
@@ -25,7 +24,7 @@ export async function createUser({ name, email, password }: { name: string; emai
 }
 
 export async function fetchUserIdServer() {
-    const session = await getServerSession(options);
+    const session = await auth();
     if (!session?.user?.email) {
         throw new Error("Unauthorized"); // or return null
     }

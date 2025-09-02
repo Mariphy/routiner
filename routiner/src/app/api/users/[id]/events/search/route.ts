@@ -1,11 +1,10 @@
-import { getServerSession } from "next-auth";
-import { options } from "@/app/api/auth/[...nextauth]/options";
+import { auth } from "@/auth";
 import { connectToDb } from "@/app/api/db";
 import { parseISO, startOfDay, endOfDay } from "date-fns";
 
 export async function GET(req: Request) {
   try {
-    const session = await getServerSession(options);
+    const session = await auth();
     if (!session?.user?.email) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,

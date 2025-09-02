@@ -1,11 +1,10 @@
-import { getServerSession } from "next-auth";
-import { options } from '@/app/api/auth/[...nextauth]/options';
+import { auth } from "@/auth";
 import { connectToDb } from '@/app/api/db';
 import { Routine } from '@/app/types';
 
 export async function getRoutines(): Promise<Routine[]> {
     try {
-        const session = await getServerSession(options);
+        const session = await auth();
         if (!session?.user?.email) {
             console.error("User not authenticated");
             return [];

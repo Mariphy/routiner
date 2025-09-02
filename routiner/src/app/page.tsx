@@ -1,10 +1,9 @@
-import { options } from "@/app/api/auth/[...nextauth]/options";
-import { getServerSession } from "next-auth";
+import { auth } from "@/auth";
 import GuestHomePage from "./components/GuestHomePage";
 import UserHomePage from "./components/UserHomePage";
 
 export default async function Home() {
-  const session = await getServerSession(options);
+  const session = await auth();
 
   return (
     <main className="flex-grow flex flex-col sm:flex-row items-center justify-center pt-12">

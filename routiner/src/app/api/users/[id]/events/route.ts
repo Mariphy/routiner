@@ -1,5 +1,4 @@
-import { getServerSession } from "next-auth";
-import { options } from "@/app/api/auth/[...nextauth]/options";
+import { auth } from "@/auth";
 import { connectToDb } from "@/app/api/db";
 import { generateUniqueId } from "@/app/utils/helpers";
 import type { Event } from "@/app/types.ts"
@@ -16,7 +15,7 @@ tasks: string[];
 
 export async function GET() {
     try {
-        const session = await getServerSession(options);
+        const session = await auth();
         if (!session?.user?.email) {
           return new Response(JSON.stringify({ error: "Unauthorized" }), {
             status: 401,
@@ -51,7 +50,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
     try {
-        const session = await getServerSession(options);
+        const session = await auth();
         if (!session?.user?.email) {
           return new Response(JSON.stringify({ error: "Unauthorized" }), {
             status: 401,
@@ -104,7 +103,7 @@ export async function POST(req: Request) {
 
 export async function PUT(req: Request) {
     try {
-        const session = await getServerSession(options);
+        const session = await auth();
         if (!session?.user?.email) {
           return new Response(JSON.stringify({ error: "Unauthorized" }), {
             status: 401,
@@ -150,7 +149,7 @@ export async function PUT(req: Request) {
 };
 export async function DELETE(req: Request) {
     try {
-        const session = await getServerSession(options);
+        const session = await auth();
         if (!session?.user?.email) {
           return new Response(JSON.stringify({ error: "Unauthorized" }), {
             status: 401,

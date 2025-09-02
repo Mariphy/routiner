@@ -4,12 +4,11 @@ import { revalidatePath } from 'next/cache';
 import { connectToDb } from '../../api/db';
 import type { Task, UserDocument } from '@/app/types';
 import { generateUniqueId } from '@/app/utils/helpers';
-import { getServerSession } from 'next-auth';
-import { options } from '@/app/api/auth/[...nextauth]/options';
+import { auth } from "@/auth";
 
 export async function addTask(formData: FormData) {
   try {
-    const session = await getServerSession(options);
+    const session = await auth();
     if (!session?.user?.email) {
       return { success: false, error: 'Unauthenticated' };
     }
