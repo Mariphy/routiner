@@ -1,3 +1,2 @@
-export { default } from "next-auth/middleware"
-
-export const config = { matcher: ["/routines", "/board", "/calendar"] }
+export { auth as middleware } from "@/auth";
+export const config = { matcher: ["/board", "/calendar"] }
