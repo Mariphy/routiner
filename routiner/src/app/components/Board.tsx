@@ -11,7 +11,7 @@ import type { Event as EventType } from '@/app/types.ts';
 import { 
   editTask, deleteTask
 } from '@/app/lib/api';
-import { addTask } from '@/app/lib/actions'
+import { addTask } from '@/app/lib/actions/tasks'
 
 interface BoardProps {
   tasks: TaskType[];
@@ -20,10 +20,8 @@ interface BoardProps {
   userId: string;
 }
 
-export default function Board({ tasks: initialTasks, routines: initialRoutines, events: initialEvents, userId: userId }: BoardProps) {
+export default function Board({ tasks: initialTasks, routines: routines, events: events, userId: userId }: BoardProps) {
   const [tasks, setTasks] = useState<TaskType[]>(initialTasks);
-  const [routines, setRoutines] = useState<RoutineType[]>(initialRoutines  ?? []);
-  const [events, setEvents] = useState<EventType[]>(initialEvents ?? []);
   const [newTask, setNewTask] = useState('');
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,6 +30,8 @@ export default function Board({ tasks: initialTasks, routines: initialRoutines, 
 
   const startDate = startOfWeek(new Date(), { weekStartsOn: 0 });
   const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
+
+  console.log('Board component is now in play')
 
   // Filter tasks based on completion status
   const filteredTasks = showCompleted 
