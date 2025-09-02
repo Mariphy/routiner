@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { getDay } from 'date-fns';
 import { Calendar, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getEventsByDate } from '../lib/api';
-import { getTasksByDate } from '../lib/actions/tasks';
+import { getTasksByDate } from '../lib/api';
 import type { Event, Task, Routine } from '@/app/types.ts';
 
 type PlannerItem = {
