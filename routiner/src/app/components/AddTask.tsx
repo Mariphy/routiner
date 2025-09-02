@@ -1,17 +1,17 @@
 'use client'
 import React, { useTransition } from 'react';
+import { addTask } from "@/app/lib/actions/tasks";
 
 interface AddTaskProps {
   onClose: () => void;
-  addTaskAction: (formData: FormData) => Promise<{ success: boolean; error?: string }>;
 }
 
-export default function AddTask({ onClose, addTaskAction }: AddTaskProps) {
+export default function AddTask({ onClose }: AddTaskProps) {
   const [isPending, startTransition] = useTransition();
 
   const handleAction = async (formData: FormData) => {
     startTransition(async () => {
-      const res = await addTaskAction(formData);
+      const res = await addTask(formData);
       if (res.success) {
         onClose();
       } else {
