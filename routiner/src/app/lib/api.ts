@@ -1,7 +1,7 @@
 //fetches data through API requests
 import { parseISO, isSameDay } from 'date-fns';
 import { getCurrentWeekRange } from '../utils/helpers';
-import type { Task, TaskInput, Event, EventInput, Routine, RoutineInput } from '@/app/types.ts';
+import type { Task, Event, EventInput, Routine, RoutineInput } from '@/app/types.ts';
 
 //helpers
 function isMongoDate(obj: unknown): obj is { $date: string } {
@@ -51,7 +51,12 @@ export async function fetchUserIdClient() {
 //fetching functions:
 //tasks:
 export async function getTasks(userId: string) {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/tasks`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/tasks`,
+        {
+        credentials: "include", // browser will send cookies automatically
+        }
+    );
+    console.log(response)
 
     if (!response.ok) {
     console.error(`Failed to fetch tasks: ${response.status}`);
@@ -129,23 +134,7 @@ export async function getEventsForCurrentWeek(userId: string) {
 
 //tasks mutations
 //to-do: move to /actions/tasks
-export async function addTask(userId: string, task: TaskInput) {
-    const response = await fetch(`/api/users/${userId}/tasks`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ task }),
-    });
-
-    if (!response.ok) {
-    console.error(`Failed to add task: ${response.status}`);
-    return null;
-    }
-
-    const responseData = await response.json();
-    const newTask = responseData.task; // Extract the task object
-    return newTask;
-}
-  
+//addTask - moved
 export async function editTask(userId: string, task: Task) {
     const response = await fetch(`/api/users/${userId}/tasks`, {
         method: 'PUT',
