@@ -4,7 +4,7 @@ import {
 } from '@/app/lib/api';
 import { getTasks } from '@/app/lib/api';
 import { getRoutines } from '@/app/lib/api';
-import { fetchUserIdServer } from '@/app/lib/actions/user';
+import { fetchUserIdServer } from '@/app/lib/actions/userId';
 
 export async function preloadBoardData() {
   const userId = await fetchUserIdServer();

@@ -1,7 +1,7 @@
 "use server"
 import Calendar from "../components/Calendar";
 import { getEventsByMonth } from '@/app/lib/api';
-import { fetchUserIdServer } from '@/app/lib/actions/user';
+import { fetchUserIdServer } from '@/app/lib/actions/userId';
 import { preloadCalendarData } from '../lib/preload';
 import AddButton from '../components/AddButton';
 

@@ -2,7 +2,7 @@
 import Board from '../components/Board';
 import AddButton from '../components/AddButton';
 import {  getEventsForCurrentWeek, getRoutines, getTasks } from '../lib/api';
-import { fetchUserIdServer } from '@/app/lib/actions/user';
+import { fetchUserIdServer } from '@/app/lib/actions/userId';
 import { preloadBoardData } from '../lib/preload';
 import type { Routine, Task, Event } from '@/app/types';
 
