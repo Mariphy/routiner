@@ -50,10 +50,12 @@ export async function fetchUserIdClient() {
 
 //fetching functions:
 //tasks:
-export async function getTasks(userId: string) {
+export async function getTasks(userId: string, reqHeaders) {
     const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/tasks`,
         {
-        credentials: "include", // browser will send cookies automatically
+            credentials: "include", // browser will send cookies automatically
+            headers: { "cookie": reqHeaders.cookies.getAll().map((c: Record<string, string>) => `${c.name}=${c.value}`).join('; ') },
+
         }
     );
     console.log(response)
@@ -87,8 +89,14 @@ export async function getTasksByDate(userId: string, date: string) {
 }
 
 //routines fetching functions:
-export async function getRoutines(userId: string) {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/routines`);
+export async function getRoutines(userId: string, reqHeaders) {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/routines`,
+        {
+            credentials: "include", // browser will send cookies automatically
+            headers: { "cookie": reqHeaders.cookies.getAll().map((c: Record<string, string>) => `${c.name}=${c.value}`).join('; ') },
+
+        }
+    );
 
     if (!response.ok) {
     console.error(`Failed to fetch routines: ${response.status}`);
@@ -110,8 +118,11 @@ export async function getEventsByDate(userId: string, date: string): Promise<Eve
   return data.events || [];
 }
 
-export async function getEventsByMonth(userId: string, month: string): Promise<Event[]> {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/events/search?month=${month}`);
+export async function getEventsByMonth(userId: string, month: string, reqHeaders): Promise<Event[]> {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/events/search?month=${month}`, {
+    credentials: "include",
+    headers: { "cookie": reqHeaders.cookies.getAll().map((c: Record<string, string>) => `${c.name}=${c.value}`).join('; ') },
+  });
     if (!response.ok) {
         console.error(`Failed to fetch events: ${response.status}`);
         return [];
@@ -121,9 +132,14 @@ export async function getEventsByMonth(userId: string, month: string): Promise<E
   return data.events || [];
 }
 
-export async function getEventsForCurrentWeek(userId: string) {
+export async function getEventsForCurrentWeek(userId: string, reqHeaders) {
   const { start, end } = getCurrentWeekRange();
-  const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/events/search?start=${start}&end=${end}`);
+  const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/events/search?start=${start}&end=${end}`,
+        {
+            credentials: "include", // browser will send cookies automatically
+            headers: { "cookie": reqHeaders.cookies.getAll().map((c: Record<string, string>) => `${c.name}=${c.value}`).join('; ') },
+        }
+    );
     if (!response.ok) {
         console.error(`Failed to fetch events for week: ${response.status}`);
         return [];
