@@ -9,7 +9,7 @@ interface AddTaskProps {
 export default function AddTask({ onClose }: AddTaskProps) {
   const [isPending, startTransition] = useTransition();
 
-  const handleAction = async (formData: FormData) => {
+  const addTaskAction = async (formData: FormData) => {
     startTransition(async () => {
       const res = await addTask(formData);
       if (res.success) {
@@ -24,7 +24,7 @@ export default function AddTask({ onClose }: AddTaskProps) {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
         <h2 className="text-lg font-bold mb-4">Add Task</h2>
-        <form action={handleAction} className="space-y-4">
+        <form action={addTaskAction} className="space-y-4">
           <div>
             <label className="block text-sm font-medium">Title</label>
             <input name="title" type="text" className="w-full border p-2 rounded" required disabled={isPending} />
