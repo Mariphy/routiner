@@ -14,14 +14,14 @@ import {
 import { addTask } from '@/app/lib/actions/tasks'
 
 interface BoardProps {
+  userId: string;
   tasks: TaskType[];
   routines: RoutineType[];
   events: EventType[];
-  userId: string;
 }
 
-export default function Board({ tasks: initialTasks, routines: routines, events: events, userId: userId }: BoardProps) {
-  const [tasks, setTasks] = useState<TaskType[]>(initialTasks);
+export default function Board({ userId: userId, tasks: initialTasks, routines: routines, events: events }: BoardProps) {
+  const [tasks, setTasks] = useState<TaskType[]>(initialTasks ?? []);
   const [newTask, setNewTask] = useState('');
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,12 +31,11 @@ export default function Board({ tasks: initialTasks, routines: routines, events:
   const startDate = startOfWeek(new Date(), { weekStartsOn: 0 });
   const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
 
-  console.log('Board component is now in play')
 
   // Filter tasks based on completion status
   const filteredTasks = showCompleted 
-    ? tasks.filter(task => task.checked) // Show only completed tasks
-    : tasks.filter(task => !task.checked); // Show only uncompleted tasks
+    ? (tasks || []).filter(task => task.checked) // Show only completed tasks
+    : (tasks || []).filter(task => !task.checked); // Show only uncompleted tasks
 
   const handleQuickAddTask = async (day?: string) => {
     const taskDay = day ?? selectedDay;
