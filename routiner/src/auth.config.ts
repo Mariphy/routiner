@@ -7,9 +7,15 @@ import { MongoDBAdapter } from "@auth/mongodb-adapter"
 import client from "@/app/api/mongodbClient"
 
 export default {
-    adapter: MongoDBAdapter(client),
+    adapter: MongoDBAdapter(client, {
+        databaseName: "Routiner",
+    }),
     providers: [
-        GitHub,
+        GitHub({
+            clientId: process.env.AUTH_GITHUB_ID,
+            clientSecret: process.env.AUTH_GITHUB_SECRET,
+            authorization: { params: { scope: "read:user user:email" } },
+        }),
         Credentials({
             name: "Credentials",
             credentials: {
@@ -35,4 +41,19 @@ export default {
     session: {
         strategy: "jwt",
     },
+    callbacks: {
+        async signIn({ user, account, profile }) {
+            console.log("SignIn callback:", { user, account, profile });
+            return true;
+        },
+        async session({ session, token }) {
+            console.log("Session callback:", { session, token });
+            return session;
+        },
+        async jwt({ token, user, account }) {
+            console.log("JWT callback:", { token, user, account });
+            return token;
+        },
+    },
+    debug: true,
 } satisfies NextAuthConfig
