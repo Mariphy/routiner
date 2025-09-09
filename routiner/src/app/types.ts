@@ -41,7 +41,9 @@ export interface UserDocument {
   name: string;
   email: string;
   password: string;
-  routines: string[];
-  events: string[];
+  routines: Routine[];
+  events: Event[];
   tasks: Task[];
+  image?: string;
+  emailVerified?: boolean;
 }
