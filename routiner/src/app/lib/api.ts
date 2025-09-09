@@ -79,8 +79,9 @@ export async function getTasks(userId: string, reqHeaders: RequestHeaders) {
     };
 }
 
+//to-do: add cookies
 export async function getTasksByDate(userId: string, date: string) {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/tasks`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/tasks`,);
     if (!response.ok) {
     console.error(`Failed to fetch tasks: ${response.status}`);
     return [];
@@ -114,6 +115,7 @@ export async function getRoutines(userId: string, reqHeaders: RequestHeaders) {
 }  
 
 //events fetching functions:
+//to-do: add cookies
 export async function getEventsByDate(userId: string, date: string): Promise<Event[]> {
   const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/events/search?date=${date}`);
     if (!response.ok) {
@@ -242,21 +244,8 @@ export async function deleteRoutine(userId: string, routineId: string) {
 }
 
 //events mutations
-//to-do: move to /actions/routines
-export async function addEvent(userId: string, event: EventInput) {
-    const response = await fetch(`/api/users/${userId}/events`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ event }),
-    });
-
-    if (!response.ok) {
-    console.error(`Failed to add event: ${response.status}`);
-    return null;
-    }
-
-    return response.json();
-}       
+//to-do: move to /actions/events
+//addEvent moved to server actions     
 
 export async function editEvent(userId: string, event: Event) {
     const response = await fetch(`/api/users/${userId}/events`, {
