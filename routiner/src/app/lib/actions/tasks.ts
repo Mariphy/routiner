@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache';
-import { connectToDb } from '../../api/db';
+import { connectToDb } from '@/app/api/db';
 import type { Task, UserDocument } from '@/app/types';
 import { generateUniqueId } from '@/app/utils/helpers';
 import { auth } from "@/auth";
@@ -45,6 +45,7 @@ export async function addTask(formData: FormData) {
     }
 
     revalidatePath('/board');
+    revalidatePath('/calendar');
     return { success: true, task };
   } catch (e) {
     console.error('addTask error:', e);
