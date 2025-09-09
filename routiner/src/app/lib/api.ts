@@ -1,7 +1,7 @@
 //fetches data through API requests
 import { parseISO, isSameDay } from 'date-fns';
 import { getCurrentWeekRange } from '../utils/helpers';
-import type { Task, Event, EventInput, Routine, RoutineInput } from '@/app/types.ts';
+import type { Task, Event, Routine, RoutineInput } from '@/app/types.ts';
 import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
 import { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers';
 
