@@ -11,7 +11,7 @@ export async function getRoutines(): Promise<Routine[]> {
         }
 
         const { db } = await connectToDb();
-        const user = await db.collection("Users").findOne({ email: session.user.email });
+        const user = await db.collection("users").findOne({ email: session.user.email });
         
         if (!user) {
             console.error("User not found");

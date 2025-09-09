@@ -19,7 +19,7 @@ export async function GET(req: Request) {
     const title = url.searchParams.get("title");
 
     const { db } = await connectToDb();
-    const user = await db.collection("Users").findOne({ email: session.user.email });
+    const user = await db.collection("users").findOne({ email: session.user.email });
 
     if (!user) {
           return new Response(JSON.stringify({ error: "User not found" }), {
@@ -49,7 +49,7 @@ export async function GET(req: Request) {
     }
     console.log("matchConditions:", matchConditions);
     // Aggregate pipeline to extract only matching events
-    const events = await db.collection("Users").aggregate([
+    const events = await db.collection("users").aggregate([
       { $match: { email: session.user.email } },
       { $unwind: "$events" },
       { $match: matchConditions },

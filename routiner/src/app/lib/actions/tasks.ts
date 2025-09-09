@@ -35,7 +35,7 @@ export async function addTask(formData: FormData) {
     };
 
     const { db } = await connectToDb();
-    const result = await db.collection<UserDocument>('Users').updateOne(
+    const result = await db.collection<UserDocument>('users').updateOne(
       { email: session.user.email },
       { $push: { tasks: task } }
     );

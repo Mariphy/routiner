@@ -24,7 +24,7 @@ export async function GET() {
         }
     
         const { db } = await connectToDb();
-        const user = await db.collection("Users").findOne({ email: session.user.email });
+        const user = await db.collection("users").findOne({ email: session.user.email });
     
         if (!user) {
           return new Response(JSON.stringify({ error: "User not found" }), {
@@ -74,7 +74,7 @@ export async function POST(req: Request) {
           date: event.date ? new Date(event.date) : undefined,
         };
     
-        const result = await db.collection("Users").updateOne(
+        const result = await db.collection("users").updateOne(
           { email: session.user.email },
           { $push: { events: eventWithId } }
         );
@@ -121,7 +121,7 @@ export async function PUT(req: Request) {
           });
         }
     
-        const result = await db.collection("Users").updateOne(
+        const result = await db.collection("users").updateOne(
           { email: session.user.email, "events.id": event.id },
           { $set: { "events.$": event } }
         );
@@ -167,7 +167,7 @@ export async function DELETE(req: Request) {
           });
         }
     
-        const result = await db.collection<UserDocument>("Users").updateOne(
+        const result = await db.collection<UserDocument>("users").updateOne(
           { email: session.user.email, "events.id": event.id },
           { $pull: { events: { id: event.id } } }
         );

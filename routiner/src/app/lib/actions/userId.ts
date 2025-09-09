@@ -8,7 +8,7 @@ export async function fetchUserIdServer() {
     }
 
     const { db } = await connectToDb();
-    const user = await db.collection("Users").findOne({ email: session.user.email });
+    const user = await db.collection("users").findOne({ email: session.user.email });
 
     if (!user) {
         throw new Error("User not found");
