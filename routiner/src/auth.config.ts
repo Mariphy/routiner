@@ -41,19 +41,5 @@ export default {
     session: {
         strategy: "jwt",
     },
-    callbacks: {
-        async signIn({ user, account, profile }) {
-            console.log("SignIn callback:", { user, account, profile });
-            return true;
-        },
-        async session({ session, token }) {
-            console.log("Session callback:", { session, token });
-            return session;
-        },
-        async jwt({ token, user, account }) {
-            console.log("JWT callback:", { token, user, account });
-            return token;
-        },
-    },
-    debug: true,
+    debug: false,
 } satisfies NextAuthConfig
