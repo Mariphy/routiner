@@ -61,10 +61,19 @@ export default function AddTask({ onClose }: AddTaskProps) {
           </label>
 
           <div className="flex justify-end gap-4">
-            <button type="button" onClick={onClose} className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400" disabled={isPending}>
+            <button 
+              type="button" 
+              onClick={onClose} 
+              className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400" 
+              disabled={isPending}
+            >
               Cancel
             </button>
-            <button type="submit" className="bg-accent text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50" disabled={isPending}>
+            <button 
+              type="submit" 
+              className="bg-accent text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50" 
+              disabled={isPending}
+            >
               {isPending ? 'Saving...' : 'Save'}
             </button>
           </div>
