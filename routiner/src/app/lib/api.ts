@@ -2,6 +2,13 @@
 import { parseISO, isSameDay } from 'date-fns';
 import { getCurrentWeekRange } from '../utils/helpers';
 import type { Task, Event, EventInput, Routine, RoutineInput } from '@/app/types.ts';
+import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
+import { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers';
+
+interface RequestHeaders {
+  cookies: ReadonlyRequestCookies;
+  headers: ReadonlyHeaders;
+}
 
 //helpers
 function isMongoDate(obj: unknown): obj is { $date: string } {
@@ -50,7 +57,7 @@ export async function fetchUserIdClient() {
 
 //fetching functions:
 //tasks:
-export async function getTasks(userId: string, reqHeaders) {
+export async function getTasks(userId: string, reqHeaders: RequestHeaders) {
     const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/tasks`,
         {
             credentials: "include", // browser will send cookies automatically
@@ -89,7 +96,7 @@ export async function getTasksByDate(userId: string, date: string) {
 }
 
 //routines fetching functions:
-export async function getRoutines(userId: string, reqHeaders) {
+export async function getRoutines(userId: string, reqHeaders: RequestHeaders) {
     const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/routines`,
         {
             credentials: "include", // browser will send cookies automatically
@@ -118,7 +125,7 @@ export async function getEventsByDate(userId: string, date: string): Promise<Eve
   return data.events || [];
 }
 
-export async function getEventsByMonth(userId: string, month: string, reqHeaders): Promise<Event[]> {
+export async function getEventsByMonth(userId: string, month: string, reqHeaders: RequestHeaders): Promise<Event[]> {
   const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/events/search?month=${month}`, {
     credentials: "include",
     headers: { "cookie": reqHeaders.cookies.getAll().map((c: Record<string, string>) => `${c.name}=${c.value}`).join('; ') },
@@ -132,7 +139,7 @@ export async function getEventsByMonth(userId: string, month: string, reqHeaders
   return data.events || [];
 }
 
-export async function getEventsForCurrentWeek(userId: string, reqHeaders) {
+export async function getEventsForCurrentWeek(userId: string, reqHeaders: RequestHeaders) {
   const { start, end } = getCurrentWeekRange();
   const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/events/search?start=${start}&end=${end}`,
         {
