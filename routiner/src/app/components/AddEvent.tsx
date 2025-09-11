@@ -14,7 +14,7 @@ export default function AddEvent( { onClose }: AddEventProps) {
   const nextHour = ((now.getHours() + 1) % 24).toString().padStart(2, '0');
   const currentTime = `${currentHour}:00`;
   const oneHourLater = `${nextHour}:00`;
-  const todayDate = now.toISOString().substring(0, 10);
+  const todayDate = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
 
   const addEventAction = async (formData: FormData) => {
     startTransition(async () => {
