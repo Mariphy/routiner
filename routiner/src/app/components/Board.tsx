@@ -20,8 +20,7 @@ interface BoardProps {
   events: EventType[];
 }
 
-export default function Board({ userId: userId, tasks: initialTasks, routines: routines, events: events }: BoardProps) {
-  const [tasks, setTasks] = useState<TaskType[]>(initialTasks ?? []);
+export default function Board({ userId: userId, tasks: tasks, routines: routines, events: events }: BoardProps) {
   const [newTask, setNewTask] = useState('');
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -49,7 +48,6 @@ export default function Board({ userId: userId, tasks: initialTasks, routines: r
     try {
       const result = await addTask(formData);
       if (result.task) {
-        setTasks(prevTasks => [...prevTasks, result.task]);
         setNewTask('');
         setSelectedDay(null);
       } else {
