@@ -1,7 +1,7 @@
 //fetches data through API requests
 import { parseISO, isSameDay } from 'date-fns';
 import { getCurrentWeekRange } from '../utils/helpers';
-import type { Task, Event, Routine, RoutineInput } from '@/app/types.ts';
+import type { Task, Event, Routine } from '@/app/types.ts';
 import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
 import { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers';
 
@@ -65,7 +65,7 @@ export async function getTasks(userId: string, reqHeaders: RequestHeaders) {
 
         }
     );
-    console.log(response)
+    //console.log("response: ", response)
 
     if (!response.ok) {
     console.error(`Failed to fetch tasks: ${response.status}`);
@@ -194,22 +194,7 @@ export async function deleteTask(userId: string, taskId: string) {
 
 //routines mutations
 //to-do: move to /actions/routines
-export async function addRoutine(userId: string, routine: RoutineInput) {
-    const response = await fetch(`/api/users/${userId}/routines`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ routine }),
-    });
-
-    if (!response.ok) {
-    console.error(`Failed to add routine: ${response.status}`);
-    return null;
-    }
-
-    const responseData = await response.json();
-    const newRoutine = responseData.routine; // Extract the routine object
-    return newRoutine;
-}
+//addRoutine moved to server actions
 
 export async function editRoutine(userId: string, routine: Routine) {
     const response = await fetch(`/api/users/${userId}/routines`, {

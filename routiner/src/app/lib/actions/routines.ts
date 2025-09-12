@@ -1,27 +1,47 @@
-import { auth } from "@/auth";
-import { connectToDb } from '@/app/api/db';
-import { Routine } from '@/app/types';
+'use server'
 
-export async function getRoutines(): Promise<Routine[]> {
+import { revalidatePath } from 'next/cache';
+import { connectToDb } from '@/app/api/db';
+import type { Routine, UserDocument } from '@/app/types';
+import { generateUniqueId } from '@/app/utils/helpers';
+import { auth } from "@/auth";
+
+export async function addRoutine(formData: FormData) {
     try {
         const session = await auth();
         if (!session?.user?.email) {
             console.error("User not authenticated");
-            return [];
+            return { success: false, error: "User not authenticated" };
         }
+
+        const rawTitle = (formData.get('title') ?? '').toString().trim();
+        if (!rawTitle) {
+            return { success: false, error: 'Task title is required' };
+        }
+
+        const routine: Routine = {
+            id: generateUniqueId(),
+            title: rawTitle,
+            daily: formData.get("daily") === "on",
+            repeat: formData.get("repeat") ? (formData.get("repeat") as string).split(",") : [],
+            startTime: formData.get("startTime") as string,
+            endTime: formData.get("endTime") as string,
+        };
 
         const { db } = await connectToDb();
-        const user = await db.collection("users").findOne({ email: session.user.email });
-        
-        if (!user) {
-            console.error("User not found");
-            return [];
+        const result = await db.collection<UserDocument>('users').updateOne(
+            { email: session.user.email },
+            { $push: { routines: routine } }
+        );
+
+        if (result.modifiedCount === 0) {
+            return { success: false, error: "Failed to add routine" };
         }
-
-        return user.routines || [];
-
+        revalidatePath('/board');
+        revalidatePath('/calendar');
+        return { success: true, routine };
     } catch (error) {
-        console.error("Failed to fetch routines:", error);
-        return [];
+        console.error('addRoutine error:', error);
+        return { success: false, error: 'Internal error' };
     }
 }
