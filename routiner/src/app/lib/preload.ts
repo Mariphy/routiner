@@ -1,4 +1,4 @@
-import {
+/*import {
   getEventsForCurrentWeek,
   getEventsByMonth,
 } from '@/app/lib/api';
@@ -21,3 +21,4 @@ export async function preloadCalendarData() {
   const month = new Date().toISOString().slice(0, 7); // 'YYYY-MM'
   void getEventsByMonth(userId, month);
 }
+*/
