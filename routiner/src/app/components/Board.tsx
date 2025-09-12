@@ -3,12 +3,12 @@
 import React, { useState } from 'react';
 import { startOfWeek, addDays, format, isSameDay } from 'date-fns';
 import EditTask from './EditTask';
-import Task from './Task';  
+import Task from './Task';
 import Routine from './Routine';
 import type { Task as TaskType } from '@/app/types.ts';
 import type { Routine as RoutineType } from '@/app/types.ts';
 import type { Event as EventType } from '@/app/types.ts';
-import { 
+import {
   editTask, deleteTask
 } from '@/app/lib/api';
 import { addTask } from '@/app/lib/actions/tasks'
@@ -33,7 +33,7 @@ export default function Board({ userId: userId, tasks: initialTasks, routines: r
 
 
   // Filter tasks based on completion status
-  const filteredTasks = showCompleted 
+  const filteredTasks = showCompleted
     ? (tasks || []).filter(task => task.checked) // Show only completed tasks
     : (tasks || []).filter(task => !task.checked); // Show only uncompleted tasks
 
@@ -41,11 +41,23 @@ export default function Board({ userId: userId, tasks: initialTasks, routines: r
     const taskDay = day ?? selectedDay;
     if (!newTask.trim()) return;
 
-    const newTaskObject = { title: newTask.trim(), day: taskDay ?? undefined, checked: false };
-  
-    addTask(newTaskObject as unknown as FormData); // toodoo avoid the cast
-    setNewTask('');
-    setSelectedDay(null);
+    const formData = new FormData();
+    formData.append('title', newTask.trim());
+    if (taskDay) {
+      formData.append('day', taskDay);
+    }
+    try {
+      const result = await addTask(formData);
+      if (result.task) {
+        setTasks(prevTasks => [...prevTasks, result.task]);
+        setNewTask('');
+        setSelectedDay(null);
+      } else {
+        console.error('Failed to add task:', result.error);
+      }
+    } catch (error) {
+      console.error('Error adding task:', error);
+    }
   };
 
   const openModalForTask = (task: TaskType) => {
@@ -55,12 +67,12 @@ export default function Board({ userId: userId, tasks: initialTasks, routines: r
 
   const handleEditTask = async (task: TaskType) => {
     try {
-      const editedTask = await editTask(userId!, task); 
+      const editedTask = await editTask(userId!, task);
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
           task.id === editedTask.id ? editedTask : task
         )
-      ); 
+      );
     } catch (error) {
       console.error('Error editing task:', error);
     }
@@ -69,7 +81,7 @@ export default function Board({ userId: userId, tasks: initialTasks, routines: r
     setTaskToEdit(null);
   };
 
-  const handleDeleteTask = async (taskToDelete: {id: string}) => {
+  const handleDeleteTask = async (taskToDelete: { id: string }) => {
     try {
       await deleteTask(userId!, taskToDelete.id); // Use the `deleteTask` function from `api.ts`
       setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskToDelete.id)); // Remove the deleted task from the local state
@@ -78,7 +90,7 @@ export default function Board({ userId: userId, tasks: initialTasks, routines: r
     }
   };
 
-  
+
   return (
     <div className="board-container w-full overflow-x-auto">
       {/* Toggle Header */}
@@ -90,11 +102,10 @@ export default function Board({ userId: userId, tasks: initialTasks, routines: r
             </span>
             <button
               onClick={() => setShowCompleted(!showCompleted)}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                showCompleted 
-                  ? 'bg-green-100 text-green-800 hover:bg-green-200' 
-                  : 'bg-blue-100 text-blue-800 hover:bg-blue-200'
-              }`}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${showCompleted
+                ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                : 'bg-blue-100 text-blue-800 hover:bg-blue-200'
+                }`}
             >
               {showCompleted ? 'Show Active' : 'Show Completed'}
             </button>
@@ -111,14 +122,14 @@ export default function Board({ userId: userId, tasks: initialTasks, routines: r
             Task List {showCompleted && '(Completed)'}
           </h2>
           {filteredTasks.map((task) => (
-            <Task 
-              key={task.id} 
+            <Task
+              key={task.id}
               task={task}
-              onClick={() => openModalForTask(task)} 
+              onClick={() => openModalForTask(task)}
               onEditTask={handleEditTask}
             />
           ))}
-          
+
           {/* Only show add task input when showing active tasks */}
           {!showCompleted && (
             <div className="flex items-center gap-2 mb-4">
@@ -138,23 +149,23 @@ export default function Board({ userId: userId, tasks: initialTasks, routines: r
             </div>
           )}
         </div>
-        
+
         {daysOfWeek.map((day, index) => {
           const dayName = format(day, 'EEEE');
-          const eventsForDay = events.filter(event => 
+          const eventsForDay = events.filter(event =>
             event.date && isSameDay(
               event.date instanceof Date ? event.date : new Date(event.date),
               day
-            )  
+            )
           );
-          const routinesForDay = routines.filter(routine => routine.repeat.includes(dayName));  
+          const routinesForDay = routines.filter(routine => routine.repeat.includes(dayName));
 
           return (
             <div key={index} className="column border p-4 sm:w-72 md:w-72 lg:w-80 rounded-lg bg-neutral-200 shadow-md">
               <h2 className="text-xl font-bold mb-4">
                 {dayName} {showCompleted && '(Completed)'}
               </h2>
-              
+
               {/* Filter tasks for this day */}
               {filteredTasks
                 .filter((task) => task.day === dayName)
@@ -162,35 +173,35 @@ export default function Board({ userId: userId, tasks: initialTasks, routines: r
                   <Task
                     key={taskIndex}
                     task={task}
-                    onClick={() => openModalForTask(task)} 
+                    onClick={() => openModalForTask(task)}
                     onEditTask={handleEditTask}
                   />
                 ))}
-                
+
               {routinesForDay
                 .map((routine, routineIndex) => (
                   <Routine
                     key={routineIndex}
                     routine={routine}
                   />
-              ))}
-              
+                ))}
+
               {eventsForDay.map(event => (
                 <div key={event.id} className="event border p-2 mb-2 rounded-lg bg-green-100 shadow-sm">
                   <h3 className="font-medium">{event.title}</h3>
-                   {event.date && (
-                      <p className="font-light text-sm text-gray-600">
-                        Date: {event.date instanceof Date ? event.date.toLocaleDateString() : new Date(event.date).toLocaleDateString()}
-                      </p>
-                    )}
-                    {event.startTime && event.endTime && (
-                      <p className="text-sm text-gray-600">
-                        {event.startTime} - {event.endTime}
-                      </p>
+                  {event.date && (
+                    <p className="font-light text-sm text-gray-600">
+                      Date: {event.date instanceof Date ? event.date.toLocaleDateString() : new Date(event.date).toLocaleDateString()}
+                    </p>
+                  )}
+                  {event.startTime && event.endTime && (
+                    <p className="text-sm text-gray-600">
+                      {event.startTime} - {event.endTime}
+                    </p>
                   )}
                 </div>
               ))}
-              
+
               {/* Only show add task input when showing active tasks */}
               {!showCompleted && (
                 <div className="flex items-center gap-2 mb-4">
@@ -212,7 +223,7 @@ export default function Board({ userId: userId, tasks: initialTasks, routines: r
                   </button>
                 </div>
               )}
-              
+
               {isModalOpen && taskToEdit && (
                 <EditTask
                   task={taskToEdit}
