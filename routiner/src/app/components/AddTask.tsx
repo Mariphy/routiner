@@ -25,7 +25,10 @@ export default function AddTask({ onClose }: AddTaskProps) {
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
       onClick={onClose}
     >
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+      <div 
+        className="bg-white p-6 rounded-lg shadow-lg w-96"
+        onClick={(e) => e.stopPropagation()}
+        >
         <h2 className="text-lg font-bold mb-4">Add Task</h2>
         <form action={addTaskAction} className="space-y-4">
           <div>
