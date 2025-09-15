@@ -38,7 +38,7 @@ export default function EditTask({ task, onClose }: EditTaskProps) {
 
     return (
         <div
-            className="fixed inset-0 bg-white bg-opacity-25 flex items-center justify-center z-50"
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
             onClick={onClose}
         >
             <div className="bg-white p-6 m-2 rounded-lg shadow-lg w-full max-w-lg"
