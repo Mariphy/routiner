@@ -32,7 +32,10 @@ export default function AddRoutine({ onClose }: AddRoutineProps) {
   ];
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      onClick={onClose}
+    >
       <div className="bg-white p-6 rounded-lg shadow-lg w-96 overflow-y-auto">
         <h2 className="text-lg font-bold mb-4">Add Routine</h2>
         <form action={addRoutineAction} className="flex flex-col gap-4">
