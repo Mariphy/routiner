@@ -29,6 +29,7 @@ export default function Board({ tasks: tasks, routines: routines, events: events
     ? (tasks || []).filter(task => task.checked) // Show only completed tasks
     : (tasks || []).filter(task => !task.checked); // Show only uncompleted tasks
 
+  //adds tasks from the board without opening the modal   
   const handleQuickAddTask = async (day?: string) => {
     const taskDay = day ?? selectedDay;
     if (!newTask.trim()) return;
@@ -135,7 +136,6 @@ export default function Board({ tasks: tasks, routines: routines, events: events
                   <Task
                     key={taskIndex}
                     task={task}
-                    //onClick={() => openModalForTask(task)}
                   />
                 ))}
 
