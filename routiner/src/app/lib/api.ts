@@ -157,41 +157,6 @@ export async function getEventsForCurrentWeek(userId: string, reqHeaders: Reques
   return data.events || [];
 }
 
-//tasks mutations
-//to-do: move to /actions/tasks
-//addTask - moved
-export async function editTask(userId: string, task: Task) {
-    const response = await fetch(`/api/users/${userId}/tasks`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ task }),
-    });
-
-    if (!response.ok) {
-    console.error(`Failed to edit task: ${response.status}`);
-    return task;
-    }
-
-    const responseData = await response.json();
-    const updatedTask = responseData.task; // Extract the updated task
-    return updatedTask;
-}
-  
-export async function deleteTask(userId: string, taskId: string) {
-    const response = await fetch(`/api/users/${userId}/tasks`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: taskId }),
-    });
-
-    if (!response.ok) {
-    console.error(`Failed to delete task: ${response.status}`);
-    return null;
-    }
-
-    return response.json();
-}
-
 //routines mutations
 //to-do: move to /actions/routines
 //addRoutine moved to server actions
