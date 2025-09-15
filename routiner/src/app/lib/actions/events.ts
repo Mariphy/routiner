@@ -43,7 +43,7 @@ export async function addEvent(formData: FormData) {
     );
 
     if (result.modifiedCount === 0) {
-      return { success: false, error: 'Failed to add task' };
+      return { success: false, error: 'Failed to add event' };
     }
 
     revalidatePath('/board');
