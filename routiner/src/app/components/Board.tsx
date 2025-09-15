@@ -2,15 +2,11 @@
 
 import React, { useState } from 'react';
 import { startOfWeek, addDays, format, isSameDay } from 'date-fns';
-import EditTask from './EditTask';
 import Task from './Task';
 import Routine from './Routine';
 import type { Task as TaskType } from '@/app/types.ts';
 import type { Routine as RoutineType } from '@/app/types.ts';
 import type { Event as EventType } from '@/app/types.ts';
-import {
-  editTask, deleteTask
-} from '@/app/lib/api';
 import { addTask } from '@/app/lib/actions/tasks'
 
 interface BoardProps {
@@ -21,11 +17,9 @@ interface BoardProps {
 }
 
 export default function Board({ userId: userId, tasks: tasks, routines: routines, events: events }: BoardProps) {
-  const [newTask, setNewTask] = useState('');
+  const [newTask, setNewTask] = useState(''); //quickAdd
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [taskToEdit, setTaskToEdit] = useState<TaskType | null>(null);
-  const [showCompleted, setShowCompleted] = useState(false); // Add toggle state
+  const [showCompleted, setShowCompleted] = useState(false); 
 
   const startDate = startOfWeek(new Date(), { weekStartsOn: 0 });
   const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
@@ -58,37 +52,6 @@ export default function Board({ userId: userId, tasks: tasks, routines: routines
     }
   };
 
-  const openModalForTask = (task: TaskType) => {
-    setTaskToEdit(task);
-    setIsModalOpen(true);
-  };
-
-  const handleEditTask = async (task: TaskType) => {
-    try {
-      const editedTask = await editTask(userId!, task);
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
-          task.id === editedTask.id ? editedTask : task
-        )
-      );
-    } catch (error) {
-      console.error('Error editing task:', error);
-    }
-
-    setIsModalOpen(false);
-    setTaskToEdit(null);
-  };
-
-  const handleDeleteTask = async (taskToDelete: { id: string }) => {
-    try {
-      await deleteTask(userId!, taskToDelete.id); // Use the `deleteTask` function from `api.ts`
-      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskToDelete.id)); // Remove the deleted task from the local state
-    } catch (error) {
-      console.error('Error deleting task:', error);
-    }
-  };
-
-
   return (
     <div className="board-container w-full overflow-x-auto">
       {/* Toggle Header */}
@@ -114,6 +77,7 @@ export default function Board({ userId: userId, tasks: tasks, routines: routines
         </div>
       </div>
 
+      {/* All Tasks */}
       <div className="board flex gap-2 p-4 min-w-max min-h-[600px]">
         <div className="column border p-4 sm:w-72 md:w-72 lg:w-80 flex-shrink-0 rounded-lg bg-neutral-200 shadow-md">
           <h2 className="text-xl font-bold mb-4">
@@ -123,8 +87,8 @@ export default function Board({ userId: userId, tasks: tasks, routines: routines
             <Task
               key={task.id}
               task={task}
-              onClick={() => openModalForTask(task)}
-              onEditTask={handleEditTask}
+              //onClick={() => openModalForTask(task)}
+              //onEditTask={handleEditTask}
             />
           ))}
 
@@ -148,6 +112,7 @@ export default function Board({ userId: userId, tasks: tasks, routines: routines
           )}
         </div>
 
+        {/* Day Columns */}
         {daysOfWeek.map((day, index) => {
           const dayName = format(day, 'EEEE');
           const eventsForDay = events.filter(event =>
@@ -171,8 +136,7 @@ export default function Board({ userId: userId, tasks: tasks, routines: routines
                   <Task
                     key={taskIndex}
                     task={task}
-                    onClick={() => openModalForTask(task)}
-                    onEditTask={handleEditTask}
+                    //onClick={() => openModalForTask(task)}
                   />
                 ))}
 
@@ -220,15 +184,6 @@ export default function Board({ userId: userId, tasks: tasks, routines: routines
                     +
                   </button>
                 </div>
-              )}
-
-              {isModalOpen && taskToEdit && (
-                <EditTask
-                  task={taskToEdit}
-                  onEditTask={handleEditTask}
-                  onDeleteTask={handleDeleteTask}
-                  onClose={() => setIsModalOpen(false)}
-                />
               )}
             </div>
           );
