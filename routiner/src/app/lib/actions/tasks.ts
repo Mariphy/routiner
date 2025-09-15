@@ -83,12 +83,20 @@ export async function editTask(formData: FormData, id: string) {
 
     const { db } = await connectToDb();
     const result = await db.collection<UserDocument>('users').updateOne(
-      { email: session.user.email },
-      { $push: { tasks: task } }
+      { email: session.user.email, "tasks.id": id },
+      { $set: {
+          "tasks.$.title": rawTitle,
+          "tasks.$.day": dayRaw || undefined,
+          "tasks.$.date": dateRaw ? new Date(dateRaw) : undefined,
+          "tasks.$.startTime": startTimeRaw,
+          "tasks.$.endTime": endTimeRaw,
+          "tasks.$.checked": checked,
+        }
+      }
     );
 
     if (result.modifiedCount === 0) {
-      return { success: false, error: 'Failed to add task' };
+      return { success: false, error: 'Failed to edit task' };
     }
 
     revalidatePath('/board');
