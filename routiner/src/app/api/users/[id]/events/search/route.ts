@@ -47,7 +47,7 @@ export async function GET(req: Request) {
     if (title) {
       matchConditions["events.title"] = { $regex: new RegExp(title, "i") };
     }
-    console.log("matchConditions:", matchConditions);
+    
     // Aggregate pipeline to extract only matching events
     const events = await db.collection("users").aggregate([
       { $match: { email: session.user.email } },
@@ -55,7 +55,7 @@ export async function GET(req: Request) {
       { $match: matchConditions },
       { $replaceRoot: { newRoot: "$events" } },
     ]).toArray();
-    console.log("events found:", events);
+  
     return new Response(JSON.stringify({ events }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
