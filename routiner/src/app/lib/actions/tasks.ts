@@ -52,3 +52,76 @@ export async function addTask(formData: FormData) {
     return { success: false, error: 'Internal error' };
   }
 }
+
+export async function editTask(formData: FormData, id: string) {
+  try {
+    const session = await auth();
+    if (!session?.user?.email) {
+      return { success: false, error: 'Unauthenticated' };
+    }
+
+    const rawTitle = (formData.get('title') ?? '').toString().trim();
+    if (!rawTitle) {
+      return { success: false, error: 'Task title is required' };
+    }
+
+    const dayRaw = (formData.get('day') ?? '').toString().trim();
+    const dateRaw = formData.get('date')?.toString();
+    const startTimeRaw = formData.get('startTime')?.toString().trim() || undefined;
+    const endTimeRaw = formData.get('endTime')?.toString().trim() || undefined;
+    const checked = formData.get('checked') === 'on';
+
+    const task: Task = {
+      id: id,
+      title: rawTitle,
+      day: dayRaw || undefined,
+      date: dateRaw ? new Date(dateRaw) : undefined,
+      startTime: startTimeRaw,
+      endTime: endTimeRaw,
+      checked,
+    };
+
+    const { db } = await connectToDb();
+    const result = await db.collection<UserDocument>('users').updateOne(
+      { email: session.user.email },
+      { $push: { tasks: task } }
+    );
+
+    if (result.modifiedCount === 0) {
+      return { success: false, error: 'Failed to add task' };
+    }
+
+    revalidatePath('/board');
+    revalidatePath('/calendar');
+    return { success: true, task };
+  } catch (e) {
+    console.error('addTask error:', e);
+    return { success: false, error: 'Internal error' };
+  }
+};
+
+export async function deleteTask(id: string) {
+    try {
+        const session = await auth();
+        if (!session?.user?.email) {
+          return { success: false, error: 'Unauthenticated' };
+        }
+
+        const { db } = await connectToDb();
+        const result = await db.collection<UserDocument>('users').updateOne(
+          { email: session.user.email },
+          { $pull: { tasks: { id } } }
+        );
+
+        if (result.modifiedCount === 0) {
+          return { success: false, error: 'Failed to delete task' };
+        }
+
+        revalidatePath('/board');
+        revalidatePath('/calendar');
+        return { success: true };
+    } catch (e) {
+        console.error('deleteTask error:', e);
+        return { success: false, error: 'Internal error' };
+    }
+}
