@@ -42,7 +42,7 @@ export default function EditTask({ task, onClose }: EditTaskProps) {
             onClick={onClose}
         >
             <div className="bg-white p-6 m-2 rounded-lg shadow-lg w-full max-w-lg"
-                onClick={(e) => e.stopPropagation()}
+                 onClick={(e) => e.stopPropagation()}
             >
                 <h2 className="text-xl font-bold mb-4">Edit Task</h2>
                 <form action={editTaskAction} className="space-y-4">
@@ -80,7 +80,11 @@ export default function EditTask({ task, onClose }: EditTaskProps) {
                     </div>
 
                     <label className="flex items-center gap-2">
-                        <input name="checked" type="checkbox" className="w-4 h-4" disabled={isPending} />
+                        <input 
+                            name="checked" 
+                            type="checkbox" 
+                            className="w-4 h-4" 
+                            disabled={isPending} />
                         <span className="text-sm font-medium">Mark as Completed</span>
                     </label>
 
@@ -101,15 +105,15 @@ export default function EditTask({ task, onClose }: EditTaskProps) {
                             {isPending ? 'Saving...' : 'Save'}
                         </button>
                     </div>
-                    <div>
-                        <button
-                            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                            onClick={handleDelete}
-                        >
-                            Delete
-                        </button>
-                    </div>
                 </form>
+                <div>
+                    <button
+                        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                        onClick={handleDelete}
+                    >
+                        Delete
+                    </button>
+                </div>
             </div >
         </div >
 
