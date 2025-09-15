@@ -24,9 +24,13 @@ export default function Task({ task }: TaskProps) {
     e.stopPropagation();
     
     const formData = new FormData();
-    formData.append('id', task.id);
     formData.append('title', task.title);
-    formData.append('checked', e.target.checked.toString());
+    formData.append('checked', e.target.checked ? 'on' : '');
+
+    if (task.day) formData.append('day', task.day);
+    if (task.date) formData.append('date', task.date.toISOString());
+    if (task.startTime) formData.append('startTime', task.startTime);
+    if (task.endTime) formData.append('endTime', task.endTime);
     startTransition(async () => {
       try {
         const result = await editTask(formData, task.id);
