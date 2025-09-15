@@ -10,13 +10,12 @@ import type { Event as EventType } from '@/app/types.ts';
 import { addTask } from '@/app/lib/actions/tasks'
 
 interface BoardProps {
-  userId: string;
   tasks: TaskType[];
   routines: RoutineType[];
   events: EventType[];
 }
 
-export default function Board({ userId: userId, tasks: tasks, routines: routines, events: events }: BoardProps) {
+export default function Board({ tasks: tasks, routines: routines, events: events }: BoardProps) {
   const [newTask, setNewTask] = useState(''); //quickAdd
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [showCompleted, setShowCompleted] = useState(false); 
