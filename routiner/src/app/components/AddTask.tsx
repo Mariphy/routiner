@@ -27,7 +27,12 @@ export default function AddTask({ onClose }: AddTaskProps) {
         <form action={addTaskAction} className="space-y-4">
           <div>
             <label className="block text-sm font-medium">Title</label>
-            <input name="title" type="text" className="w-full border p-2 rounded" required disabled={isPending} />
+            <input 
+              name="title" 
+              type="text" 
+              className="w-full border p-2 rounded" 
+              required 
+              disabled={isPending} />
           </div>
 
             <div>
