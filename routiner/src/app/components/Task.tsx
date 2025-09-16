@@ -64,7 +64,7 @@ export default function Task({ task }: TaskProps) {
           </h3>
         </div>  
         {task.date && task.date instanceof Date && !isNaN(task.date.getTime()) ? (
-          <p className="font-light mt-2">Deadline: {task.date.toLocaleDateString()}</p>
+          <p className="font-light mt-2">Deadline: {task.date.toISOString().split('T')[0]}</p>
         ) : null}
         
         <div 

@@ -58,24 +58,52 @@ export default function EditTask({ task, onClose }: EditTaskProps) {
                     </div>
                     <div>
                         <label className="block text-sm font-medium">Day</label>
-                        <select name="day" className="w-full border p-2 rounded" disabled={isPending}>
+                        <select 
+                            name="day" 
+                            className="w-full border p-2 rounded" 
+                            disabled={isPending}
+                            defaultValue={task.day || ''}
+                        >
                             <option value="">(Optional)</option>
-                            <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
-                            <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+                            <option>Monday</option>
+                            <option>Tuesday</option>
+                            <option>Wednesday</option>
+                            <option>Thursday</option>
+                            <option>Friday</option>
+                            <option>Saturday</option>
+                            <option>Sunday</option>
                         </select>
                     </div>
                     <div>
                         <label className="block text-sm font-medium">Date</label>
-                        <input name="date" type="date" className="w-full border p-2 rounded" disabled={isPending} />
+                        <input 
+                            name="date" 
+                            type="date" 
+                            defaultValue={task.date ? task.date.toISOString().split('T')[0] : ''}
+                            className="w-full border p-2 rounded" 
+                            disabled={isPending} 
+                        />
                     </div>
                     <div className="flex gap-4">
                         <div>
                             <label className="block text-sm font-medium">Start Time</label>
-                            <input name="startTime" type="time" className="w-full border p-2 rounded" disabled={isPending} />
+                            <input 
+                                name="startTime" 
+                                type="time" 
+                                defaultValue={task.startTime}
+                                className="w-full border p-2 rounded" 
+                                disabled={isPending} 
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-medium">End Time</label>
-                            <input name="endTime" type="time" className="w-full border p-2 rounded" disabled={isPending} />
+                            <input 
+                                name="endTime" 
+                                type="time" 
+                                defaultValue={task.endTime}
+                                className="w-full border p-2 rounded" 
+                                disabled={isPending} 
+                            />
                         </div>
                     </div>
 
@@ -83,6 +111,7 @@ export default function EditTask({ task, onClose }: EditTaskProps) {
                         <input 
                             name="checked" 
                             type="checkbox" 
+                            defaultChecked={task.checked}
                             className="w-4 h-4" 
                             disabled={isPending} />
                         <span className="text-sm font-medium">Mark as Completed</span>
