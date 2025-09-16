@@ -47,7 +47,7 @@ export default function Task({ task }: TaskProps) {
     <>
       <div 
         className={`task relative border p-2 mb-2 rounded-lg shadow-sm cursor-pointer group ${
-          task.checked ? 'bg-green-50 border-green-200' : 'bg-neutral-100'
+          task.checked ? 'bg-green-50 border-green-200 line-through' : 'bg-neutral-100'
         } ${isPending ? 'opacity-50' : ''}`}
         onClick={handleTaskClick} 
       >
