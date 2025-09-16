@@ -103,7 +103,7 @@ export async function editTask(formData: FormData, id: string) {
     revalidatePath('/calendar');
     return { success: true, task };
   } catch (e) {
-    console.error('addTask error:', e);
+    console.error('editTask error:', e);
     return { success: false, error: 'Internal error' };
   }
 };
