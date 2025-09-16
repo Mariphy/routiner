@@ -1,5 +1,5 @@
 'use client';
-import React, { useTransition } from 'react';
+import React, { useState, useTransition } from 'react';
 import { editRoutine, deleteRoutine } from '@/app/lib/actions/routines';
 import type { Routine as RoutineType } from '@/app/types.ts';
 import Select from 'react-select';
@@ -11,6 +11,26 @@ interface EditRoutineProps {
 
 export default function EditRoutine({ routine, onClose }: EditRoutineProps) {
     const [isPending, startTransition] = useTransition();
+    const [daily, setDaily] = useState(routine.daily || false);
+    const [repeat, setRepeat] = useState(routine.repeat || []);
+
+    const repeatOptions = [
+        { value: 'Monday', label: 'Monday' },
+        { value: 'Tuesday', label: 'Tuesday' },
+        { value: 'Wednesday', label: 'Wednesday' },
+        { value: 'Thursday', label: 'Thursday' },
+        { value: 'Friday', label: 'Friday' },
+        { value: 'Saturday', label: 'Saturday' },
+        { value: 'Sunday', label: 'Sunday' }
+    ];
+
+    const handleDailyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const isChecked = e.target.checked;
+        setDaily(isChecked);
+        if (isChecked) {
+            setRepeat(repeatOptions.map(option => option.value));
+        }
+    };
 
     const editRoutineAction = async (formData: FormData) => {
         startTransition(async () => {
@@ -25,7 +45,6 @@ export default function EditRoutine({ routine, onClose }: EditRoutineProps) {
 
     const handleDelete = () => {
         if (confirm('Are you sure you want to delete this routine?')) {
-            
             startTransition(async () => {
                 const res = await deleteRoutine(routine.id);
                 if (res.success) {
@@ -37,15 +56,8 @@ export default function EditRoutine({ routine, onClose }: EditRoutineProps) {
         }
     }; 
 
-    const repeatOptions = [
-        { value: 'Monday', label: 'Monday' },
-        { value: 'Tuesday', label: 'Tuesday' },
-        { value: 'Wednesday', label: 'Wednesday' },
-        { value: 'Thursday', label: 'Thursday' },
-        { value: 'Friday', label: 'Friday' },
-        { value: 'Saturday', label: 'Saturday' },
-        { value: 'Sunday', label: 'Sunday' }
-      ];
+    // Convert repeat array to Select format
+    const selectedDays = repeat.map(day => ({ value: day, label: day }));
 
     return (
         <div
@@ -60,36 +72,50 @@ export default function EditRoutine({ routine, onClose }: EditRoutineProps) {
                     <input
                         type="text"
                         name="title"
-                        placeholder="Morning Routine"
+                        defaultValue={routine.title}
                         className="border p-2 rounded"
                         required
                     />
                 
                     <label className="flex items-center gap-2">
-                    <input
-                        type="checkbox"
-                        name="daily"
-                        className="form-checkbox"
-                    />
-                    <span>Repeat Daily</span>
+                        <input
+                            type="checkbox"
+                            name="daily"
+                            className="form-checkbox"
+                            checked={daily}
+                            onChange={handleDailyChange}
+                        />
+                        <span>Repeat Daily</span>
                     </label>
+
                     <span>Or choose which days of week to repeat:</span>
                     <Select
-                        defaultValue={repeatOptions[0]}
+                        value={selectedDays}
+                        onChange={(selected) => setRepeat(selected?.map(option => option.value) || [])}
                         isMulti
-                        name="repeat"
                         options={repeatOptions}
                         className="basic-multi-select"
                         classNamePrefix="select"
+                        isDisabled={daily}
                     />
+
+                    {/* Hidden input to pass repeat data to form */}
+                    <input
+                        type="hidden"
+                        name="repeat"
+                        value={repeat.join(',')}
+                    />
+
                     <input
                         type="time"
                         name="startTime"
+                        defaultValue={routine.startTime}
                         className="border p-2 rounded"
                     />
                     <input
                         type="time"
                         name="endTime"
+                        defaultValue={routine.endTime}
                         className="border p-2 rounded"
                     />
         
@@ -114,12 +140,12 @@ export default function EditRoutine({ routine, onClose }: EditRoutineProps) {
                     <button
                         className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
                         onClick={handleDelete}
+                        disabled={isPending}
                     >
-                        Delete
+                        {isPending ? 'Deleting...' : 'Delete'}
                     </button>
                 </div>
             </div >
         </div >
-
     );
 }

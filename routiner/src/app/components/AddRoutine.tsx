@@ -1,5 +1,5 @@
 "use client";
-import React, { useTransition } from 'react';
+import React, { useState, useTransition } from 'react';
 import Select from 'react-select';
 import { addRoutine } from "@/app/lib/actions/routines";
 
@@ -9,6 +9,26 @@ interface AddRoutineProps {
 
 export default function AddRoutine({ onClose }: AddRoutineProps) {
   const [isPending, startTransition] = useTransition();
+  const [daily, setDaily] = useState(false);
+  const [repeat, setRepeat] = useState<string[]>([]);
+
+  const repeatOptions = [
+    { value: 'Monday', label: 'Monday' },
+    { value: 'Tuesday', label: 'Tuesday' },
+    { value: 'Wednesday', label: 'Wednesday' },
+    { value: 'Thursday', label: 'Thursday' },
+    { value: 'Friday', label: 'Friday' },
+    { value: 'Saturday', label: 'Saturday' },
+    { value: 'Sunday', label: 'Sunday' }
+  ];
+
+  const handleDailyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const isChecked = e.target.checked;
+    setDaily(isChecked);
+    if (isChecked) {
+      setRepeat(repeatOptions.map(option => option.value));
+    }
+  };
 
   const addRoutineAction = async (formData: FormData) => {
     startTransition(async () => {
@@ -21,15 +41,8 @@ export default function AddRoutine({ onClose }: AddRoutineProps) {
     });
   };
 
-  const repeatOptions = [
-    { value: 'Monday', label: 'Monday' },
-    { value: 'Tuesday', label: 'Tuesday' },
-    { value: 'Wednesday', label: 'Wednesday' },
-    { value: 'Thursday', label: 'Thursday' },
-    { value: 'Friday', label: 'Friday' },
-    { value: 'Saturday', label: 'Saturday' },
-    { value: 'Sunday', label: 'Sunday' }
-  ];
+  // Convert repeat array to Select format
+  const selectedDays = repeat.map(day => ({ value: day, label: day }));
 
   return (
     <div
@@ -55,18 +68,30 @@ export default function AddRoutine({ onClose }: AddRoutineProps) {
               type="checkbox"
               name="daily"
               className="form-checkbox"
+              checked={daily}
+              onChange={handleDailyChange}
             />
             <span>Repeat Daily</span>
           </label>
+
           <span>Or choose which days of week to repeat:</span>
           <Select
-            defaultValue={repeatOptions[0]}
+            value={selectedDays}
+            onChange={(selected) => setRepeat(selected?.map(option => option.value) || [])}
             isMulti
-            name="repeat"
             options={repeatOptions}
             className="basic-multi-select"
             classNamePrefix="select"
+            isDisabled={daily}
           />
+
+          {/* Hidden input to pass repeat data to form */}
+          <input
+            type="hidden"
+            name="repeat"
+            value={repeat.join(',')}
+          />
+
           <input
             type="time"
             name="startTime"
