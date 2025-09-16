@@ -18,7 +18,7 @@ interface BoardProps {
 export default function Board({ tasks: tasks, routines: routines, events: events }: BoardProps) {
   const [newTask, setNewTask] = useState(''); //quickAdd
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
-  const [showCompleted, setShowCompleted] = useState(false); 
+  const [showCompleted, setShowCompleted] = useState(false);
 
   const startDate = startOfWeek(new Date(), { weekStartsOn: 0 });
   const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
@@ -87,8 +87,6 @@ export default function Board({ tasks: tasks, routines: routines, events: events
             <Task
               key={task.id}
               task={task}
-              //onClick={() => openModalForTask(task)}
-              //onEditTask={handleEditTask}
             />
           ))}
 
@@ -99,6 +97,11 @@ export default function Board({ tasks: tasks, routines: routines, events: events
                 type="text"
                 value={newTask}
                 onChange={(e) => setNewTask(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleQuickAddTask();
+                  }
+                }}
                 placeholder="Click + to add a new task"
                 className="task border p-2 rounded-lg bg-neutral-100 shadow-sm flex-grow"
               />
@@ -172,6 +175,11 @@ export default function Board({ tasks: tasks, routines: routines, events: events
                     onChange={(e) => {
                       setNewTask(e.target.value);
                       setSelectedDay(dayName);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleQuickAddTask(dayName);
+                      }
                     }}
                     placeholder={`Click + to add task on ${dayName}`}
                     className="task border p-2 rounded-lg bg-neutral-100 shadow-sm flex-grow"
