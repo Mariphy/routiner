@@ -57,7 +57,7 @@ export default function EditTask({ task, onClose }: EditTaskProps) {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium">Day</label>
+                        <label className="block text-sm font-medium">When are you going to handle it?</label>
                         <select 
                             name="day" 
                             className="w-full border p-2 rounded" 
@@ -75,7 +75,7 @@ export default function EditTask({ task, onClose }: EditTaskProps) {
                         </select>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium">Date</label>
+                        <label className="block text-sm font-medium">Deadline</label>
                         <input 
                             name="date" 
                             type="date" 

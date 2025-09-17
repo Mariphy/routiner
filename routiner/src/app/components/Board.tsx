@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { startOfWeek, addDays, format, isSameDay } from 'date-fns';
 import Task from './Task';
 import Routine from './Routine';
+import Event from './Event';
 import type { Task as TaskType } from '@/app/types.ts';
 import type { Routine as RoutineType } from '@/app/types.ts';
 import type { Event as EventType } from '@/app/types.ts';
@@ -150,21 +151,13 @@ export default function Board({ tasks: tasks, routines: routines, events: events
                   />
                 ))}
 
-              {eventsForDay.map(event => (
-                <div key={event.id} className="event border p-2 mb-2 rounded-lg bg-green-100 shadow-sm">
-                  <h3 className="font-medium">{event.title}</h3>
-                  {event.date && (
-                    <p className="font-light text-sm text-gray-600">
-                      Date: {event.date instanceof Date ? event.date.toLocaleDateString() : new Date(event.date).toLocaleDateString()}
-                    </p>
-                  )}
-                  {event.startTime && event.endTime && (
-                    <p className="text-sm text-gray-600">
-                      {event.startTime} - {event.endTime}
-                    </p>
-                  )}
-                </div>
-              ))}
+              {eventsForDay
+                .map((event, eventIndex) => (
+                  <Event
+                    key={eventIndex}
+                    event={event}
+                  />
+                ))}
 
               {/* Only show add task input when showing active tasks */}
               {!showCompleted && (

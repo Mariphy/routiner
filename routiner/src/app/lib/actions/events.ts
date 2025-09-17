@@ -53,4 +53,71 @@ export async function addEvent(formData: FormData) {
     console.error(error);
     return { success: false, error: 'Internal error' };
   }
-}
+};
+
+export async function editEvent(formData: FormData) {
+    try {
+        const session = await auth();
+        if (!session?.user?.email) {
+            return { success: false, error: 'Unauthenticated' };
+        }
+        const rawTitle = (formData.get('title') ?? '').toString().trim();
+        if (!rawTitle) {
+            return { success: false, error: 'Task title is required' };
+        } 
+
+        const event: Event = {
+            id: (formData.get('id') ?? '').toString(),
+            title: rawTitle,
+            date: new Date((formData.get('date') ?? '').toString()),
+            startTime: (formData.get('startTime') ?? '').toString(),
+            endTime: (formData.get('endTime') ?? '').toString(),
+        };
+
+        const { db } = await connectToDb();
+        const result = await db.collection<UserDocument>('users').updateOne(
+            { email: session.user.email, "events.id": event.id },
+            { $set: {
+                "events.$.title": event.title,
+                "events.$.date": event.date,
+                "events.$.startTime": event.startTime,
+                "events.$.endTime": event.endTime,
+            }}
+        );
+        if (result.modifiedCount === 0) {
+            return { success: false, error: 'Failed to edit event' };
+        }
+        revalidatePath('/board');
+        revalidatePath('/calendar');
+        return { success: true, event };
+    } catch (error) {
+        console.error('editEvent error:', error);
+        return { success: false, error: 'Internal error' };
+    } 
+};
+
+export async function deleteEvent(id: string) {
+    try {
+        const session = await auth();
+        if (!session?.user?.email) {
+            return { success: false, error: 'Unauthenticated' };
+        }
+
+        const { db } = await connectToDb();
+        const result = await db.collection<UserDocument>('users').updateOne(
+            { email: session.user.email, "events.id": id },
+            { $pull: { events: { id } } }
+        );
+
+        if (result.modifiedCount === 0) {
+            return { success: false, error: 'Failed to delete event' };
+        }
+
+        revalidatePath('/board');
+        revalidatePath('/calendar');
+        return { success: true };
+    } catch (error) {
+        console.error('deleteEvent error:', error);
+        return { success: false, error: 'Internal error' };
+    }
+};

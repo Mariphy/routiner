@@ -42,7 +42,7 @@ export default function AddTask({ onClose }: AddTaskProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium">Day</label>
+            <label className="block text-sm font-medium">When are you going to handle it?</label>
             <select name="day" className="w-full border p-2 rounded" disabled={isPending}>
               <option value="">(Optional)</option>
               <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
@@ -51,7 +51,7 @@ export default function AddTask({ onClose }: AddTaskProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium">Date</label>
+            <label className="block text-sm font-medium">Deadline</label>
             <input name="date" type="date" className="w-full border p-2 rounded" disabled={isPending} />
           </div>
 
