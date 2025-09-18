@@ -42,7 +42,7 @@ export default function Task({ task }: TaskProps) {
       }
     });
   };
-
+  console.log('t', task.date instanceof Date);
   return (
     <>
       <div 
@@ -63,7 +63,7 @@ export default function Task({ task }: TaskProps) {
             {task.title}
           </h3>
         </div>  
-        {task.date && task.date instanceof Date && !isNaN(task.date.getTime()) ? (
+        {task.date && !isNaN(task.date.getTime()) ? (
           <p className="font-light mt-2">Deadline: {task.date.toISOString().split('T')[0]}</p>
         ) : null}
         

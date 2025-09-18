@@ -19,8 +19,17 @@ export async function addTask(formData: FormData) {
     }
 
     const dayRaw = (formData.get('day') ?? '').toString().trim();
-    const dateRaw = formData.get('date')?.toString();
+    const dateRaw = `${formData.get('date')?.toString()}T00:00`;
     const startTimeRaw = formData.get('startTime')?.toString().trim() || undefined;
+    let date;
+    if (dateRaw && startTimeRaw) {
+      const dateTimeString = `${dateRaw}T${startTimeRaw}:00`;
+      date = new Date(dateTimeString);
+      console.log('date+time', date);
+    }  else if (dateRaw) {
+      date = new Date(dateRaw);
+      console.log('date only', date);
+    }
     const endTimeRaw = formData.get('endTime')?.toString().trim() || undefined;
     const checked = formData.get('checked') === 'on';
 
@@ -28,7 +37,7 @@ export async function addTask(formData: FormData) {
       id: generateUniqueId(),
       title: rawTitle,
       day: dayRaw || undefined,
-      date: dateRaw ? new Date(dateRaw) : undefined,
+      date: date || undefined,
       startTime: startTimeRaw,
       endTime: endTimeRaw,
       checked,
@@ -66,8 +75,17 @@ export async function editTask(formData: FormData, id: string) {
     }
 
     const dayRaw = (formData.get('day') ?? '').toString().trim();
-    const dateRaw = formData.get('date')?.toString();
+    const dateRaw = `${formData.get('date')?.toString()}T00:00`;
     const startTimeRaw = formData.get('startTime')?.toString().trim() || undefined;
+    let date;
+    if (dateRaw && startTimeRaw) {
+      const dateTimeString = `${dateRaw}T${startTimeRaw}:00`;
+      date = new Date(dateTimeString);
+      console.log('date+time', date);
+    }  else if (dateRaw) {
+      date = new Date(dateRaw);
+      console.log('date only', date);
+    }
     const endTimeRaw = formData.get('endTime')?.toString().trim() || undefined;
     const checked = formData.get('checked') === 'on';
 
@@ -75,7 +93,7 @@ export async function editTask(formData: FormData, id: string) {
       id: id,
       title: rawTitle,
       day: dayRaw || undefined,
-      date: dateRaw ? new Date(dateRaw) : undefined,
+      date: date || undefined,
       startTime: startTimeRaw,
       endTime: endTimeRaw,
       checked,

@@ -120,10 +120,7 @@ export default function Board({ tasks: tasks, routines: routines, events: events
         {daysOfWeek.map((day, index) => {
           const dayName = format(day, 'EEEE');
           const eventsForDay = events.filter(event =>
-            event.date && isSameDay(
-              event.date instanceof Date ? event.date : new Date(event.date),
-              day
-            )
+            event.date && isSameDay(event.date, day)
           );
           const routinesForDay = routines.filter(routine => routine.repeat.includes(dayName));
 

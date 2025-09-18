@@ -16,7 +16,9 @@ export default function Event({ event }: EventProps) {
     const closeModal = () => {
         setIsModalOpen(false);
     };
-
+    //debugger;
+    console.log('e', (event.date instanceof Date));
+    console.log('date', new Date(event.date) instanceof Date);
     return (
         <>
             <div className="event relative border p-2 mb-2 rounded-lg bg-green-100 shadow-sm cursor-pointer group"
@@ -25,7 +27,7 @@ export default function Event({ event }: EventProps) {
                 <h3 className="font-medium">{event.title}</h3>
                 {event.date && (
                     <p className="font-light text-sm text-gray-600">
-                        Date: {event.date instanceof Date ? event.date.toLocaleDateString() : new Date(event.date).toLocaleDateString()}
+                        Date: {new Date(event.date).toISOString().split('T')[0]}
                     </p>
                 )}
                 {event.startTime && event.endTime && (
