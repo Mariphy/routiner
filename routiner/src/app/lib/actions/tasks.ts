@@ -19,16 +19,14 @@ export async function addTask(formData: FormData) {
     }
 
     const dayRaw = (formData.get('day') ?? '').toString().trim();
-    const dateRaw = `${formData.get('date')?.toString()}T00:00`;
+    const dateRaw = (formData.get('date') ?? '').toString() || undefined;
     const startTimeRaw = formData.get('startTime')?.toString().trim() || undefined;
     let date;
     if (dateRaw && startTimeRaw) {
       const dateTimeString = `${dateRaw}T${startTimeRaw}:00`;
       date = new Date(dateTimeString);
-      console.log('date+time', date);
     }  else if (dateRaw) {
-      date = new Date(dateRaw);
-      console.log('date only', date);
+      date = new Date(`${dateRaw}T00:00`);
     }
     const endTimeRaw = formData.get('endTime')?.toString().trim() || undefined;
     const checked = formData.get('checked') === 'on';
@@ -75,16 +73,14 @@ export async function editTask(formData: FormData, id: string) {
     }
 
     const dayRaw = (formData.get('day') ?? '').toString().trim();
-    const dateRaw = `${formData.get('date')?.toString()}T00:00`;
+    const dateRaw = (formData.get('date') ?? '').toString() || undefined;
     const startTimeRaw = formData.get('startTime')?.toString().trim() || undefined;
     let date;
     if (dateRaw && startTimeRaw) {
       const dateTimeString = `${dateRaw}T${startTimeRaw}:00`;
       date = new Date(dateTimeString);
-      console.log('date+time', date);
     }  else if (dateRaw) {
-      date = new Date(dateRaw);
-      console.log('date only', date);
+      date = new Date(dateRaw + 'T00:00');
     }
     const endTimeRaw = formData.get('endTime')?.toString().trim() || undefined;
     const checked = formData.get('checked') === 'on';
