@@ -35,3 +35,15 @@ export interface Routine {
 }
 
 export type RoutineInput = Omit<Routine, 'id'>;
+
+export interface UserDocument {
+  _id: string;
+  name: string;
+  email: string;
+  password: string;
+  routines: Routine[];
+  events: Event[];
+  tasks: Task[];
+  image?: string;
+  emailVerified?: boolean;
+}

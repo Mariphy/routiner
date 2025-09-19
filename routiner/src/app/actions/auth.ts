@@ -37,4 +37,4 @@ export async function signup(formData: FormData) {
     }
   
     return await response.json();
-  }
+}

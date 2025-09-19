@@ -1,11 +1,10 @@
-import { getServerSession } from "next-auth";
-import { options } from "@/app/api/auth/[...nextauth]/options";
+import { auth } from "@/auth";
 import { connectToDb } from "@/app/api/db";
 import { parseISO, startOfDay, endOfDay } from "date-fns";
 
 export async function GET(req: Request) {
   try {
-    const session = await getServerSession(options);
+    const session = await auth();
     if (!session?.user?.email) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
@@ -20,7 +19,7 @@ export async function GET(req: Request) {
     const title = url.searchParams.get("title");
 
     const { db } = await connectToDb();
-    const user = await db.collection("Users").findOne({ email: session.user.email });
+    const user = await db.collection("users").findOne({ email: session.user.email });
 
     if (!user) {
           return new Response(JSON.stringify({ error: "User not found" }), {
@@ -48,15 +47,15 @@ export async function GET(req: Request) {
     if (title) {
       matchConditions["events.title"] = { $regex: new RegExp(title, "i") };
     }
-    console.log("matchConditions:", matchConditions);
+    
     // Aggregate pipeline to extract only matching events
-    const events = await db.collection("Users").aggregate([
+    const events = await db.collection("users").aggregate([
       { $match: { email: session.user.email } },
       { $unwind: "$events" },
       { $match: matchConditions },
       { $replaceRoot: { newRoot: "$events" } },
     ]).toArray();
-    console.log("events found:", events);
+  
     return new Response(JSON.stringify({ events }), {
       status: 200,
       headers: { "Content-Type": "application/json" },

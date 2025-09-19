@@ -14,7 +14,7 @@ describe("Tasks API Route", () => {
   });
 
   afterAll(async () => {
-    await db.collection("Users").deleteMany({ email: "test@example.com" }); // Clean up test data
+    await db.collection("users").deleteMany({ email: "test@example.com" }); // Clean up test data
   });
 
   it("fetches tasks for a user", async () => {
@@ -26,7 +26,7 @@ describe("Tasks API Route", () => {
         { id: "2", title: "Test Task 2", checked: true },
       ],
     };
-    await db.collection("Users").insertOne(testUser);
+    await db.collection("users").insertOne(testUser);
 
     // Call the GET handler
     const res = await GET();
@@ -53,7 +53,7 @@ describe("Tasks API Route", () => {
     expect(data.task.title).toBe("New Task");
 
     // Verify the task was added to the database
-    const user = await db.collection("Users").findOne({ email: "mia@example.com" });
+    const user = await db.collection("users").findOne({ email: "mia@example.com" });
     expect(user).not.toBeNull();
     expect(user!.tasks).toHaveLength(3);
   });

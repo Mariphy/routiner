@@ -1,7 +1,10 @@
+"use client";
+
 import React, { useEffect, useState } from 'react';
 import { getDay } from 'date-fns';
 import { Calendar, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
-import { fetchUserId, getTasksByDate, getEventsByDate } from '../lib/api';
+import { getEventsByDate } from '../lib/api';
+import { getTasksByDate } from '../lib/api';
 import type { Event, Task, Routine } from '@/app/types.ts';
 
 type PlannerItem = {
@@ -16,6 +19,7 @@ type PlannerItem = {
 };
 
 interface DayProps {
+  userId: string; 
   selectedDate: Date;
   events?: Event[];
   onNavigateDay?: (direction: 'prev' | 'next') => void;
@@ -24,6 +28,7 @@ interface DayProps {
 }
 
 export default function Day({ 
+  userId,
   selectedDate, 
   events: passedEvents,
   onNavigateDay,
@@ -36,7 +41,6 @@ export default function Day({
   useEffect(() => {
     async function fetchData() {
       try {
-        const userId = await fetchUserId();
         const dateString = selectedDate.toISOString().split('T')[0];
         
         const promises = [
@@ -86,7 +90,7 @@ export default function Day({
     }
 
     fetchData();
-  }, [selectedDate, dayOfWeek, passedEvents]);
+  }, [selectedDate, dayOfWeek, passedEvents, userId]);
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('en-US', {

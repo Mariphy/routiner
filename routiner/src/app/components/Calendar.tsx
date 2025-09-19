@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useMemo } from 'react';
 import { startOfMonth, endOfMonth, addDays, subMonths, addMonths, format, getDay, isSameDay } from 'date-fns';
 import Day from './Day';
@@ -5,12 +6,13 @@ import DayCell from './DayCell';
 import type { Event as CalendarEvent } from '@/app/types.ts';
 
 interface CalendarProps {
+  userId: string;
   events: CalendarEvent[];
 }
 
 const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-export default function Calendar({events}: CalendarProps) {
+export default function Calendar({userId, events}: CalendarProps) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -102,6 +104,7 @@ export default function Calendar({events}: CalendarProps) {
       {/* Day view */}
       <div className="p-6">
         <Day 
+          userId={userId}
           selectedDate={selectedDate} 
           events={eventsForSelectedDate}  // Pass pre-filtered events
         />

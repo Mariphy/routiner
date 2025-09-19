@@ -1,69 +1,68 @@
-import React, { useState } from 'react';
-import type { EventInput } from '@/app/types.ts'
+"use client";
+import React, { useTransition } from 'react';
+import { addEvent } from "@/app/lib/actions/events";
 
-interface AddEventProps {
-  onSave: (event:EventInput) => void;  
+interface AddEventProps { 
   onClose: () => void;
 }  
 
-export default function AddEvent( { onSave, onClose }: AddEventProps) {
-  const now = new Date();
-  const currentTime = now.toTimeString().slice(0, 5);
-  const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000).toTimeString().slice(0, 5);
-  
-  const [title, setTitle] = useState('');
-  const [date, setDate] = useState<Date>(now);
-  const [startTime, setStartTime] = useState(currentTime);
-  const [endTime, setEndTime] = useState(oneHourLater);
+export default function AddEvent( { onClose }: AddEventProps) {
+  const [isPending, startTransition] = useTransition();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Create a date-only object (no time component)
-    const eventDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    
-    onSave({ title, date: eventDate, startTime, endTime });
-    onClose();
+  const now = new Date();
+  const currentHour = now.getHours().toString().padStart(2, '0');
+  const nextHour = ((now.getHours() + 1) % 24).toString().padStart(2, '0');
+  const currentTime = `${currentHour}:00`;
+  const oneHourLater = `${nextHour}:00`;
+  const todayDate = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+
+  const addEventAction = async (formData: FormData) => {
+    startTransition(async () => {
+      const res = await addEvent(formData);
+      if (res.success) {
+        onClose();
+      } else {
+        console.error(res.error);
+      }
+    });
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      onClick={onClose}
+    >
+      <div 
+        className="bg-white p-6 rounded-lg shadow-lg w-96"
+        onClick={(e) => e.stopPropagation()}
+      >
         <h2 className="text-lg font-bold mb-4">Add Event</h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form action={addEventAction} className="flex flex-col gap-4">
           <input
             type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            name="title"
             placeholder="Event Title"
             className="border p-2 rounded"
             required
           />
           <input
             type="date"
-            value={date.toISOString().substring(0, 10)}
-            onChange={(e) => {
-              const value = e.target.value;
-              if (value) {
-                // Create date in local timezone at midnight
-                const [year, month, day] = value.split('-').map(Number);
-                setDate(new Date(year, month - 1, day));
-              }
-            }}
+            name="date"
+            defaultValue={todayDate}
             className="border p-2 rounded"
             required
           />
           <input
             type="time"
-            value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
+            name="startTime"
+            defaultValue={currentTime}
             className="border p-2 rounded"
             required
           />
           <input
             type="time"
-            value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
+            name="endTime"
+            defaultValue={oneHourLater}
             className="border p-2 rounded"
             required
           />
@@ -77,9 +76,10 @@ export default function AddEvent( { onSave, onClose }: AddEventProps) {
             </button>
             <button
               type="submit"
+              disabled={isPending}
               className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
             >
-              Save
+              {isPending ? 'Saving...' : 'Save'}
             </button>
           </div>
         </form>

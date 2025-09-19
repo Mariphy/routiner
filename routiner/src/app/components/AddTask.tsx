@@ -1,135 +1,95 @@
-import React, { useState } from 'react';
-
-interface Task {
-    title: string; 
-    id: string;
-    day?: string;
-    date?: Date;
-    startTime?: string;
-    endTime?: string;
-    checked: boolean;
-}
-
-type TaskInput = Omit<Task, 'id'>;
+'use client'
+import React, { useTransition } from 'react';
+import { addTask } from "@/app/lib/actions/tasks";
 
 interface AddTaskProps {
-  onSave: (task: TaskInput) => void;
   onClose: () => void;
 }
 
-export default function AddTask({ onSave, onClose }: AddTaskProps) {
-  const [title, setTitle] = useState("");
-  const [day, setDay] = useState("");
-  const [date, setDate] = useState<Date | undefined>(undefined);  
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-  const [checked, setChecked] = useState(false);
+export default function AddTask({ onClose }: AddTaskProps) {
+  const [isPending, startTransition] = useTransition();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Apply the same date fix as AddEvent
-    const taskDate = date ? new Date(date.getFullYear(), date.getMonth(), date.getDate()) : undefined;
-    
-    onSave({ title, day, date: taskDate, startTime, endTime, checked });
+  const addTaskAction = async (formData: FormData) => {
+    startTransition(async () => {
+      const res = await addTask(formData);
+      if (res.success) {
+        onClose();
+      } else {
+        console.error(res.error);
+      }
+    });
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-lg font-bold mb-4">Add Task</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                    <label className="block text-sm font-medium">Title</label>
-                    <input
-                        type="text"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        className="w-full border p-2 rounded"
-                        required
-                    />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium">Day</label>
-                    <select
-                        value={day}
-                        onChange={(e) => setDay(e.target.value)}
-                        className="w-full border p-2 rounded"
-                    >
-                        <option value="">Select a day</option>
-                        <option value="Monday">Monday</option>
-                        <option value="Tuesday">Tuesday</option>
-                        <option value="Wednesday">Wednesday</option>
-                        <option value="Thursday">Thursday</option>
-                        <option value="Friday">Friday</option>
-                        <option value="Saturday">Saturday</option>
-                        <option value="Sunday">Sunday</option>
-                    </select>
-                </div>
-                <div>
-                    <label className="block text-sm font-medium">Date</label>
-                    <input
-                    type="date"
-                    value={date ? date.toISOString().substring(0, 10) : ""}
-                    onChange={(e) => {
-                        const value = e.target.value;
-                        if (value) {
-                          // Create date in local timezone at midnight (same as AddEvent)
-                          const [year, month, day] = value.split('-').map(Number);
-                          setDate(new Date(year, month - 1, day));
-                        } else {
-                          setDate(undefined);
-                        }
-                    }}
-                    className="w-full border p-2 rounded"
-                    />
-                </div>
-                <div className="flex gap-4">
-                    <div>
-                    <label className="block text-sm font-medium">Start Time</label>
-                    <input
-                        type="time"
-                        value={startTime}
-                        onChange={(e) => setStartTime(e.target.value)}
-                        className="w-full border p-2 rounded"
-                    />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium">End Time</label>
-                    <input
-                        type="time"
-                        value={endTime}
-                        onChange={(e) => setEndTime(e.target.value)}
-                        className="w-full border p-2 rounded"
-                    />
-                    </div>
-                </div>
-                <div className="flex items-center gap-2">
-                    <input
-                    type="checkbox"
-                    checked={checked}
-                    onChange={(e) => setChecked(e.target.checked)}
-                    className="w-4 h-4"
-                    />
-                    <label className="text-sm font-medium">Mark as Completed</label>
-                </div>
-                <div className="flex justify-end gap-4">
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
-                        >
-                        Cancel
-                    </button>
-                    <button
-                        type="submit"
-                        className="bg-accent text-white px-4 py-2 rounded hover:bg-blue-600"
-                        >
-                        Save
-                    </button>
-                </div>
-            </form>
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      onClick={onClose}
+    >
+      <div 
+        className="bg-white p-6 rounded-lg shadow-lg w-96"
+        onClick={(e) => e.stopPropagation()}
+        >
+        <h2 className="text-lg font-bold mb-4">Add Task</h2>
+        <form action={addTaskAction} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium">Title</label>
+            <input
+              name="title"
+              type="text"
+              className="w-full border p-2 rounded"
+              required
+              disabled={isPending} />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">When are you going to handle it?</label>
+            <select name="day" className="w-full border p-2 rounded" disabled={isPending}>
+              <option value="">(Optional)</option>
+              <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+              <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">Deadline</label>
+            <input name="date" type="date" className="w-full border p-2 rounded" disabled={isPending} />
+          </div>
+
+          <div className="flex gap-4">
+            <div>
+              <label className="block text-sm font-medium">Start Time</label>
+              <input name="startTime" type="time" className="w-full border p-2 rounded" disabled={isPending} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">End Time</label>
+              <input name="endTime" type="time" className="w-full border p-2 rounded" disabled={isPending} />
+            </div>
+          </div>
+
+          <label className="flex items-center gap-2">
+            <input name="checked" type="checkbox" className="w-4 h-4" disabled={isPending} />
+            <span className="text-sm font-medium">Mark as Completed</span>
+          </label>
+
+          <div className="flex justify-end gap-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+              disabled={isPending}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="bg-accent text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+              disabled={isPending}
+            >
+              {isPending ? 'Saving...' : 'Save'}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
-};
+}
