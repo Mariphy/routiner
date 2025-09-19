@@ -16,9 +16,7 @@ export default function Event({ event }: EventProps) {
     const closeModal = () => {
         setIsModalOpen(false);
     };
-    //debugger;
-    console.log('e', (event.date instanceof Date));
-    console.log('date', new Date(event.date) instanceof Date);
+    
     return (
         <>
             <div className="event relative border p-2 mb-2 rounded-lg bg-green-100 shadow-sm cursor-pointer group"

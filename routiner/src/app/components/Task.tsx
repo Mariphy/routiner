@@ -42,7 +42,7 @@ export default function Task({ task }: TaskProps) {
       }
     });
   };
-  console.log('t', task.date instanceof Date);
+  
   return (
     <>
       <div 
