@@ -7,11 +7,6 @@ import { generateUniqueId } from '@/app/utils/helpers';
 import { auth } from "@/auth";
 
 export async function addTask(formData: FormData) {
-  try {
-    const session = await auth();
-    if (!session?.user?.email) {
-      return { success: false, error: 'Unauthenticated' };
-    }
 
     const rawTitle = (formData.get('title') ?? '').toString().trim();
     if (!rawTitle) {
@@ -41,7 +36,6 @@ export async function addTask(formData: FormData) {
       checked,
     };
 
-    const { db } = await connectToDb();
     const result = await db.collection<UserDocument>('users').updateOne(
       { email: session.user.email },
       { $push: { tasks: task } }
@@ -54,10 +48,7 @@ export async function addTask(formData: FormData) {
     revalidatePath('/board');
     revalidatePath('/calendar');
     return { success: true, task };
-  } catch (e) {
-    console.error('addTask error:', e);
-    return { success: false, error: 'Internal error' };
-  }
+
 }
 
 export async function editTask(formData: FormData, id: string) {

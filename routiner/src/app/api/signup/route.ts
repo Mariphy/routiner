@@ -1,16 +1,37 @@
 import { hashPassword } from "@/app/lib/bcrypt";
 import { createUser, getUserByEmail } from "@/app/lib/actions/user";
+import { SignupRequest } from "./dtos/SignupRequestDTO";
+import { withErrorHandler, validateRequired } from "@/app/lib/errorHandler";
+import { ConflictError, ValidationError, DatabaseError } from "@/app/lib/errors";
 
-export async function POST(req: Request) {
-  const { name, email, password } = await req.json();
+async function signupHandler(req: SignupRequest) {
+  // Validate required fields
+  validateRequired(req, ['name', 'email', 'password']);
 
-  const existingUser = await getUserByEmail(email);
+  // Check if user already exists
+  const existingUser = await getUserByEmail(req.email);
   if (existingUser) {
-    return new Response(JSON.stringify({ error: "User exists" }), { status: 409 });
+    throw new ConflictError("User already exists with this email");
   }
 
-  const hashed = await hashPassword(password);
-  await createUser({ name, email, password: hashed });
+  // Hash password and create user
+  const hashed = await hashPassword(req.password);
+  const result = await createUser({ 
+    name: req.name, 
+    email: req.email, 
+    password: hashed 
+  });
 
-  return new Response(JSON.stringify({ message: "User created" }), { status: 201 });
+  if (!result) {
+    throw new DatabaseError("Failed to create user");
+  }
+
+  return new Response(JSON.stringify({ message: "User created successfully" }), { 
+    status: 201,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 }
+
+export const POST = withErrorHandler(signupHandler);

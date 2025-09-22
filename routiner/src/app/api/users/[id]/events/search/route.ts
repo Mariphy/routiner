@@ -2,16 +2,8 @@ import { auth } from "@/auth";
 import { connectToDb } from "@/app/api/db";
 import { parseISO, startOfDay, endOfDay } from "date-fns";
 
-export async function GET(req: Request) {
-  try {
-    const session = await auth();
-    if (!session?.user?.email) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
 
+export async function GET(req: Request) {
     const url = new URL(req.url);
     const date = url.searchParams.get("date");
     const start = url.searchParams.get("start");
@@ -22,10 +14,7 @@ export async function GET(req: Request) {
     const user = await db.collection("users").findOne({ email: session.user.email });
 
     if (!user) {
-          return new Response(JSON.stringify({ error: "User not found" }), {
-            status: 404,
-            headers: { "Content-Type": "application/json" },
-          });
+          throw new NotFoundError("User not found");
     }
 
     // Build dynamic match conditions
@@ -61,9 +50,5 @@ export async function GET(req: Request) {
       headers: { "Content-Type": "application/json" },
     });
 
-  } catch (err) {
-    console.error("Error searching events:", err);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), { status: 500 });
-  }
 }
 

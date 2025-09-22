@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { connectToDb } from "@/app/api/db";
 import { generateUniqueId } from "@/app/utils/helpers";
 import type { Routine } from "@/app/types.ts";
+import { NotFoundError } from "@/app/lib/errors";
 
   interface UserDocument {
     _id: string;
@@ -27,10 +28,7 @@ export async function GET() {
         const user = await db.collection("users").findOne({ email: session.user.email });
     
         if (!user) {
-          return new Response(JSON.stringify({ error: "User not found" }), {
-            status: 404,
-            headers: { "Content-Type": "application/json" },
-          });
+          throw new NotFoundError("User not found");
         }
     
         return new Response(JSON.stringify({ routines: user.routines || [] }), {

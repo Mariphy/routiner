@@ -23,7 +23,7 @@ export async function addRoutine(formData: FormData) {
             id: generateUniqueId(),
             title: rawTitle,
             daily: formData.get("daily") === "on",
-            repeat: formData.get("repeat") ? (formData.get("repeat") as string).split(",") : [],
+            repeat: formData.get("repeat") ? formData.get("repeat")?.toString().split(",") : [],
             startTime: formData.get("startTime") as string,
             endTime: formData.get("endTime") as string,
         };
