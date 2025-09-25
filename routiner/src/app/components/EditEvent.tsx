@@ -54,6 +54,7 @@ export default function EditEvent({ event, onClose }: EditEventProps) {
             >
                 <h2 className="text-lg font-bold mb-4">Edit Event</h2>
                 <form action={editEventAction} className="flex flex-col gap-4">
+                    <input type="hidden" name="id" value={event.id} />
                     <input
                         type="text"
                         name="title"
@@ -64,7 +65,7 @@ export default function EditEvent({ event, onClose }: EditEventProps) {
                     <input
                         type="date"
                         name="date"
-                        defaultValue={event.date ? event.date.toISOString().split('T')[0] : todayDate}
+                        defaultValue={event.date ? new Date(event.date).toISOString().split('T')[0] : todayDate}
                         className="border p-2 rounded"
                         required
                     />

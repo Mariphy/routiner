@@ -5,9 +5,10 @@ import { startOfWeek, addDays, format, isSameDay } from 'date-fns';
 import Task from './Task';
 import Routine from './Routine';
 import Event from './Event';
-import type { Task as TaskType } from '@/app/types.ts';
-import type { Routine as RoutineType } from '@/app/types.ts';
-import type { Event as EventType } from '@/app/types.ts';
+import type { 
+  Task as TaskType, 
+  Routine as RoutineType, 
+  Event as EventType } from '@/app/types.ts';
 import { addTask } from '@/app/lib/actions/tasks'
 
 interface BoardProps {
