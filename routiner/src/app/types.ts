@@ -47,3 +47,19 @@ export interface UserDocument {
   image?: string;
   emailVerified?: boolean;
 }
+
+export interface ExternalCalendar {
+  id: string;
+  name: string;
+  url: string;
+  color?: string;
+  isActive: boolean;
+  lastSynced?: Date;
+  syncError?: string;
+}
+
+export interface ExternalEvent extends Event {
+  calendarId: string;
+  originalId: string;
+  isExternal: true;
+}
