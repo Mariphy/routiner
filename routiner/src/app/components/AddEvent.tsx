@@ -18,6 +18,7 @@ export default function AddEvent( { onClose }: AddEventProps) {
 
   const addEventAction = async (formData: FormData) => {
     startTransition(async () => {
+      //add concatination of date and time, convert to ISO
       const res = await addEvent(formData);
       if (res.success) {
         onClose();

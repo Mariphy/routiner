@@ -22,6 +22,7 @@ export async function addTask(formData: FormData) {
     const dateRaw = (formData.get('date') ?? '').toString() || undefined;
     const startTimeRaw = formData.get('startTime')?.toString().trim() || undefined;
     let date;
+    //to-do use new Date(day, time)
     if (dateRaw && startTimeRaw) {
       const dateTimeString = `${dateRaw}T${startTimeRaw}:00`;
       date = new Date(dateTimeString);

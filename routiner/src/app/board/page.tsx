@@ -8,6 +8,7 @@ import type { Routine, Task, Event } from '@/app/types';
 import { cookies, headers } from "next/headers";
 
 export default async function BoardPage() {
+  //await new Promise(resolve => setTimeout(resolve, 3000));
   let tasks: Task[] = [];
   let routines: Routine[] = [];
   let events: Event[] = [];

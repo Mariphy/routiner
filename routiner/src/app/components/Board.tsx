@@ -55,7 +55,7 @@ export default function Board({ tasks: tasks, routines: routines, events: events
   };
 
   return (
-    <div className="board-container w-full overflow-x-auto">
+    <div className="w-full overflow-x-auto">
       {/* Toggle Header */}
       <div className="flex justify-between items-center p-4 bg-white border-b">
         <div className="flex items-center gap-4">
