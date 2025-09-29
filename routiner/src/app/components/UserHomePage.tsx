@@ -19,11 +19,12 @@ export default function UserHomePage() {
         <p className="mt-4">
             <span className="font-semibold">Happy Planning!</span>
         </p>
-            <Link href="/api/auth/signout">
-                <button className="bg-green-500 text-white m-6 px-4 py-2 rounded hover:bg-green-600">
-                  Sign Out
-                </button>
-            </Link>        
+        <Link href="/settings" className="text-xl hover:underline">Settings</Link>  
+        <Link href="/api/auth/signout">
+            <button className="bg-green-500 text-white m-6 px-4 py-2 rounded hover:bg-green-600">
+              Sign Out
+            </button>
+        </Link>      
     </div>
   );
 }
