@@ -1,6 +1,6 @@
 'use client';
 import React, { useTransition } from 'react';
-import { editTask, deleteTask } from '@/app/lib/actions/tasks';
+import { editTask, deleteTask } from '@/app/actions/tasks';
 import type { Task as TaskType } from '@/app/types.ts';
 
 interface EditTaskProps {

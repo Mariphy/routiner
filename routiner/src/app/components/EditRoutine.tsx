@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useTransition } from 'react';
-import { editRoutine, deleteRoutine } from '@/app/lib/actions/routines';
+import { editRoutine, deleteRoutine } from '@/app/actions/routines';
 import type { Routine as RoutineType } from '@/app/types.ts';
 import Select from 'react-select';
 

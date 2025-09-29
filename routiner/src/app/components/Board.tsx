@@ -9,7 +9,7 @@ import type {
   Task as TaskType, 
   Routine as RoutineType, 
   Event as EventType } from '@/app/types.ts';
-import { addTask } from '@/app/lib/actions/tasks'
+import { addTask } from '@/app/actions/tasks'
 
 interface BoardProps {
   tasks: TaskType[];

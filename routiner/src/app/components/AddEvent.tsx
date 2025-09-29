@@ -1,6 +1,6 @@
 "use client";
 import React, { useTransition } from 'react';
-import { addEvent } from "@/app/lib/actions/events";
+import { addEvent } from "@/app/actions/events";
 
 interface AddEventProps { 
   onClose: () => void;
