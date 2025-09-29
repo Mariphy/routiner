@@ -1,7 +1,7 @@
 //fetches data through API requests
 import { parseISO, isSameDay } from 'date-fns';
 import { getCurrentWeekRange } from '../utils/helpers';
-import type { Task, Event, Routine } from '@/app/types.ts';
+import type { Task, Event } from '@/app/types.ts';
 import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
 import { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers';
 
@@ -38,7 +38,6 @@ function normalizeTask(task: Task) {
     };
 }
 
-//user id
 //user id for client 
 export async function fetchUserIdClient() {
     const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/session`, {
@@ -65,7 +64,6 @@ export async function getTasks(userId: string, reqHeaders: RequestHeaders) {
 
         }
     );
-    //console.log("response: ", response)
 
     if (!response.ok) {
     console.error(`Failed to fetch tasks: ${response.status}`);
@@ -157,72 +155,17 @@ export async function getEventsForCurrentWeek(userId: string, reqHeaders: Reques
   return data.events || [];
 }
 
-//routines mutations
-//to-do: move to /actions/routines
-//addRoutine moved to server actions
+//fetch events from an external calendar
+async function fetchRawICS(userId: string, reqHeaders: RequestHeaders) {
+    const url = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}`,
+        {
+            credentials: "include", // browser will send cookies automatically
+            headers: { "cookie": reqHeaders.cookies.getAll().map((c: Record<string, string>) => `${c.name}=${c.value}`).join('; ') },
 
-export async function editRoutine(userId: string, routine: Routine) {
-    const response = await fetch(`/api/users/${userId}/routines`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ routine }),
-    });
-
-    if (!response.ok) {
-    console.error(`Failed to edit routine: ${response.status}`);
-    return routine;
-    }
-
-    const responseData = await response.json();
-    const updatedRoutine = responseData.routine; // Extract the updated routine
-    return updatedRoutine;
+        }
+    );
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to fetch ICS: ${res.status}`);
+  const text = await res.text(); // raw iCalendar text
+  return text;
 }
-
-export async function deleteRoutine(userId: string, routineId: string) {
-    const response = await fetch(`/api/users/${userId}/routines`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: routineId }),
-    });
-
-    if (!response.ok) {
-    console.error(`Failed to delete routine: ${response.status}`);
-    return null;
-    }
-
-    return response.json();
-}
-
-//events mutations
-//to-do: move to /actions/events
-//addEvent moved to server actions     
-
-export async function editEvent(userId: string, event: Event) {
-    const response = await fetch(`/api/users/${userId}/events`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ event }),
-    });
-
-    if (!response.ok) {
-    console.error(`Failed to edit event: ${response.status}`);
-    return event;
-    }
-
-    return response.json();
-}   
-
-export async function deleteEvent(userId: string, eventId: string) {
-    const response = await fetch(`/api/users/${userId}/events`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: eventId }),
-    });
-
-    if (!response.ok) {
-    console.error(`Failed to delete event: ${response.status}`);
-    return null;
-    }
-
-    return response.json();
-}   

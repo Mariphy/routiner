@@ -46,6 +46,7 @@ export interface UserDocument {
   tasks: Task[];
   image?: string;
   emailVerified?: boolean;
+  importLink?: string;
 }
 
 export interface ExternalCalendar {

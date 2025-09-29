@@ -1,17 +1,7 @@
 import { auth } from "@/auth";
 import { connectToDb } from "@/app/api/db";
 import { generateUniqueId } from "@/app/utils/helpers";
-import type { Routine } from "@/app/types.ts";
-
-  interface UserDocument {
-    _id: string;
-    name: string;
-    email: string;
-    password: string;
-    routines: Routine[];
-    events: string[];
-    tasks: string[];
-}
+import type { Routine, UserDocument } from "@/app/types.ts";
 
 export async function GET() {
     try {
