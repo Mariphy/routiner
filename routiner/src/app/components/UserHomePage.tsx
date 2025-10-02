@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 export default function UserHomePage() {
-
   return (
     <div>
         <p className="mt-4">

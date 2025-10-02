@@ -1,5 +1,13 @@
-import { addImportLink } from "@/app/actions/calendarImport"
-export default function SettingsPage() {
+import { addImportLink } from "@/app/actions/calendarImport";
+import { cookies, headers } from "next/headers";
+import { fetchUserIdServer } from "@/app/actions/userId"
+import { fetchRawICS } from "@/app/lib/api";
+   
+export default async function SettingsPage() {
+    const userId = await fetchUserIdServer();
+    const cookieStore = await cookies();
+    const allHeaders = await headers();
+
     const addLinkAction = async (formData: FormData) => {
         'use server';
         const res = await addImportLink(formData);
@@ -7,6 +15,8 @@ export default function SettingsPage() {
             console.error('Failed to add import link:', res.error);
         }
     }
+    const rawEvents = fetchRawICS(userId, { cookies: cookieStore, headers: allHeaders })
+    
     return (
         <div className="pt-20 px-6">
             <p>If you would like to import events from another calendar, please provide the subscription link below</p>
@@ -26,6 +36,7 @@ export default function SettingsPage() {
                     Add
                 </button>
             </form>
+            {rawEvents}
         </div>
     )
 }

@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { connectToDb } from "@/app/api/db";
-import { generateUniqueId } from "@/app/utils/helpers";
-import type { Routine, UserDocument } from "@/app/types.ts";
+import { generateUniqueId } from "@/app/lib/helpers";
+import type { UserDocument } from "@/app/types.ts";
 
 export async function GET() {
     try {

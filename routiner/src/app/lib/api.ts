@@ -1,6 +1,6 @@
 //fetches data through API requests
 import { parseISO, isSameDay } from 'date-fns';
-import { getCurrentWeekRange } from '../utils/helpers';
+import { getCurrentWeekRange } from '@/app/lib/helpers';
 import type { Task, Event } from '@/app/types.ts';
 import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
 import { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers';
@@ -156,7 +156,7 @@ export async function getEventsForCurrentWeek(userId: string, reqHeaders: Reques
 }
 
 //fetch events from an external calendar
-async function fetchRawICS(userId: string, reqHeaders: RequestHeaders) {
+export async function fetchRawICS(userId: string, reqHeaders: RequestHeaders) {
     const url = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}`,
         {
             credentials: "include", // browser will send cookies automatically
