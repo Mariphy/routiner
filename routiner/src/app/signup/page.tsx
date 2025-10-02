@@ -70,29 +70,44 @@ export default function SignUpPage() {
         <form onSubmit={handleSubmit}>
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
           <div className="mb-4">
+            <label htmlFor="signup-name" className="block text-sm font-medium text-gray-700 mb-1">
+              Name
+            </label>
             <input
+              id="signup-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Name"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
           </div>
           <div className="mb-4">
+            <label htmlFor="signup-email" className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
             <input
+              id="signup-email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
               type="email"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
           </div>
           <div className="mb-4">
+            <label htmlFor="signup-password" className="block text-sm font-medium text-gray-700 mb-1">
+              Password
+            </label>
             <input
+              id="signup-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
               type="password"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
           </div>
           <button

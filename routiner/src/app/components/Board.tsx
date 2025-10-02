@@ -95,7 +95,11 @@ export default function Board({ tasks: tasks, routines: routines, events: events
           {/* Only show add task input when showing active tasks */}
           {!showCompleted && (
             <div className="flex items-center gap-2 mb-4">
+              <label htmlFor="quick-add-task" className="sr-only">
+                Add new task
+              </label>
               <input
+                id="quick-add-task"
                 type="text"
                 value={newTask}
                 onChange={(e) => setNewTask(e.target.value)}
@@ -160,7 +164,11 @@ export default function Board({ tasks: tasks, routines: routines, events: events
               {/* Only show add task input when showing active tasks */}
               {!showCompleted && (
                 <div className="flex items-center gap-2 mb-4">
+                  <label htmlFor={`quick-add-task-${dayName}`} className="sr-only">
+                    Add task for {dayName}
+                  </label>
                   <input
+                    id={`quick-add-task-${dayName}`}
                     type="text"
                     value={selectedDay === dayName ? newTask : ''}
                     onChange={(e) => {

@@ -55,28 +55,44 @@ export default function EditEvent({ event, onClose }: EditEventProps) {
                 <h2 className="text-lg font-bold mb-4">Edit Event</h2>
                 <form action={editEventAction} className="flex flex-col gap-4">
                     <input type="hidden" name="id" value={event.id} />
+                    <label htmlFor="edit-event-title" className="block text-sm font-medium">
+                        Event Title
+                    </label>
                     <input
+                        id="edit-event-title"
                         type="text"
                         name="title"
                         defaultValue={event.title}
                         className="border p-2 rounded"
                         required
                     />
+                    <label htmlFor="edit-event-date" className="block text-sm font-medium">
+                        Date
+                    </label>
                     <input
+                        id="edit-event-date"
                         type="date"
                         name="date"
                         defaultValue={event.date ? new Date(event.date).toISOString().split('T')[0] : todayDate}
                         className="border p-2 rounded"
                         required
                     />
+                    <label htmlFor="edit-event-start-time" className="block text-sm font-medium">
+                        Start Time
+                    </label>
                     <input
+                        id="edit-event-start-time"
                         type="time"
                         name="startTime"
                         defaultValue={event.startTime || currentTime}
                         className="border p-2 rounded"
                         required
                     />
+                    <label htmlFor="edit-event-end-time" className="block text-sm font-medium">
+                        End Time
+                    </label>
                     <input
+                        id="edit-event-end-time"
                         type="time"
                         name="endTime"
                         defaultValue={event.endTime || oneHourLater}
