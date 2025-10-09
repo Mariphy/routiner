@@ -1,8 +1,8 @@
 "use client";
 import React, { useState, useMemo } from 'react';
 import { startOfMonth, endOfMonth, addDays, subMonths, addMonths, format, getDay, isSameDay } from 'date-fns';
-import Day from './Day';
-import DayCell from './DayCell';
+import Day from '@/app/components/Day';
+import DayCell from '@/app/components/DayCell';
 import type { Event as CalendarEvent } from '@/app/types.ts';
 
 interface CalendarProps {
