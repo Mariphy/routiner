@@ -3,17 +3,18 @@ import React, { useState, useMemo } from 'react';
 import { startOfMonth, endOfMonth, addDays, subMonths, addMonths, format, getDay, isSameDay } from 'date-fns';
 import Day from '@/app/components/Day';
 import DayCell from '@/app/components/DayCell';
-import type { Event as CalendarEvent } from '@/app/types.ts';
+import type { Event as EventType, Task as TaskType, Routine as RoutineType } from '@/app/types.ts';
 import { X } from 'lucide-react';
 
 interface CalendarProps {
-  userId: string;
-  events: CalendarEvent[];
+  events: EventType[];
+  tasks: TaskType[];
+  routines: RoutineType[];
 }
 
 const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-export default function Calendar({ userId, events }: CalendarProps) {
+export default function Calendar({ events, tasks, routines }: CalendarProps) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isDayView, setIsDayView] = useState(false);
@@ -25,6 +26,18 @@ export default function Calendar({ userId, events }: CalendarProps) {
       selectedDate
     )
   );
+
+  //Filter tasks for selected date
+  const tasksForSelectedDate = tasks.filter(task =>
+    task.date && isSameDay(
+      task.date instanceof Date ? task.date : new Date(task.date),
+      selectedDate
+    )
+  );
+
+  //Filter routines by day of week
+  const dayName = format(selectedDate, 'EEEE');
+  const routinesForDay = routines.filter(routine => routine.repeat.includes(dayName));
 
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
@@ -118,9 +131,10 @@ export default function Calendar({ userId, events }: CalendarProps) {
             </button>
           </div>
           <Day
-            userId={userId}
             selectedDate={selectedDate}
             events={eventsForSelectedDate}  // Pass pre-filtered events
+            tasks={tasksForSelectedDate}  
+            routines={routinesForDay}
           />
         </div>)}
     </div>

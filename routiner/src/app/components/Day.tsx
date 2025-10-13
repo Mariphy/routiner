@@ -1,26 +1,31 @@
 "use client";
 import React from 'react';
-import type { Event as EventType, Task as TaskType } from '@/app/types';
+import type { Event as EventType, Task as TaskType, Routine as RoutineType } from '@/app/types';
 import Event from "@/app/components/Event";
 import Task from "@/app/components/Task";
+import Routine from '@/app/components/Routine';
 
 
 interface DayProps {
-    userId: string;
     selectedDate: Date;
     events: EventType[];
     tasks: TaskType[];
+    routines: RoutineType[];
 }
 
-export default function Day({ userId, selectedDate, events, tasks }: DayProps) { 
+export default function Day({ selectedDate, events, tasks, routines }: DayProps) { 
     return (
         <div className='pb-10'>
+            {selectedDate.toISOString().slice(0, 10)}
             <h2 className="text-2xl font-bold mb-4 text-center">Shedule for the day</h2>
             {events.map(event => (
                 <Event key={event.id} event={event} variant="compact" />
             ))}
             {tasks.map(task => (
                 <Task key={task.id} task={task} />
+            ))}
+            {routines.map(routine => (
+                <Routine key={routine.id} routine={routine} />
             ))}
         </div>
     )
