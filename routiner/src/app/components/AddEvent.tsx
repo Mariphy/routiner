@@ -39,28 +39,44 @@ export default function AddEvent( { onClose }: AddEventProps) {
       >
         <h2 className="text-lg font-bold mb-4">Add Event</h2>
         <form action={addEventAction} className="flex flex-col gap-4">
+          <label htmlFor="event-title" className="block text-sm font-medium">
+            Event Title
+          </label>
           <input
+            id="event-title"
             type="text"
             name="title"
             placeholder="Event Title"
             className="border p-2 rounded"
             required
           />
+          <label htmlFor="event-date" className="block text-sm font-medium">
+            Date
+          </label>
           <input
+            id="event-date"
             type="date"
             name="date"
             defaultValue={todayDate}
             className="border p-2 rounded"
             required
           />
+          <label htmlFor="event-start-time" className="block text-sm font-medium">
+            Start Time
+          </label>
           <input
+            id="event-start-time"
             type="time"
             name="startTime"
             defaultValue={currentTime}
             className="border p-2 rounded"
             required
           />
+          <label htmlFor="event-end-time" className="block text-sm font-medium">
+            End Time
+          </label>
           <input
+            id="event-end-time"
             type="time"
             name="endTime"
             defaultValue={oneHourLater}

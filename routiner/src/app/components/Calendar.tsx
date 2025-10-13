@@ -1,33 +1,48 @@
 "use client";
 import React, { useState, useMemo } from 'react';
 import { startOfMonth, endOfMonth, addDays, subMonths, addMonths, format, getDay, isSameDay } from 'date-fns';
-import Day from './Day';
-import DayCell from './DayCell';
-import type { Event as CalendarEvent } from '@/app/types.ts';
+import Day from '@/app/components/Day';
+import DayCell from '@/app/components/DayCell';
+import type { Event as EventType, Task as TaskType, Routine as RoutineType } from '@/app/types.ts';
+import { X } from 'lucide-react';
 
 interface CalendarProps {
-  userId: string;
-  events: CalendarEvent[];
+  events: EventType[];
+  tasks: TaskType[];
+  routines: RoutineType[];
 }
 
 const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-export default function Calendar({userId, events}: CalendarProps) {
+export default function Calendar({ events, tasks, routines }: CalendarProps) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [isDayView, setIsDayView] = useState(false);
 
   // Filter events for the selected date
-  const eventsForSelectedDate = events.filter(event => 
+  const eventsForSelectedDate = events.filter(event =>
     event.date && isSameDay(
       event.date instanceof Date ? event.date : new Date(event.date),
       selectedDate
     )
   );
 
+  //Filter tasks for selected date
+  const tasksForSelectedDate = tasks.filter(task =>
+    task.date && isSameDay(
+      task.date instanceof Date ? task.date : new Date(task.date),
+      selectedDate
+    )
+  );
+
+  //Filter routines by day of week
+  const dayName = format(selectedDate, 'EEEE');
+  const routinesForDay = routines.filter(routine => routine.repeat.includes(dayName));
+
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
 
-   // Memoize the calendar grid to avoid infinite loops
+  // Memoize the calendar grid to avoid infinite loops
   const calendarGrid = useMemo(() => {
     const days: Date[] = [];
     let day = monthStart;
@@ -42,16 +57,16 @@ export default function Calendar({userId, events}: CalendarProps) {
   }, [monthStart, monthEnd]);
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col lg:flex-row justify-evenly h-screen">
       {/* Calendar grid */}
-      <div className="flex flex-col justify-between items-center flex-shrink p-4">
+      <div className="flex flex-col justify-start items-center flex-shrink p-4">
         <div className="text-center mb-4 p-4 flex items-center justify-center gap-4">
           <button
             onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
             className="px-2 py-1 rounded hover:bg-gray-200"
             aria-label="Previous Month"
           >
-            &#8592;
+            &#8592; {/* Left arrow */}
           </button>
           <h2 className="text-2xl font-bold min-w-[120px]">
             {format(currentMonth, 'MMMM yyyy')}
@@ -61,7 +76,7 @@ export default function Calendar({userId, events}: CalendarProps) {
             className="px-2 py-1 rounded hover:bg-gray-200"
             aria-label="Next Month"
           >
-            &#8594;
+            &#8594; {/* Right arrow */}
           </button>
         </div>
         {/* Days of week header */}
@@ -93,22 +108,35 @@ export default function Calendar({userId, events}: CalendarProps) {
                 day={day}
                 today={new Date()}
                 selectedDate={selectedDate}
-                onClick={setSelectedDate}
+                onClick={(date) => {
+                  setSelectedDate(date);
+                  setIsDayView(true);
+                }}
                 events={eventsForDay} // Pass events for preview
               />
             );
           })}
         </div>
       </div>
-      
+
       {/* Day view */}
-      <div className="p-6">
-        <Day 
-          userId={userId}
-          selectedDate={selectedDate} 
-          events={eventsForSelectedDate}  // Pass pre-filtered events
-        />
-      </div>
+      {selectedDate && isDayView &&(
+        <div className="py-6 px-2 flex-1">
+          <div className="flex justify-end">
+            <button
+              onClick={() => setIsDayView(false)}
+              className='border rounded-full m-2 p-2'
+            >
+              <X />
+            </button>
+          </div>
+          <Day
+            selectedDate={selectedDate}
+            events={eventsForSelectedDate}  // Pass pre-filtered events
+            tasks={tasksForSelectedDate}  
+            routines={routinesForDay}
+          />
+        </div>)}
     </div>
   );
 }

@@ -77,7 +77,7 @@ export async function getTasks(userId: string, reqHeaders: RequestHeaders) {
     };
 }
 
-//to-do: add cookies
+//to-do: add cookies (maybe not, using with a client side component Day)
 export async function getTasksByDate(userId: string, date: string) {
     const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/tasks`,);
     if (!response.ok) {
@@ -88,10 +88,12 @@ export async function getTasksByDate(userId: string, date: string) {
     const data = await response.json();
     const tasks = data.tasks || [];
 
-    return tasks.filter((task: Task) => {
-        const taskDate = parsePossibleDate(task.date);
-        return taskDate && isSameDay(taskDate, parseISO(date));
-    });
+    return tasks
+        .filter((task: Task) => {
+            const taskDate = parsePossibleDate(task.date);
+            return taskDate && isSameDay(taskDate, parseISO(date));
+        })
+        .map(normalizeTask);
 }
 
 //routines fetching functions:

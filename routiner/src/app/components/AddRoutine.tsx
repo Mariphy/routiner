@@ -55,7 +55,11 @@ export default function AddRoutine({ onClose }: AddRoutineProps) {
       >
         <h2 className="text-lg font-bold mb-4">Add Routine</h2>
         <form action={addRoutineAction} className="flex flex-col gap-4">
+          <label htmlFor="routine-title" className="block text-sm font-medium">
+            Routine Title
+          </label>
           <input
+            id="routine-title"
             type="text"
             name="title"
             placeholder="Morning Routine"
@@ -74,8 +78,11 @@ export default function AddRoutine({ onClose }: AddRoutineProps) {
             <span>Repeat Daily</span>
           </label>
 
-          <span>Or choose which days of week to repeat:</span>
+          <label htmlFor="routine-repeat-days" className="block text-sm font-medium">
+            Or choose which days of week to repeat:
+          </label>
           <Select
+            inputId="routine-repeat-days"
             value={selectedDays}
             onChange={(selected) => setRepeat(selected?.map(option => option.value) || [])}
             isMulti
@@ -92,12 +99,20 @@ export default function AddRoutine({ onClose }: AddRoutineProps) {
             value={repeat.join(',')}
           />
 
+          <label htmlFor="routine-start-time" className="block text-sm font-medium">
+            Start Time
+          </label>
           <input
+            id="routine-start-time"
             type="time"
             name="startTime"
             className="border p-2 rounded"
           />
+          <label htmlFor="routine-end-time" className="block text-sm font-medium">
+            End Time
+          </label>
           <input
+            id="routine-end-time"
             type="time"
             name="endTime"
             className="border p-2 rounded"

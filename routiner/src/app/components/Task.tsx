@@ -52,7 +52,11 @@ export default function Task({ task }: TaskProps) {
         onClick={handleTaskClick} 
       >
         <div className="flex items-center mb-2">
+          <label htmlFor={`task-checkbox-${task.id}`} className="sr-only">
+            Task completion status
+          </label>
           <input
+            id={`task-checkbox-${task.id}`}
             type="checkbox"
             checked={task.checked}
             onClick={(e) => e.stopPropagation()}

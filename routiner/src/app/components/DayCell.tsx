@@ -1,5 +1,5 @@
 import React from 'react';
-import { isSameDay, isSameMonth, format } from 'date-fns';
+import { isSameDay, format } from 'date-fns';
 
 export default function DayCell({
   day,
@@ -14,16 +14,13 @@ export default function DayCell({
   onClick: (date: Date) => void;
   events?: Array<{ id?: string; title?: string }>;
 }) {
-  const isCurrentMonth = isSameMonth(day, today);
   const isToday = isSameDay(day, today);
   const isSelected = isSameDay(day, selectedDate);
 
   return (
     <div
-      className={`flex flex-col justify-between items-start p-1 border rounded-lg shadow-sm aspect-square cursor-pointer overflow-hidden ${
-        isCurrentMonth ? 'bg-white text-gray-900' : 'bg-gray-100 text-gray-400'
-      } ${
-        isToday ? 'border-2 border-green-500' : isSelected ? 'border-2 border-blue-500' : 'border-gray-300'
+      className={`flex flex-col justify-between items-start p-1 border rounded-lg shadow-sm aspect-square cursor-pointer overflow-hidden bg-white text-gray-900 md:min-h-24 md:min-w-24' 
+       ${isToday ? 'border-2 border-green-500' : isSelected ? 'border-2 border-blue-500' : 'border-gray-300'
       }`}
       onClick={() => onClick(day)}
     >

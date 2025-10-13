@@ -69,7 +69,11 @@ export default function EditRoutine({ routine, onClose }: EditRoutineProps) {
             >
                 <h2 className="text-xl font-bold mb-4">Edit Routine</h2>
                 <form action={editRoutineAction} className="flex flex-col gap-4">
+                    <label htmlFor="edit-routine-title" className="block text-sm font-medium">
+                        Title
+                    </label>
                     <input
+                        id="edit-routine-title"
                         type="text"
                         name="title"
                         defaultValue={routine.title}
@@ -88,8 +92,11 @@ export default function EditRoutine({ routine, onClose }: EditRoutineProps) {
                         <span>Repeat Daily</span>
                     </label>
 
-                    <span>Or choose which days of week to repeat:</span>
+                    <label htmlFor="edit-routine-repeat-days" className="block text-sm font-medium">
+                        Or choose which days of week to repeat:
+                    </label>
                     <Select
+                        inputId="edit-routine-repeat-days"
                         value={selectedDays}
                         onChange={(selected) => setRepeat(selected?.map(option => option.value) || [])}
                         isMulti
@@ -106,13 +113,21 @@ export default function EditRoutine({ routine, onClose }: EditRoutineProps) {
                         value={repeat.join(',')}
                     />
 
+                    <label htmlFor="edit-routine-start-time" className="block text-sm font-medium">
+                        Start Time
+                    </label>
                     <input
+                        id="edit-routine-start-time"
                         type="time"
                         name="startTime"
                         defaultValue={routine.startTime}
                         className="border p-2 rounded"
                     />
+                    <label htmlFor="edit-routine-end-time" className="block text-sm font-medium">
+                        End Time
+                    </label>
                     <input
+                        id="edit-routine-end-time"
                         type="time"
                         name="endTime"
                         defaultValue={routine.endTime}
