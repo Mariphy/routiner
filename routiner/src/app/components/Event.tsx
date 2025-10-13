@@ -5,8 +5,9 @@ import type { Event as EventType } from '@/app/types.ts';
 
 interface EventProps {
     event: EventType;
+    variant?: 'compact' | 'detailed';
 }
-export default function Event({ event }: EventProps) {
+export default function Event({ event, variant = 'detailed' }: EventProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleEventClick = () => {
@@ -21,16 +22,18 @@ export default function Event({ event }: EventProps) {
         <>
             <div className="event relative border p-2 mb-2 rounded-lg bg-green-100 shadow-sm cursor-pointer group"
                 onClick={handleEventClick}
-            >
-                <h3 className="font-medium">{event.title}</h3>
-                {event.date && (
+            >   
+                <div className="flex flex-row">
+                    {event.startTime && event.endTime && (
+                    <p className="text-sm text-gray-600 p-1 mt-1">
+                        {event.startTime} - {event.endTime}
+                    </p>
+                    )}
+                    <h3 className="font-medium p-1">{event.title}</h3>
+                </div>
+                {variant === 'detailed' && event.date && (
                     <p className="font-light text-sm text-gray-600">
                         Date: {new Date(event.date).toISOString().split('T')[0]}
-                    </p>
-                )}
-                {event.startTime && event.endTime && (
-                    <p className="text-sm text-gray-600">
-                        {event.startTime} - {event.endTime}
                     </p>
                 )}
                 <div
