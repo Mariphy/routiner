@@ -2,7 +2,7 @@ import ical from 'node-ical';
 import type { RequestHeaders } from '@/app/types';
 import type { CalendarComponent } from 'node-ical';
 
-// do stuff in an async function
+// fetches events from external link, parses ics, returns a list of JS objects
 export async function getExternalEvents(userId: string, reqHeaders: RequestHeaders) {
     const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}/account`,
         {
