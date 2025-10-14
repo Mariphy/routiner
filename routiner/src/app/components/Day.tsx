@@ -18,7 +18,7 @@ export default function Day({ selectedDate, events, tasks, routines, externalEve
     return (
         <div className='pb-10'>
             {selectedDate.toISOString().slice(0, 10)}
-            <h2 className="text-2xl font-bold mb-4 text-center">Shedule for the day</h2>
+            <h2 className="text-2xl font-bold mb-4 text-center">Schedule for the day</h2>
             {routines.map(routine => (
                 <Routine key={routine.id} routine={routine} />
             ))}
