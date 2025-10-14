@@ -4,17 +4,19 @@ import { startOfMonth, endOfMonth, addDays, subMonths, addMonths, format, getDay
 import Day from '@/app/components/Day';
 import DayCell from '@/app/components/DayCell';
 import type { Event as EventType, Task as TaskType, Routine as RoutineType } from '@/app/types.ts';
+import type { VEvent } from 'node-ical';
 import { X } from 'lucide-react';
 
 interface CalendarProps {
   events: EventType[];
   tasks: TaskType[];
   routines: RoutineType[];
+  externalEvents: VEvent[];
 }
 
 const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-export default function Calendar({ events, tasks, routines }: CalendarProps) {
+export default function Calendar({ events, tasks, routines, externalEvents }: CalendarProps) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isDayView, setIsDayView] = useState(false);
@@ -26,6 +28,32 @@ export default function Calendar({ events, tasks, routines }: CalendarProps) {
       selectedDate
     )
   );
+
+  //Filter external events for selected date and transform types
+  const externalEventsForSelectedDay = externalEvents
+  .filter(event => 
+    event.start && isSameDay(
+      event.start instanceof Date ? event.start : new Date(event.start),
+      selectedDate
+    )
+  )
+  .map(event => ({
+    id: event.uid || Math.random().toString(36),
+    title: event.summary || 'Untitled Event',
+    date: event.start || new Date(),
+    startTime: event.start.toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: false 
+    }),
+    endTime: event.end.toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: false 
+    }),
+    description: event.description || '',
+    location: event.location || ''
+  }));
 
   //Filter tasks for selected date
   const tasksForSelectedDate = tasks.filter(task =>
@@ -135,6 +163,7 @@ export default function Calendar({ events, tasks, routines }: CalendarProps) {
             events={eventsForSelectedDate}  // Pass pre-filtered events
             tasks={tasksForSelectedDate}  
             routines={routinesForDay}
+            externalEvents = {externalEventsForSelectedDay}
           />
         </div>)}
     </div>

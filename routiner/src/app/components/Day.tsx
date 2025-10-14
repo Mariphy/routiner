@@ -11,21 +11,25 @@ interface DayProps {
     events: EventType[];
     tasks: TaskType[];
     routines: RoutineType[];
+    externalEvents: EventType[];
 }
 
-export default function Day({ selectedDate, events, tasks, routines }: DayProps) { 
+export default function Day({ selectedDate, events, tasks, routines, externalEvents }: DayProps) { 
     return (
         <div className='pb-10'>
             {selectedDate.toISOString().slice(0, 10)}
             <h2 className="text-2xl font-bold mb-4 text-center">Shedule for the day</h2>
-            {events.map(event => (
-                <Event key={event.id} event={event} variant="compact" />
+            {routines.map(routine => (
+                <Routine key={routine.id} routine={routine} />
             ))}
             {tasks.map(task => (
                 <Task key={task.id} task={task} />
             ))}
-            {routines.map(routine => (
-                <Routine key={routine.id} routine={routine} />
+            {events.map(event => (
+                <Event key={event.id} event={event} variant="compact" />
+            ))}
+            {externalEvents.map(event => (
+                <Event key={event.id} event= {event}/>
             ))}
         </div>
     )

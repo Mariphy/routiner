@@ -1,14 +1,7 @@
 //fetches data through API requests
 import { parseISO, isSameDay } from 'date-fns';
 import { getCurrentWeekRange } from '@/app/lib/helpers';
-import type { Task, Event } from '@/app/types.ts';
-import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
-import { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers';
-
-interface RequestHeaders {
-  cookies: ReadonlyRequestCookies;
-  headers: ReadonlyHeaders;
-}
+import type { Task, Event, RequestHeaders } from '@/app/types.ts';
 
 //helpers
 function isMongoDate(obj: unknown): obj is { $date: string } {
@@ -155,19 +148,4 @@ export async function getEventsForCurrentWeek(userId: string, reqHeaders: Reques
     }
   const data = await response.json();
   return data.events || [];
-}
-
-//fetch events from an external calendar
-export async function fetchRawICS(userId: string, reqHeaders: RequestHeaders) {
-    const url = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${userId}`,
-        {
-            credentials: "include", // browser will send cookies automatically
-            headers: { "cookie": reqHeaders.cookies.getAll().map((c: Record<string, string>) => `${c.name}=${c.value}`).join('; ') },
-
-        }
-    );
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Failed to fetch ICS: ${res.status}`);
-  const text = await res.text(); // raw iCalendar text
-  return text;
 }
