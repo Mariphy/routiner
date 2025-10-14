@@ -1,3 +1,6 @@
+import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
+import { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers';
+
 export interface Task {
     title: string; 
     id: string;
@@ -49,18 +52,7 @@ export interface UserDocument {
   importLink?: string;
 }
 
-export interface ExternalCalendar {
-  id: string;
-  name: string;
-  url: string;
-  color?: string;
-  isActive: boolean;
-  lastSynced?: Date;
-  syncError?: string;
-}
-
-export interface ExternalEvent extends Event {
-  calendarId: string;
-  originalId: string;
-  isExternal: true;
+export interface RequestHeaders {
+  cookies: ReadonlyRequestCookies;
+  headers: ReadonlyHeaders;
 }
