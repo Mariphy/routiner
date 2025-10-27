@@ -29,7 +29,7 @@ export default function Day({ selectedDate, events, tasks, routines, externalEve
                 <Event key={event.id} event={event} variant="compact" />
             ))}
             {externalEvents.map(event => (
-                <Event key={event.id} event= {event} variant="compact"/>
+                <Event key={event.id} event= {event} variant="external"/>
             ))}
         </div>
     )
