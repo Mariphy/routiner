@@ -11,7 +11,7 @@ export default async function SettingsPage() {
     
     return (
         <div className="pt-20 px-6">
-            <p>If you would like to import events from another calendar, please provide the subscription link below</p>
+            <p>If you would like to import events from another calendar, please provide the subscription link below. You can currently add one link, each new entry will override the previous one.</p>
             <form action={addLinkAction} className="mt-4 flex items-center gap-2">
                 <label htmlFor="importURL">Import URL:</label>
                 <input
