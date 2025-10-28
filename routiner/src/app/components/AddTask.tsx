@@ -1,6 +1,6 @@
 'use client'
 import React, { useTransition } from 'react';
-import { addTask } from "@/app/lib/actions/tasks";
+import { addTask } from "@/app/actions/tasks";
 
 interface AddTaskProps {
   onClose: () => void;

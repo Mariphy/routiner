@@ -1,15 +1,18 @@
 "use server"
 import Calendar from "../components/Calendar";
 import { getEventsByMonth, getTasks, getRoutines } from '@/app/lib/api';
-import { fetchUserIdServer } from '@/app/lib/actions/userId';
+import { getExternalEvents } from '@/app/lib/icalparser';
+import { fetchUserIdServer } from '@/app/actions/userId';
 import AddButton from '../components/AddButton';
 import type { Routine, Task, Event } from '@/app/types';
+import type { VEvent } from 'node-ical';
 import { cookies, headers } from "next/headers";
 
 export default async function CalendarPage() {
   let tasks: Task[] = [];
   let routines: Routine[] = [];
   let events: Event[] = [];
+  let externalEvents: VEvent[] = [];
   const cookieStore = await cookies();
   const allHeaders = await headers();
   const userId = await fetchUserIdServer();
@@ -27,7 +30,13 @@ export default async function CalendarPage() {
     } catch (error) {
       console.error('Error fetching data:', error);
     }
-    }
+  }
+  try {
+    const fetchedEvents = await getExternalEvents(userId, { cookies: cookieStore, headers: allHeaders });
+    externalEvents = fetchedEvents;
+  } catch (error) {
+    console.error('Error fetching external events:', error);
+  }
 
   return (
     <main className="flex-grow flex flex-col sm:flex-row pt-12">
@@ -36,6 +45,7 @@ export default async function CalendarPage() {
           events={events}
           tasks={tasks}
           routines={routines}
+          externalEvents={externalEvents}
         />}
         <AddButton />
       </div>

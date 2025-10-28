@@ -5,12 +5,15 @@ import type { Event as EventType } from '@/app/types.ts';
 
 interface EventProps {
     event: EventType;
-    variant?: 'compact' | 'detailed';
+    variant?: 'compact' | 'detailed' | 'external';
 }
 export default function Event({ event, variant = 'detailed' }: EventProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleEventClick = () => {
+        if (variant === 'external') {
+            return; 
+        }
         setIsModalOpen(true);
     };
 
@@ -36,7 +39,7 @@ export default function Event({ event, variant = 'detailed' }: EventProps) {
                         Date: {new Date(event.date).toISOString().split('T')[0]}
                     </p>
                 )}
-                <div
+                {variant !== 'external' && <div
                     data-testid="edit-button"
                     className="absolute top-2 right-2 text-gray-500 cursor-pointer hidden group-hover:block"
                     onClick={(e) => {
@@ -45,7 +48,7 @@ export default function Event({ event, variant = 'detailed' }: EventProps) {
                     }}
                 >
                     <CiEdit />
-                </div>
+                </div>}
             </div>
             {isModalOpen && (
                 <EditEvent
