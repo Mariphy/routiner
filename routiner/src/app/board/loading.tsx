@@ -54,7 +54,7 @@ export default function Loading() {
 
               {/* Routine Skeletons */}
               {Array.from({ length: 1 }, (_, i) => (
-                <div key={`routine-${i}`} className="border p-2 mb-2 rounded-lg bg-yellow-100 shadow-sm">
+                <div key={`routine-${i}`} className="border p-2 mb-2 rounded-lg bg-blue-100 shadow-sm">
                   <div className="h-4 w-2/3 bg-gray-300 rounded animate-pulse mb-2"></div>
                   <div className="h-3 w-1/3 bg-gray-300 rounded animate-pulse"></div>
                 </div>
