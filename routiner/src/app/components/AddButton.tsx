@@ -33,7 +33,7 @@ export default function AddButton() {
                                     setIsModalOpen(false);
                                     setCurrentForm('task');
                                 }}
-                                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                                className="bg-neutral-200 text-black font-medium border px-4 py-2 rounded hover:bg-neutral-300"
                             >
                                 Task
                             </button>
@@ -42,7 +42,7 @@ export default function AddButton() {
                                     setIsModalOpen(false);
                                     setCurrentForm('event');
                                 }}
-                                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                                className="bg-green-200 text-black font-medium border px-4 py-2 rounded hover:bg-green-300"
                             >
                                 Event
                             </button>
@@ -51,7 +51,7 @@ export default function AddButton() {
                                     setIsModalOpen(false);
                                     setCurrentForm('routine');
                                 }}
-                                className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600"
+                                className="bg-blue-200 text-black font-medium border px-4 py-2 rounded hover:bg-blue-300"
                             >
                                 Routine
                             </button>
