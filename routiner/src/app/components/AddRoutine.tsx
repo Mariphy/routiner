@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useTransition } from 'react';
 import Select from 'react-select';
-import { addRoutine } from "@/app/lib/actions/routines";
+import { addRoutine } from "@/app/actions/routines";
 
 interface AddRoutineProps {
   onClose: () => void;

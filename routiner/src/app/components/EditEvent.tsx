@@ -1,6 +1,6 @@
 "use client";
 import React, { useTransition } from 'react';
-import { editEvent, deleteEvent } from "@/app/lib/actions/events";
+import { editEvent, deleteEvent } from "@/app/actions/events";
 import type { Event as EventType } from '@/app/types.ts';
 
 interface EditEventProps {

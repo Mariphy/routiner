@@ -1,3 +1,6 @@
+import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
+import { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers';
+
 export interface Task {
     title: string; 
     id: string;
@@ -46,4 +49,10 @@ export interface UserDocument {
   tasks: Task[];
   image?: string;
   emailVerified?: boolean;
+  importLink?: string;
+}
+
+export interface RequestHeaders {
+  cookies: ReadonlyRequestCookies;
+  headers: ReadonlyHeaders;
 }

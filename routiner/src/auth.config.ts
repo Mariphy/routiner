@@ -2,7 +2,7 @@ import type { NextAuthConfig } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import GitHub from "next-auth/providers/github"
 import { verifyPassword } from "@/app/lib/bcrypt"
-import { getUserByEmail } from "@/app/lib/actions/user"
+import { getUserByEmail } from "@/app/actions/user"
 import { MongoDBAdapter } from "@auth/mongodb-adapter"
 import client from "@/app/api/mongodbClient"
 

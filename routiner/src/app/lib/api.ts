@@ -1,14 +1,7 @@
 //fetches data through API requests
 import { parseISO, isSameDay } from 'date-fns';
-import { getCurrentWeekRange } from '../utils/helpers';
-import type { Task, Event } from '@/app/types.ts';
-import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
-import { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers';
-
-interface RequestHeaders {
-  cookies: ReadonlyRequestCookies;
-  headers: ReadonlyHeaders;
-}
+import { getCurrentWeekRange } from '@/app/lib/helpers';
+import type { Task, Event, RequestHeaders } from '@/app/types.ts';
 
 //helpers
 function isMongoDate(obj: unknown): obj is { $date: string } {
@@ -38,7 +31,6 @@ function normalizeTask(task: Task) {
     };
 }
 
-//user id
 //user id for client 
 export async function fetchUserIdClient() {
     const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/session`, {
@@ -65,7 +57,6 @@ export async function getTasks(userId: string, reqHeaders: RequestHeaders) {
 
         }
     );
-    //console.log("response: ", response)
 
     if (!response.ok) {
     console.error(`Failed to fetch tasks: ${response.status}`);

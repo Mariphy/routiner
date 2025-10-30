@@ -9,15 +9,17 @@ import type {
   Task as TaskType, 
   Routine as RoutineType, 
   Event as EventType } from '@/app/types.ts';
-import { addTask } from '@/app/lib/actions/tasks'
+import type { VEvent } from 'node-ical';
+import { addTask } from '@/app/actions/tasks'
 
 interface BoardProps {
   tasks: TaskType[];
   routines: RoutineType[];
   events: EventType[];
+  externalEvents: VEvent[];
 }
 
-export default function Board({ tasks: tasks, routines: routines, events: events }: BoardProps) {
+export default function Board({ tasks: tasks, routines: routines, events: events, externalEvents: externalEvents }: BoardProps) {
   const [newTask, setNewTask] = useState(''); //quickAdd
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [showCompleted, setShowCompleted] = useState(false);
@@ -53,6 +55,27 @@ export default function Board({ tasks: tasks, routines: routines, events: events
       console.error('Error adding task:', error);
     }
   };
+  const externalEventsForSelectedWeek = externalEvents
+    .filter(event => 
+      event.start >= startDate && event.start < addDays(startDate, 7)
+    )
+    .map(event => ({
+      id: event.uid || Math.random().toString(36),
+      title: event.summary || 'Untitled Event',
+      date: event.start || new Date(),
+      startTime: event.start.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: false 
+      }),
+      endTime: event.end.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: false 
+      }),
+      description: event.description || '',
+      location: event.location || ''
+  }));
 
   return (
     <div className="w-full overflow-x-auto">
@@ -128,6 +151,9 @@ export default function Board({ tasks: tasks, routines: routines, events: events
             event.date && isSameDay(event.date, day)
           );
           const routinesForDay = routines.filter(routine => routine.repeat.includes(dayName));
+          const externalEventsForDay = externalEventsForSelectedWeek.filter(event =>
+            event.date && isSameDay(event.date, day)
+          );
 
           return (
             <div key={index} className="column border p-4 sm:w-72 md:w-72 lg:w-80 rounded-lg bg-neutral-200 shadow-md">
@@ -154,6 +180,14 @@ export default function Board({ tasks: tasks, routines: routines, events: events
                 ))}
 
               {eventsForDay
+                .map((event, eventIndex) => (
+                  <Event
+                    key={eventIndex}
+                    event={event}
+                  />
+                ))}
+
+              {externalEventsForDay
                 .map((event, eventIndex) => (
                   <Event
                     key={eventIndex}

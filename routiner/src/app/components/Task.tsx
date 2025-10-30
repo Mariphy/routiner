@@ -1,7 +1,7 @@
 import React, { useState, useTransition } from 'react';
 import { CiEdit } from "react-icons/ci";
 import EditTask from '@/app/components/EditTask';
-import { editTask } from '@/app/lib/actions/tasks';
+import { editTask } from '@/app/actions/tasks';
 import type { Task as TaskType } from '@/app/types.ts';
 
 interface TaskProps {

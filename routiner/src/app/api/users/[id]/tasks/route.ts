@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { connectToDb } from "@/app/api/db";
-import { generateUniqueId } from "@/app/utils/helpers";
+import { generateUniqueId } from "@/app/lib/helpers";
 import type { Task } from '@/app/types';
 
 interface UserDocument {

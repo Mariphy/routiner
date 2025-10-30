@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { connectToDb } from '@/app/api/db';
 import type { Task, UserDocument } from '@/app/types';
-import { generateUniqueId } from '@/app/utils/helpers';
+import { generateUniqueId } from '@/app/lib/helpers';
 import { auth } from "@/auth";
 
 export async function addTask(formData: FormData) {
