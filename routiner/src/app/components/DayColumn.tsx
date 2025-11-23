@@ -102,6 +102,7 @@ export default function DayColumn({ dayName, tasks, routines, events, externalEv
                     <Routine
                         key={routineIndex}
                         routine={routine}
+                        dayName={dayName}
                     />
                 ))}
 

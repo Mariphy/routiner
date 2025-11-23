@@ -68,15 +68,28 @@ export async function editRoutine(formData: FormData, id: string) {
     };
 
     const { db } = await connectToDb();
+    const updateFields: Record<string, any> = {
+      "routines.$.title": rawTitle,
+      "routines.$.daily": formData.get("daily") === "on",
+      "routines.$.repeat": formData.get("repeat") ? (formData.get("repeat") as string).split(",") : [],
+      "routines.$.startTime": formData.get("startTime") as string,
+      "routines.$.endTime": formData.get("endTime") as string,
+    };
+
+    // Handle checkedDays if provided
+    const checkedDaysStr = formData.get("checkedDays");
+    if (checkedDaysStr) {
+      try {
+        const checkedDays = JSON.parse(checkedDaysStr as string);
+        updateFields["routines.$.checkedDays"] = checkedDays;
+      } catch (e) {
+        console.error('Failed to parse checkedDays:', e);
+      }
+    }
+
     const result = await db.collection<UserDocument>('users').updateOne(
       { email: session.user.email, "routines.id": id },
-      { $set: {
-          "routines.$.title": rawTitle,
-          "routines.$.daily": formData.get("daily") === "on",
-          "routines.$.repeat": formData.get("repeat") ? (formData.get("repeat") as string).split(",") : [],
-          "routines.$.startTime": formData.get("startTime") as string,
-          "routines.$.endTime": formData.get("endTime") as string,
-      }}
+      { $set: updateFields }
     );
 
     if (result.modifiedCount === 0) {
