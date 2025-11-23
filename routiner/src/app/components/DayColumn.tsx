@@ -8,6 +8,7 @@ import type {
     Event as EventType
 } from '@/app/types.ts';
 import { addTask } from '@/app/actions/tasks';
+import { editTask } from '@/app/actions/tasks';
 
 interface DayColumnProps {
     dayName: string;
@@ -48,8 +49,40 @@ export default function DayColumn({ dayName, tasks, routines, events, externalEv
             console.error('Error adding task:', error);
         }
     };
+    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+    };
+
+    const handleDropTask = async (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        const payload = event.dataTransfer.getData('application/json');
+        if (!payload) return;
+
+        try {
+            const { taskId } = JSON.parse(payload);
+            const taskToUpdate = tasks.find((t) => t.id === taskId);
+            if (!taskToUpdate) return;
+
+            const formData = new FormData();
+            formData.append('title', taskToUpdate.title);
+            formData.append('day', dayName);
+
+            const result = await editTask(formData, taskId);
+            if (!result.success) {
+                console.error('Failed to reassign task:', result.error);
+            }
+        } catch (error) {
+            console.error('Error handling drop:', error);
+        }
+    };
+
     return (
-        <div className="column border p-4 sm:w-72 md:w-72 lg:w-80 rounded-lg bg-neutral-200 shadow-md">
+        <div
+            className="column border p-4 sm:w-72 md:w-72 lg:w-80 rounded-lg bg-neutral-200 shadow-md"
+            onDragOver={handleDragOver}
+            onDrop={handleDropTask}
+        >
             <h2 className="text-xl font-bold mb-4">
                 {dayName} {showCompleted && '(Completed)'}
             </h2>

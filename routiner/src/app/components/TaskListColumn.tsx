@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Task from '@/app/components/Task';
 import type { Task as TaskType } from '@/app/types.ts';
 import { addTask } from "@/app/actions/tasks";
+import { editTask } from "@/app/actions/tasks";
 
 interface TaskListColumnProps {
     tasks: TaskType[];
@@ -26,12 +27,51 @@ export default function TaskListColumn({ tasks, showCompleted }: TaskListColumnP
           console.error('Error adding task:', error);
         }
       };
+    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+    };
+
+    const handleDropTask = async (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        const payload = event.dataTransfer.getData('application/json');
+        if (!payload) return;
+
+        try {
+            const { taskId } = JSON.parse(payload);
+            const taskToUpdate = tasks.find((t) => t.id === taskId);
+            if (!taskToUpdate) return;
+
+            const formData = new FormData();
+            formData.append('title', taskToUpdate.title);
+            formData.append('day', '');
+
+            if (taskToUpdate.date instanceof Date) {
+                formData.append('date', taskToUpdate.date.toISOString());
+            } else if (taskToUpdate.date) {
+                formData.append('date', taskToUpdate.date);
+            }
+            if (taskToUpdate.startTime) formData.append('startTime', taskToUpdate.startTime);
+            if (taskToUpdate.endTime) formData.append('endTime', taskToUpdate.endTime);
+
+            const result = await editTask(formData, taskId);
+            if (!result.success) {
+                console.error('Failed to remove task day:', result.error);
+            }
+        } catch (error) {
+            console.error('Error handling drop:', error);
+        }
+    };
+
     // Filter tasks based on completion status
     const filteredTasks = showCompleted
         ? (tasks || []).filter(task => task.checked) // Show only completed tasks
         : (tasks || []).filter(task => !task.checked); // Show only uncompleted tasks
     return (
-        <div className="column border p-4 sm:w-72 md:w-72 lg:w-80 flex-shrink-0 rounded-lg bg-neutral-200 shadow-md" draggable="true">
+        <div className="column border p-4 sm:w-72 md:w-72 lg:w-80 flex-shrink-0 rounded-lg bg-neutral-200 shadow-md"
+            onDragOver={handleDragOver}
+            onDrop={handleDropTask}
+        >
             <h2 className="text-xl font-bold mb-4">
                 Task List {showCompleted && '(Completed)'}
             </h2>

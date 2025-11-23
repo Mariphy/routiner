@@ -12,6 +12,11 @@ export default function Task({ task }: TaskProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    e.dataTransfer.setData('application/json', JSON.stringify({ taskId: task.id }));
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
   const handleTaskClick = () => {
     setIsModalOpen(true);
   };
@@ -50,7 +55,8 @@ export default function Task({ task }: TaskProps) {
           task.checked ? 'bg-green-50 border-green-200 line-through' : 'bg-neutral-100'
         } ${isPending ? 'opacity-50 line-through' : ''}`}
         onClick={handleTaskClick} 
-        draggable="true"
+        draggable={!isPending}
+        onDragStart={handleDragStart}
       >
         <div className="flex items-center mb-2">
           <label htmlFor={`task-checkbox-${task.id}`} className="sr-only">
