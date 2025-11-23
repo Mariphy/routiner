@@ -87,6 +87,12 @@ export async function editRoutine(formData: FormData, id: string) {
       }
     }
 
+    // Handle completionCount if provided
+    const completionCountStr = formData.get("completionCount");
+    if (completionCountStr) {
+      updateFields["routines.$.completionCount"] = parseInt(completionCountStr as string, 10);
+    }
+
     const result = await db.collection<UserDocument>('users').updateOne(
       { email: session.user.email, "routines.id": id },
       { $set: updateFields }

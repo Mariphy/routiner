@@ -42,6 +42,14 @@ export default function Routine({ routine, dayName }: RoutineProps) {
     };
     formData.append('checkedDays', JSON.stringify(updatedCheckedDays));
 
+    // Calculate new completion count
+    const currentCount = routine.completionCount || 0;
+    const wasChecked = routine.checkedDays?.[dayName] || false;
+    const newCount = e.target.checked && !wasChecked ? currentCount + 1 : 
+                     !e.target.checked && wasChecked ? Math.max(0, currentCount - 1) : 
+                     currentCount;
+    formData.append('completionCount', newCount.toString());
+
     startTransition(async () => {
       try {
         const result = await editRoutine(formData, routine.id);
@@ -76,6 +84,13 @@ export default function Routine({ routine, dayName }: RoutineProps) {
           }`}
         />
         <h3 className={`font-medium ${isCheckedForDay ? 'text-gray-300' : ''}`}>{routine.title}</h3>
+        {routine.completionCount !== undefined && routine.completionCount > 0 && (
+          <span className={`ml-auto text-xs font-semibold px-2 py-1 rounded-full ${
+            isCheckedForDay ? 'bg-blue-200/30 text-gray-400' : 'bg-blue-200 text-blue-800'
+          }`}>
+            {routine.completionCount}
+          </span>
+        )}
       </div>
       {routine.startTime && routine.endTime && (
         <p className={`text-sm ${isCheckedForDay ? 'text-gray-300' : 'text-gray-600'}`}>
