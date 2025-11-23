@@ -35,6 +35,8 @@ export interface Routine {
     startTime?: string;
     endTime?: string;
     subissue?: string;
+    checkedDays?: Record<string, boolean>;
+    completionCount?: number;
 }
 
 export type RoutineInput = Omit<Routine, 'id'>;

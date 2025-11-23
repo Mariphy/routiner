@@ -64,50 +64,40 @@ export async function addTask(formData: FormData) {
 export async function editTask(formData: FormData, id: string) {
   try {
     const session = await auth();
-    if (!session?.user?.email) {
-      return { success: false, error: 'Unauthenticated' };
+    if (!session?.user?.email) return { success: false, error: 'Unauthenticated' };
+
+    const updates: Record<string, unknown> = {};
+    const titleEntry = formData.get('title');
+    if (titleEntry !== null) {
+      const rawTitle = titleEntry.toString().trim();
+      if (!rawTitle) return { success: false, error: 'Task title is required' };
+      updates["tasks.$.title"] = rawTitle;
     }
 
-    const rawTitle = (formData.get('title') ?? '').toString().trim();
-    if (!rawTitle) {
-      return { success: false, error: 'Task title is required' };
+    if (formData.has('day')) {
+      const dayRaw = formData.get('day')?.toString().trim() || undefined;
+      updates["tasks.$.day"] = dayRaw || undefined;
+    }
+    if (formData.has('checked')) {
+      updates["tasks.$.checked"] = formData.get('checked') === 'on';
+    }
+    if (formData.has('startTime')) {
+      updates["tasks.$.startTime"] = formData.get('startTime')?.toString().trim() || undefined;
+    }
+    if (formData.has('endTime')) {
+      updates["tasks.$.endTime"] = formData.get('endTime')?.toString().trim() || undefined;
+    }
+    if (formData.has('date')) {
+      const dateRaw = formData.get('date')?.toString();
+      updates["tasks.$.date"] = dateRaw ? new Date(dateRaw) : undefined;
     }
 
-    const dayRaw = (formData.get('day') ?? '').toString().trim();
-    const dateRaw = (formData.get('date') ?? '').toString() || undefined;
-    const startTimeRaw = formData.get('startTime')?.toString().trim() || undefined;
-    let date;
-    if (dateRaw && startTimeRaw) {
-      const dateTimeString = `${dateRaw}T${startTimeRaw}:00`;
-      date = new Date(dateTimeString);
-    }  else if (dateRaw) {
-      date = new Date(dateRaw + 'T00:00');
-    }
-    const endTimeRaw = formData.get('endTime')?.toString().trim() || undefined;
-    const checked = formData.get('checked') === 'on';
-
-    const task: Task = {
-      id: id,
-      title: rawTitle,
-      day: dayRaw || undefined,
-      date: date || undefined,
-      startTime: startTimeRaw,
-      endTime: endTimeRaw,
-      checked,
-    };
+    if (!Object.keys(updates).length) return { success: false, error: 'No fields to update' };
 
     const { db } = await connectToDb();
     const result = await db.collection<UserDocument>('users').updateOne(
       { email: session.user.email, "tasks.id": id },
-      { $set: {
-          "tasks.$.title": rawTitle,
-          "tasks.$.day": dayRaw || undefined,
-          "tasks.$.date": dateRaw ? new Date(dateRaw) : undefined,
-          "tasks.$.startTime": startTimeRaw,
-          "tasks.$.endTime": endTimeRaw,
-          "tasks.$.checked": checked,
-        }
-      }
+      { $set: updates }
     );
 
     if (result.modifiedCount === 0) {
@@ -116,7 +106,7 @@ export async function editTask(formData: FormData, id: string) {
 
     revalidatePath('/board');
     revalidatePath('/calendar');
-    return { success: true, task };
+    return { success: true };
   } catch (e) {
     console.error('editTask error:', e);
     return { success: false, error: 'Internal error' };

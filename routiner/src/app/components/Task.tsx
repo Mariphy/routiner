@@ -12,6 +12,11 @@ export default function Task({ task }: TaskProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    e.dataTransfer.setData('application/json', JSON.stringify({ taskId: task.id }));
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
   const handleTaskClick = () => {
     setIsModalOpen(true);
   };
@@ -27,10 +32,6 @@ export default function Task({ task }: TaskProps) {
     formData.append('title', task.title);
     formData.append('checked', e.target.checked ? 'on' : '');
 
-    if (task.day) formData.append('day', task.day);
-    if (task.date) formData.append('date', task.date.toISOString());
-    if (task.startTime) formData.append('startTime', task.startTime);
-    if (task.endTime) formData.append('endTime', task.endTime);
     startTransition(async () => {
       try {
         const result = await editTask(formData, task.id);
@@ -50,6 +51,8 @@ export default function Task({ task }: TaskProps) {
           task.checked ? 'bg-green-50 border-green-200 line-through' : 'bg-neutral-100'
         } ${isPending ? 'opacity-50 line-through' : ''}`}
         onClick={handleTaskClick} 
+        draggable={!isPending}
+        onDragStart={handleDragStart}
       >
         <div className="flex items-center mb-2">
           <label htmlFor={`task-checkbox-${task.id}`} className="sr-only">
