@@ -2,7 +2,8 @@ import React, { useState, useTransition } from 'react';
 import { CiEdit } from "react-icons/ci";
 import EditRoutine from '@/app/components/EditRoutine';
 import { editRoutine } from '@/app/actions/routines';
-import type { Routine } from '@/app/types'
+import type { Routine } from '@/app/types';
+import { format, startOfWeek } from 'date-fns';
 
 interface RoutineProps {
   routine: Routine;
@@ -13,7 +14,13 @@ export default function Routine({ routine, dayName }: RoutineProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  const isCheckedForDay = dayName ? (routine.checkedDays?.[dayName] || false) : false;
+  // Get current week identifier (e.g., "2025-W47")
+  const currentWeekStart = startOfWeek(new Date(), { weekStartsOn: 0 });
+  const currentWeekKey = format(currentWeekStart, 'yyyy-MM-dd');
+
+  // Create a week-specific key for the checkbox
+  const weekDayKey = dayName ? `${currentWeekKey}-${dayName}` : '';
+  const isCheckedForDay = weekDayKey ? (routine.checkedDays?.[weekDayKey] || false) : false;
 
   const handleRoutineClick = () => {
     setIsModalOpen(true);
@@ -26,12 +33,12 @@ export default function Routine({ routine, dayName }: RoutineProps) {
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation();
     
-    if (!dayName) return;
+    if (!weekDayKey) return;
 
     const isChecked = e.target.checked;
     const newCheckedDays = {
       ...routine.checkedDays,
-      [dayName]: isChecked
+      [weekDayKey]: isChecked
     };
 
     // Calculate new completion count
