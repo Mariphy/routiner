@@ -22,6 +22,7 @@ export default function Routine({ routine }: RoutineProps) {
     <div
       className="routine relative border p-2 mb-2 rounded-lg bg-blue-100 shadow-sm cursor-pointer group"
       onClick={handleRoutineClick}
+      draggable="true"
     >
       <h3 className="font-medium">{routine.title}</h3>
       {routine.startTime && routine.endTime && (

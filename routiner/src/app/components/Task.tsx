@@ -50,6 +50,7 @@ export default function Task({ task }: TaskProps) {
           task.checked ? 'bg-green-50 border-green-200 line-through' : 'bg-neutral-100'
         } ${isPending ? 'opacity-50 line-through' : ''}`}
         onClick={handleTaskClick} 
+        draggable="true"
       >
         <div className="flex items-center mb-2">
           <label htmlFor={`task-checkbox-${task.id}`} className="sr-only">
