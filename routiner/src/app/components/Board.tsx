@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import { startOfWeek, addDays, format, isSameDay } from 'date-fns';
-import Task from './Task';
-import Routine from './Routine';
+import Task from '@/app/components/Task';
+import Routine from './Routine';  
 import Event from './Event';
+import TaskListColumn from '@/app/components/TaskListColumn';
 import type { 
   Task as TaskType, 
   Routine as RoutineType, 
@@ -101,48 +102,10 @@ export default function Board({ tasks: tasks, routines: routines, events: events
           </div>
         </div>
       </div>
-
-      {/* All Tasks */}
+      {/* Board */}
       <div className="board flex gap-2 p-4 min-w-max min-h-[600px]">
-        <div className="column border p-4 sm:w-72 md:w-72 lg:w-80 flex-shrink-0 rounded-lg bg-neutral-200 shadow-md">
-          <h2 className="text-xl font-bold mb-4">
-            Task List {showCompleted && '(Completed)'}
-          </h2>
-          {filteredTasks.map((task) => (
-            <Task
-              key={task.id}
-              task={task}
-            />
-          ))}
 
-          {/* Only show add task input when showing active tasks */}
-          {!showCompleted && (
-            <div className="flex items-center gap-2 mb-4">
-              <label htmlFor="quick-add-task" className="sr-only">
-                Add new task
-              </label>
-              <input
-                id="quick-add-task"
-                type="text"
-                value={newTask}
-                onChange={(e) => setNewTask(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleQuickAddTask();
-                  }
-                }}
-                placeholder="Click + to add a new task"
-                className="task border p-2 rounded-lg bg-neutral-100 shadow-sm flex-grow"
-              />
-              <button
-                onClick={() => handleQuickAddTask()}
-                className="bg-accent text-white px-4 py-2 rounded hover:bg-accent-hover"
-              >
-                +
-              </button>
-            </div>
-          )}
-        </div>
+        <TaskListColumn tasks={tasks} onQuickAddTask={handleQuickAddTask} showCompleted={showCompleted} />
 
         {/* Day Columns */}
         {daysOfWeek.map((day, index) => {
