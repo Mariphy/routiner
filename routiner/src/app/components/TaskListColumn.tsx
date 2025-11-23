@@ -6,10 +6,9 @@ import { addTask } from "@/app/actions/tasks";
 interface TaskListColumnProps {
     tasks: TaskType[];
     showCompleted: boolean;
-    onQuickAddTask: (taskTitle: string) => Promise<void>;
 }
 
-export default function TaskListColumn({ tasks, showCompleted, onQuickAddTask }: TaskListColumnProps) {
+export default function TaskListColumn({ tasks, showCompleted }: TaskListColumnProps) {
     const [newTask, setNewTask] = useState('');
 
     const handleQuickAddTask = async () => {
