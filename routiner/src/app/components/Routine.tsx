@@ -28,37 +28,23 @@ export default function Routine({ routine, dayName }: RoutineProps) {
     
     if (!dayName) return;
 
-    const formData = new FormData();
-    formData.append('title', routine.title);
-    formData.append('daily', routine.daily ? 'on' : '');
-    formData.append('repeat', routine.repeat.join(','));
-    if (routine.startTime) formData.append('startTime', routine.startTime);
-    if (routine.endTime) formData.append('endTime', routine.endTime);
-    
-    // Send the updated checkedDays as JSON
-    const updatedCheckedDays = {
-      ...(routine.checkedDays || {}),
-      [dayName]: e.target.checked
+    const isChecked = e.target.checked;
+    const newCheckedDays = {
+      ...routine.checkedDays,
+      [dayName]: isChecked
     };
-    formData.append('checkedDays', JSON.stringify(updatedCheckedDays));
 
     // Calculate new completion count
     const currentCount = routine.completionCount || 0;
-    const wasChecked = routine.checkedDays?.[dayName] || false;
-    const newCount = e.target.checked && !wasChecked ? currentCount + 1 : 
-                     !e.target.checked && wasChecked ? Math.max(0, currentCount - 1) : 
-                     currentCount;
-    formData.append('completionCount', newCount.toString());
+    const newCount = isChecked ? currentCount + 1 : Math.max(0, currentCount - 1);
 
     startTransition(async () => {
-      try {
-        const result = await editRoutine(formData, routine.id);
-        if (!result.success) {
-          console.error('Failed to update routine:', result.error);
-        }
-      } catch (error) {
-        console.error('Error updating routine:', error);
-      }
+      const formData = new FormData();
+      // Only send the fields that are actually changing
+      formData.append('checkedDays', JSON.stringify(newCheckedDays));
+      formData.append('completionCount', newCount.toString());
+      
+      await editRoutine(formData, routine.id);
     });
   };
 
